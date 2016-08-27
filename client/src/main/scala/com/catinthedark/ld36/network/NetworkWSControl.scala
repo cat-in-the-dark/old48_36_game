@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2
 import com.catinthedark.lib.network.IMessageBus.Callback
 import com.catinthedark.lib.network.messages.{DisconnectedMessage, GameStartedMessage}
 import com.catinthedark.lib.network.{JacksonConverterScala, MessageBus, SocketIOTransport}
+import com.catinthedark.models.{JumpMessage, MoveMessage, ServerHelloMessage, ShootMessage}
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 
@@ -34,6 +35,8 @@ class NetworkWSControl(val serverAddress: URI) extends NetworkControl {
       y = data("y").asInstanceOf[Double].toFloat,
       angle = data("angle").asInstanceOf[Double].toFloat,
       scale = data("scale").asInstanceOf[Double].toFloat)
+  }).registerConverter[ServerHelloMessage](classOf[ServerHelloMessage], data => {
+    objectMapper.convertValue(data, classOf[ServerHelloMessage])
   })
   
   println(s"Converters ${messageConverter.registeredConverters}")
@@ -68,6 +71,13 @@ class NetworkWSControl(val serverAddress: URI) extends NetworkControl {
     override def apply(message: DisconnectedMessage, sender: String): Unit = {
       println(s"onEnemyDisconnected $message")
       onEnemyDisconnected()
+    }
+  })
+
+  messageBus.subscribe(classOf[ServerHelloMessage], new Callback[ServerHelloMessage] {
+    override def apply(message: ServerHelloMessage, sender: String): Unit = {
+      println(s"onServerHelloMessage $message")
+      // BUM
     }
   })
   

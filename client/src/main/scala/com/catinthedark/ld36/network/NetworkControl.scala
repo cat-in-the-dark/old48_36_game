@@ -4,12 +4,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.lib.Pipe
-import com.catinthedark.lib.network.messages.Message
-
-case class MoveMessage(x: Float, y: Float, angle: Float, idle: Boolean) extends Message
-case class JumpMessage(x: Float, y: Float, angle: Float, scale: Float) extends Message
-case class ShootMessage(x: Float, y: Float, shotObject: String) extends Message
-
+import com.catinthedark.models.{HelloMessage, JumpMessage, MoveMessage, ShootMessage}
 
 trait NetworkControl extends Runnable {
   var isConnected: Option[Unit] = None
@@ -20,16 +15,20 @@ trait NetworkControl extends Runnable {
   val onJumpPipe = new Pipe[(Vector2, Float, Float)]()
   val onEnemyDisconnected = new Pipe[Unit]()
 
+  def hello(name: String): Unit = {
+    processOut(HelloMessage(name))
+  }
+
   def move(pos: Vector2, angle: Float, idle: Boolean): Unit = {
-    processOut(new MoveMessage(x=pos.x, y=pos.y, angle = angle, idle = idle))
+    processOut(MoveMessage(x=pos.x, y=pos.y, angle = angle, idle = idle))
   }
 
   def shoot(shotFrom: Vector2, objName: String): Unit = {
-    processOut(new ShootMessage(x = shotFrom.x, y = shotFrom.y, shotObject = objName))
+    processOut(ShootMessage(x = shotFrom.x, y = shotFrom.y, shotObject = objName))
   }
 
   def jump(pos: Vector2, angle: Float, scale: Float): Unit = {
-    processOut(new JumpMessage(x = pos.x, y = pos.y, angle = angle, scale = scale))
+    processOut(JumpMessage(x = pos.x, y = pos.y, angle = angle, scale = scale))
   }
 
   def processIn() = {

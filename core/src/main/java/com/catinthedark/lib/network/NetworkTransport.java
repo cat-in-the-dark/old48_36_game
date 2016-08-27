@@ -26,6 +26,7 @@ public abstract class NetworkTransport implements IMessageBus.Transport {
      */
     void onReceive(String json) {
         try {
+            System.out.println("RAW DATA: " + json);
             IMessageBus.Wrapper data = converter.fromJson(json);
             receiver.apply(data);
         } catch (Exception e) {

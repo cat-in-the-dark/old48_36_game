@@ -3,10 +3,14 @@ package com.catinthedark.server
 import java.util.UUID
 import java.util.concurrent.{ConcurrentHashMap, Executors, TimeUnit}
 
+import com.catinthedark.lib.network.JacksonConverterScala
+import com.catinthedark.lib.network.NetworkTransport.Converter
+import com.catinthedark.models.ServerHelloMessage
 import com.catinthedark.server.models.{Player, Room}
 import com.corundumstudio.socketio._
 import com.corundumstudio.socketio.listener.{ConnectListener, DataListener, DisconnectListener}
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.slf4j.LoggerFactory
 
 class SocketIOService {
@@ -20,6 +24,8 @@ class SocketIOService {
   config.setSocketConfig(socketConfig)
   private val server = new SocketIOServer(config)
   private val mapper = new ObjectMapper()
+  mapper.registerModule(DefaultScalaModule)
+  private val converter: Converter = new JacksonConverterScala(mapper)
   private val executor = Executors.newScheduledThreadPool(4)
 
   private val room = Room(UUID.randomUUID())
@@ -28,6 +34,10 @@ class SocketIOService {
   server.addConnectListener(new ConnectListener {
     override def onConnect(client: SocketIOClient): Unit = {
       log.info(s"New connection ${client.getSessionId} of ${server.getAllClients.size()}")
+      val msg = ServerHelloMessage(client.getSessionId.toString)
+      val data = converter.toJson(msg)
+      println(data)
+      client.sendEvent(MESSAGE, data)
     }
   })
 
