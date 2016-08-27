@@ -4,6 +4,10 @@ import com.badlogic.gdx.{Gdx, Input}
 import com.catinthedark.ld36.common.{Const, Stat, Stats}
 import com.catinthedark.ld36.hud.{ShootRageRender, StatsRender}
 import com.catinthedark.ld36.{Assets, Shared0}
+import com.badlogic.gdx.{Input, Gdx}
+import com.catinthedark.ld36.common.{Stat, Stats}
+import com.catinthedark.ld36.{Shared0, Assets}
+import com.catinthedark.ld36.common.Const
 import com.catinthedark.lib.{MagicSpriteBatch, SimpleUnit}
 
 /**

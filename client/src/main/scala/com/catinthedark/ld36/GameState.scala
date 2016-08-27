@@ -12,7 +12,6 @@ import com.catinthedark.lib.YieldUnit
 
 class GameState extends YieldUnit[Shared0, Stats] {
   var shared: Shared0 = _
-  var shared1: Shared1 = _
   var view: View = _
   var control: Control = _
   var children: Seq[SimpleUnit] = Seq()
