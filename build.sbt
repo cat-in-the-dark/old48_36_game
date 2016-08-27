@@ -34,5 +34,6 @@ lazy val server = project.in(file("./server"))
   })
   .settings(libraryDependencies ++= Seq(
     "com.fasterxml.jackson.module" % "jackson-module-scala_2.11" % "2.7.2",
-    "com.corundumstudio.socketio" % "netty-socketio" % "1.7.10"
+    "com.corundumstudio.socketio" % "netty-socketio" % "1.7.10",
+    "org.slf4j" % "slf4j-simple" % "1.7.7"
   ))
