@@ -89,7 +89,9 @@ object Assets {
   object Audios {
     val soundMap = Map(
       SoundNames.ChponkSuka -> Gdx.audio.newSound(Gdx.files.internal("sound/chponk_suka.mp3")),
-      SoundNames.HeadShot -> Gdx.audio.newSound(Gdx.files.internal("sound/head_shot.mp3"))
+      SoundNames.HeadShot -> Gdx.audio.newSound(Gdx.files.internal("sound/head_shot.mp3")),
+      SoundNames.Tooth -> Gdx.audio.newSound(Gdx.files.internal("sound/zuby_po_vsey_ulitse.mp3")),
+      SoundNames.Siklo -> Gdx.audio.newSound(Gdx.files.internal("sound/siklo.mp3"))
     )
   }
 }
