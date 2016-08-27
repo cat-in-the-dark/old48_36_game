@@ -1,10 +1,9 @@
 package com.catinthedark.ld36
 
 import java.net.URI
-
 import com.catinthedark.ld36.network.{NetworkControl, NetworkWSControl}
 
-case class Shared0(serverAddress: URI) {
+case class Shared0(serverAddress: URI, var shootRage: Float = 0) {
   val networkControl: NetworkControl = new NetworkWSControl(serverAddress)
   private var networkControlThread: Thread = _
 

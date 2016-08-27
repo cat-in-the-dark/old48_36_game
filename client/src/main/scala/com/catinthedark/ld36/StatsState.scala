@@ -5,7 +5,8 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
-import com.catinthedark.ld36.common.{StatsRender, Stats, Stat}
+import com.catinthedark.ld36.common.{Stats, Stat}
+import com.catinthedark.ld36.hud.StatsRender
 import com.catinthedark.lib.{DelayState, YieldUnit}
 import com.catinthedark.lib.Magic._
 import org.lwjgl.opengl.GL11

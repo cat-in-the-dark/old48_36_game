@@ -20,7 +20,7 @@ class GameState extends YieldUnit[Shared0, Stats] {
   override def onActivate(data: Shared0): Unit = {
     shared = data
     view = new View(shared)
-    control = new Control()
+    control = new Control(shared)
     children = Seq(view, control)
     children.foreach(_.onActivate())
   }
