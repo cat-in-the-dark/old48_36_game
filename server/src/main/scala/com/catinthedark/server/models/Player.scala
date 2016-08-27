@@ -5,7 +5,7 @@ import com.corundumstudio.socketio.SocketIOClient
 case class Player(
   room: Room,
   socket: SocketIOClient,
-  entity: PlayerEntity
+  entity: PlayerModel
 ) {
 
   def ip(): String = try {

@@ -8,6 +8,9 @@ val libgdxVersion = "1.9.4"
 
 lazy val core = project.in(file("./core"))
   .settings(commonSettings: _*)
+  .settings(libraryDependencies ++= Seq(
+    "com.fasterxml.jackson.module" % "jackson-module-scala_2.11" % "2.7.2"
+  ))
 
 lazy val client = project.in(file("./client"))
   .dependsOn(core)
