@@ -44,6 +44,7 @@ class SocketIOService {
   server.addEventListener(MESSAGE, classOf[String], new DataListener[String] {
     override def onData(client: SocketIOClient, data: String, ackSender: AckRequest): Unit = {
 //      val wrapper = mapper.readValue(data, classOf[JacksonConverter.Wrapper])
+      println(data)
       val player = players.get(client.getSessionId)
       if (player == null) {
         onNewPlayer(client, data)

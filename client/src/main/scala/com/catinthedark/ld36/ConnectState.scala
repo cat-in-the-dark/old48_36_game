@@ -23,6 +23,12 @@ class ConnectState(address: String) extends YieldUnit[String, Shared0] {
     })
 
     shared0.start()
+
+    shared0.networkControl.onServerHello.ports += onServerHello
+
+    def onServerHello(u: Unit): Unit = {
+      shared0.networkControl.hello(data)
+    }
   }
 
   override def onExit(): Unit = {

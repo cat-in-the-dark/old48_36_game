@@ -4,7 +4,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.lib.Pipe
-import com.catinthedark.models.{HelloMessage, JumpMessage, MoveMessage, ShootMessage}
+import com.catinthedark.models.HelloMessage
 
 trait NetworkControl extends Runnable {
   var isConnected: Option[Unit] = None
@@ -14,21 +14,10 @@ trait NetworkControl extends Runnable {
   val onShootPipe = new Pipe[(Vector2, String)]()
   val onJumpPipe = new Pipe[(Vector2, Float, Float)]()
   val onEnemyDisconnected = new Pipe[Unit]()
+  val onServerHello = new Pipe[Unit]()
 
   def hello(name: String): Unit = {
     processOut(HelloMessage(name))
-  }
-
-  def move(pos: Vector2, angle: Float, idle: Boolean): Unit = {
-    processOut(MoveMessage(x=pos.x, y=pos.y, angle = angle, idle = idle))
-  }
-
-  def shoot(shotFrom: Vector2, objName: String): Unit = {
-    processOut(ShootMessage(x = shotFrom.x, y = shotFrom.y, shotObject = objName))
-  }
-
-  def jump(pos: Vector2, angle: Float, scale: Float): Unit = {
-    processOut(JumpMessage(x = pos.x, y = pos.y, angle = angle, scale = scale))
   }
 
   def processIn() = {
