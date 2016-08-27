@@ -1,7 +1,7 @@
 package com.catinthedark.ld36
 
 import com.badlogic.gdx.backends.lwjgl.{LwjglApplication, LwjglApplicationConfiguration}
-import com.catinthedark.ld36.common.Const
+import com.catinthedark.common.Const
 
 object DesktopLauncher {
   def main(args: Array[String]) {

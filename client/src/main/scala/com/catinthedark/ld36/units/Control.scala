@@ -2,10 +2,10 @@ package com.catinthedark.ld36.units
 
 import com.badlogic.gdx.{Gdx, Input}
 import com.catinthedark.ld36.Shared0
-import com.catinthedark.ld36.common.Const
 import com.catinthedark.lib.SimpleUnit
-import Const.Balance
 import com.badlogic.gdx.math.Vector2
+import com.catinthedark.common.Const
+import com.catinthedark.common.Const.Balance
 import com.catinthedark.models.RUNNING
 
 /**

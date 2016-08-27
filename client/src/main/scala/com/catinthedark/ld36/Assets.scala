@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
 import com.badlogic.gdx.{Gdx, utils}
-import com.catinthedark.ld36.common.Const
-import com.catinthedark.ld36.common.Const.UI
+import com.catinthedark.common.Const
+import com.catinthedark.common.Const.UI
 import com.catinthedark.models.SoundNames
 
 object Assets {

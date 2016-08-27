@@ -1,14 +1,7 @@
-package com.catinthedark.ld36.common
+package com.catinthedark.common
 
-import com.badlogic.gdx.Gdx
-import com.catinthedark.lib.constants.ConstDelegate
-
-object Const extends ConstDelegate {
-  override def delegate = Seq(
-    debugEnabled
-  )
-
-  val debugEnabled = onOff("debug render", false)
+object Const{
+  val debugEnabled = false
 
   object UI {
     val animationSpeed = 0.2f

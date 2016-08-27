@@ -4,7 +4,7 @@ import java.net.URI
 
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.ld36.Assets.Animations.gopAnimationPack
-import com.catinthedark.ld36.common.Const.Balance
+import com.catinthedark.common.Const.Balance
 import com.catinthedark.ld36.network.{NetworkControl, NetworkWSControl}
 import com.catinthedark.models.IDLE
 
