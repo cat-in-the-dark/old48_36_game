@@ -5,7 +5,7 @@ import java.net.URI
 import com.catinthedark.lib.network.IMessageBus.Callback
 import com.catinthedark.lib.network.messages.{DisconnectedMessage, GameStartedMessage}
 import com.catinthedark.lib.network.{JacksonConverterScala, MessageBus, SocketIOTransport}
-import com.catinthedark.models.ServerHelloMessage
+import com.catinthedark.models.{MessageConverter, ServerHelloMessage}
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 
@@ -16,12 +16,7 @@ class NetworkWSControl(val serverAddress: URI) extends NetworkControl {
   private val transport = new SocketIOTransport(messageConverter, serverAddress)
   private val messageBus = new MessageBus(transport)
   
-  messageConverter
-    .registerConverter[ServerHelloMessage](classOf[ServerHelloMessage], data => {
-    objectMapper.convertValue(data, classOf[ServerHelloMessage])
-  })
-  
-  println(s"Converters ${messageConverter.registeredConverters}")
+  MessageConverter.registerConverters(messageConverter)
 
   messageBus.subscribe(classOf[GameStartedMessage], new Callback[GameStartedMessage] {
     override def apply(message: GameStartedMessage, sender: String): Unit = {

@@ -23,7 +23,13 @@ public final class SocketIOTransport extends NetworkTransport {
 
         onConnect = objects -> System.out.println("Connected to server");
         onDisconnect = objects -> System.out.println("Disconnected from server");
-        onMessage = objects -> onReceive((String)objects[0]);
+        onMessage = objects -> {
+            if (objects[0] instanceof String) {
+                onReceive((String) objects[0]);
+            } else {
+                System.out.println("Undefined object received from server");
+            }
+        };
         onConnectError = objects -> System.out.println("Can't connect to " + uri.toString());
 
         socket = IO.socket(uri, options);

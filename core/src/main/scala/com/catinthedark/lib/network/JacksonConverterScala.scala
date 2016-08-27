@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 
 import scala.collection.mutable
 
-class JacksonConverterScala(private val objectMapper: ObjectMapper) extends NetworkTransport.Converter {
+class JacksonConverterScala(val objectMapper: ObjectMapper) extends NetworkTransport.Converter {
   private val converters = new mutable.HashMap[String, Map[String, Any] => Any]()
   
   registerConverter[GameStartedMessage](classOf[GameStartedMessage], data => {

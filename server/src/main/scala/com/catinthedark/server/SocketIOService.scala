@@ -4,8 +4,8 @@ import java.util.UUID
 import java.util.concurrent.{ConcurrentHashMap, Executors, TimeUnit}
 
 import com.catinthedark.lib.network.JacksonConverterScala
-import com.catinthedark.lib.network.NetworkTransport.Converter
-import com.catinthedark.models.ServerHelloMessage
+import com.catinthedark.lib.network.messages.GameStartedMessage
+import com.catinthedark.models.{HelloMessage, MessageConverter, ServerHelloMessage}
 import com.catinthedark.server.models.{Player, Room}
 import com.corundumstudio.socketio._
 import com.corundumstudio.socketio.listener.{ConnectListener, DataListener, DisconnectListener}
@@ -25,7 +25,8 @@ class SocketIOService {
   private val server = new SocketIOServer(config)
   private val mapper = new ObjectMapper()
   mapper.registerModule(DefaultScalaModule)
-  private val converter: Converter = new JacksonConverterScala(mapper)
+  private val converter = new JacksonConverterScala(mapper)
+  MessageConverter.registerConverters(converter)
   private val executor = Executors.newScheduledThreadPool(4)
 
   private val room = Room(UUID.randomUUID())
@@ -36,20 +37,25 @@ class SocketIOService {
       log.info(s"New connection ${client.getSessionId} of ${server.getAllClients.size()}")
       val msg = ServerHelloMessage(client.getSessionId.toString)
       val data = converter.toJson(msg)
-      println(data)
+      println(s"SEND: $data")
       client.sendEvent(MESSAGE, data)
     }
   })
 
   server.addEventListener(MESSAGE, classOf[String], new DataListener[String] {
     override def onData(client: SocketIOClient, data: String, ackSender: AckRequest): Unit = {
-//      val wrapper = mapper.readValue(data, classOf[JacksonConverter.Wrapper])
-      println(data)
-      val player = players.get(client.getSessionId)
-      if (player == null) {
-        onNewPlayer(client, data)
-      } else {
-
+      println(s"GET: $data")
+      val wrapper = converter.fromJson(data)
+      wrapper.getData match {
+        case msg: HelloMessage =>
+          val player = onNewPlayer(client, msg.name)
+          val gsm = new GameStartedMessage()
+          gsm.setClientID(client.getSessionId.toString)
+          gsm.setRole("player")
+          val response = converter.toJson(gsm)
+          println(s"SEND: $response")
+          client.sendEvent(MESSAGE, response)
+        case _ => println("Undefined msg!!!!!")
       }
     }
   })
