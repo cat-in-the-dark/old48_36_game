@@ -15,7 +15,7 @@ object DesktopLauncher {
     val address = if (args.length > 0) {
       args(0)
     } else {
-      "https://catinthedark-ld36.herokuapp.com/"
+      "http://localhost:9000/"
     }
 
     println(s"Would be connected to $address if can")

@@ -1,5 +1,6 @@
 package com.catinthedark.server.models
 
+import com.catinthedark.models.PlayerModel
 import com.corundumstudio.socketio.SocketIOClient
 
 case class Player(

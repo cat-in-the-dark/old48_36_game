@@ -1,5 +1,26 @@
 package com.catinthedark.ld36
 
-import com.catinthedark.ld36.network.NetworkControl
+import java.net.URI
 
-case class Shared0(networkControl: NetworkControl)
+import com.catinthedark.ld36.network.{NetworkControl, NetworkWSControl}
+
+case class Shared0(serverAddress: URI) {
+  val networkControl: NetworkControl = new NetworkWSControl(serverAddress)
+  private var networkControlThread: Thread = _
+
+  def stopNetwork(): Unit = {
+    networkControl.dispose()
+    if (networkControlThread != null) {
+      networkControlThread.interrupt()
+      networkControlThread = null
+    }
+    println("Network stopped")
+  }
+
+  def start(): Unit = {
+    stopNetwork()
+    networkControlThread = new Thread(networkControl)
+    networkControlThread.start()
+    println("Network thread started")
+  }
+}

@@ -1,4 +1,4 @@
-package com.catinthedark.server.models
+package com.catinthedark.models
 
 import java.util.UUID
 
@@ -16,12 +16,14 @@ case class PlayerModel(id: UUID,
                        angle: Float,
                        state: String,
                        bonuses: List[String],
-                       frags: Int
+                       frags: Int,
+                       deaths: Int
                       )
 
 case class BulletModel(id: UUID,
                        x: Float,
                        y: Float,
+                       angle: Float,
                        hurting: Boolean
                       )
 
