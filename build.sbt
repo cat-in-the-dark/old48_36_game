@@ -14,6 +14,7 @@ lazy val client = project.in(file("./client"))
   .settings(commonSettings: _*)
   .settings(unmanagedResourceDirectories in Compile += file("./client/assets"))
   .settings(assemblyJarName in assembly := "client.jar")
+  .settings(fork in Compile := true)
   .settings(libraryDependencies ++= Seq(
     "com.badlogicgames.gdx" % "gdx" % libgdxVersion,
     "com.badlogicgames.gdx" % "gdx-backend-lwjgl" % libgdxVersion,

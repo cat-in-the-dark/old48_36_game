@@ -1,13 +1,13 @@
 package com.catinthedark.ld36.units
 
-import com.catinthedark.ld36.{Assets, Player, Shared1}
+import com.catinthedark.ld36.{Shared0, Assets, Player, Shared1}
 import com.catinthedark.ld36.common.Const
 import com.catinthedark.lib.{MagicSpriteBatch, SimpleUnit}
 
 /**
   * Created by kirill on 27.08.16.
   */
-class View(val shared: Shared1) extends SimpleUnit {
+class View(val shared: Shared0) extends SimpleUnit {
   val magicBatch = new MagicSpriteBatch(Const.debugEnabled())
 
   def drawField(): Unit = {

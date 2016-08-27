@@ -3,15 +3,15 @@ package com.catinthedark.lib
 import scala.collection.mutable
 
 /**
- * Created by over on 13.12.14.
- */
+  * Created by over on 13.12.14.
+  */
 
 
 class RouteMachine {
-  private val routes = mutable.ListBuffer[(YieldUnit[Any], Any => YieldUnit[Any])]()
-  private var current: YieldUnit[Any] = _
+  private val routes = mutable.ListBuffer[(YieldUnit[Any, Any], Any => YieldUnit[Any, Any])]()
+  private var current: YieldUnit[Any, Any] = _
 
-  def doRoute[T](cond: T, data: Any): Unit = {
+  def doRoute[T](cond: T): Unit = {
     val from = current
     println(s"begin transition from $from")
     from.onExit()
@@ -23,24 +23,23 @@ class RouteMachine {
       .headOption
       .getOrElse(throw new RuntimeException(s"Could not find route function from $from"))
     val to = routeFn(cond)
-    to.onActivate(data)
+    to.onActivate(cond)
     println(s"end transition to $to")
     current = to
   }
 
-  def addRoute[T >: Any](from: YieldUnit[T], routeFn: T => YieldUnit[Any]): Unit = {
-    routes += ((from, routeFn))
-  }
+  def addRoute[T](from: YieldUnit[_, T], routeFn: T => YieldUnit[T, _]): Unit =
+    routes += ((from.asInstanceOf[YieldUnit[Any, Any]], routeFn.asInstanceOf[Any => YieldUnit[Any, Any]]))
 
-  def start(unit: YieldUnit[Any]) = {
+  def start(unit: YieldUnit[Any, Any]) = {
     current = unit
     unit.onActivate()
   }
 
   def run(delta: Float): Unit = {
     val data = current.run(delta)
-    data._1 match {
-      case Some(res) => doRoute(res, data._2)
+    data match {
+      case Some(res) => doRoute(res)
       case _ =>
     }
   }

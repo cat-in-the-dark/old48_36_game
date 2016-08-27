@@ -1,9 +1,9 @@
 package com.catinthedark.lib
 
 /**
- * Created by over on 13.12.14.
- */
-abstract class Stub(name: String) extends YieldUnit[Unit] {
+  * Created by over on 13.12.14.
+  */
+abstract class Stub(name: String) extends YieldUnit[Any, Unit] {
 
   override def toString = name
 
@@ -11,5 +11,5 @@ abstract class Stub(name: String) extends YieldUnit[Unit] {
 
   override def onExit() = {}
 
-  override def run(delay: Float): (Option[Unit], Any) = (None, null)
+  def run(delta: Float): Option[Unit] = None
 }

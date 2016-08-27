@@ -3,8 +3,8 @@ package com.catinthedark.lib
 import com.badlogic.gdx.{InputAdapter, Gdx}
 
 /**
- * Created by over on 13.12.14.
- */
+  * Created by over on 13.12.14.
+  */
 trait KeyAwaitState extends Stub {
   val keycode: Int
   var done = false
@@ -20,8 +20,8 @@ trait KeyAwaitState extends Stub {
     })
   }
 
-  override def run(delay: Float): (Option[Unit], Any) =
-    if (done) (Some(), None)
+  override def run(delay: Float): Option[Unit] =
+    if (done) Some()
     else super.run(delay)
 
   override def onExit(): Unit = {

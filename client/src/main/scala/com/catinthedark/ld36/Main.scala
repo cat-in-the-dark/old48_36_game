@@ -1,10 +1,10 @@
 package com.catinthedark.ld36
 
-import java.net.URI
-
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.{Game, Gdx, Input}
+import com.catinthedark.ld36.common.Stat
 import com.catinthedark.lib._
+import com.catinthedark.yoba.EnterNameState
 
 import scala.util.Random
 
@@ -24,29 +24,27 @@ class Main(address: String) extends Game {
     }
 
   val rand = new Random()
-  var shared: Shared0 = _
 
   override def create() = {
 
     val logo = delayed("Logo", Assets.Textures.logo, 1.0f)
-//    val t1 = keyAwait("Tutorial1", Assets.Textures.t1)
-//    val t2 = keyAwait("Tutorial2", Assets.Textures.t2)
-//    val t3 = keyAwait("Tutorial3", Assets.Textures.t3)
-//    val t4 = keyAwait("Tutorial4", Assets.Textures.t4)
-//    val t5 = keyAwait("Tutorial4", Assets.Textures.t5)
-//    val t6 = keyAwait("Tutorial4", Assets.Textures.t6)
+    //    val t1 = keyAwait("Tutorial1", Assets.Textures.t1)
+    //    val t2 = keyAwait("Tutorial2", Assets.Textures.t2)
+    //    val t3 = keyAwait("Tutorial3", Assets.Textures.t3)
+    //    val t4 = keyAwait("Tutorial4", Assets.Textures.t4)
+    //    val t5 = keyAwait("Tutorial4", Assets.Textures.t5)
+    //    val t6 = keyAwait("Tutorial4", Assets.Textures.t6)
+    val enterName = new EnterNameState
+    val openConnection = new ConnectState(address)
+    val game = new GameState
+    val scores = new StatsState
 
-    shared = new Shared0(new URI(address))
-    val game = new GameState(shared)
+    rm.addRoute[Unit](logo, anyway => enterName)
+    rm.addRoute[String](enterName, username => openConnection)
+    rm.addRoute[Shared0](openConnection, shared => game)
+    rm.addRoute[Seq[Stat]](game, shared => scores)
+    rm.addRoute[Unit](scores, none => enterName)
 
-    rm.addRoute(logo, anyway => game)
-//    rm.addRoute(t0, anyway => t1)
-//    rm.addRoute(t1, anyway => t2)
-//    rm.addRoute(t2, anyway => t3)
-//    rm.addRoute(t3, anyway => t4)
-//    rm.addRoute(t4, anyway => t5)
-//    rm.addRoute(t5, anyway => t6)
-//    rm.addRoute(t6, anyway => pairing)
     rm.start(logo)
   }
 
@@ -54,8 +52,6 @@ class Main(address: String) extends Game {
     rm.run(Gdx.graphics.getDeltaTime)
   }
 
-  override def dispose(): Unit ={
-    super.dispose()
-    shared.stopNetwork()
+  override def dispose(): Unit = {
   }
 }

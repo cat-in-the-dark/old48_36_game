@@ -24,13 +24,29 @@ object Assets {
 
   object Fonts {
     val mainGenerator = new FreeTypeFontGenerator(Gdx.files.internal("font/main.ttf"))
-    val moneyFontParam = new FreeTypeFontParameter()
-    moneyFontParam.size = 44
-    val hudFont = mainGenerator.generateFont(moneyFontParam)
-    hudFont.setColor(92f / 255, 85f / 255, 103f / 255, 1)
+    val enterName = {
+      val params = new FreeTypeFontParameter()
+      params.size = 44
+      val font = mainGenerator.generateFont(params)
+      font.setColor(224f / 255, 248f / 255, 18f / 255, 1)
+      font
+    }
 
-    val ctrlFont = mainGenerator.generateFont(moneyFontParam)
-    ctrlFont.setColor(224f / 255, 248f / 255, 18f / 255, 1)
+    val statsMain = {
+      val params = new FreeTypeFontParameter()
+      params.size = 44
+      val font = mainGenerator.generateFont(params)
+      font.setColor(0f / 255, 255f / 255, 0 / 255, 1)
+      font
+    }
+
+    val statsEntry = {
+      val params = new FreeTypeFontParameter()
+      params.size = 30
+      val font = mainGenerator.generateFont(params)
+      font.setColor(255f / 255, 0f / 255, 0 / 255, 1)
+      font
+    }
   }
 
   object Animations {
