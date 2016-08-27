@@ -5,9 +5,9 @@ import java.util.concurrent.ConcurrentHashMap
 
 import com.corundumstudio.socketio.SocketIOClient
 
-class Room(
-  val name: UUID,
-  val maxPlayers: Int = 1000
+case class Room(
+  name: UUID,
+  maxPlayers: Int = 1000
 ) {
   val players = new ConcurrentHashMap[UUID, Player]()
 

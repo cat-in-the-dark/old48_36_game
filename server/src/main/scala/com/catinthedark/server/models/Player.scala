@@ -2,9 +2,10 @@ package com.catinthedark.server.models
 
 import com.corundumstudio.socketio.SocketIOClient
 
-class Player(
-  val room: Room,
-  val socket: SocketIOClient
+case class Player(
+  room: Room,
+  socket: SocketIOClient,
+  entity: PlayerEntity
 ) {
 
   def ip(): String = try {

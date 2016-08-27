@@ -2,7 +2,6 @@ package com.catinthedark.server
 
 import java.util.UUID
 import java.util.concurrent.{ConcurrentHashMap, Executors, TimeUnit}
-import java.util.function.BiConsumer
 
 import com.catinthedark.server.models.{Player, Room}
 import com.corundumstudio.socketio._
@@ -23,7 +22,7 @@ class SocketIOService {
   private val mapper = new ObjectMapper()
   private val executor = Executors.newScheduledThreadPool(4)
 
-  private val rooms = new ConcurrentHashMap[UUID, Room]()
+  private val room = Room(UUID.randomUUID())
   private val players = new ConcurrentHashMap[UUID, Player]()
 
   server.addConnectListener(new ConnectListener {
@@ -35,23 +34,39 @@ class SocketIOService {
   server.addEventListener(MESSAGE, classOf[String], new DataListener[String] {
     override def onData(client: SocketIOClient, data: String, ackSender: AckRequest): Unit = {
 //      val wrapper = mapper.readValue(data, classOf[JacksonConverter.Wrapper])
+      val player = players.get(client.getSessionId)
+      if (player == null) {
+        onNewPlayer(client, data)
+      } else {
+
+      }
     }
   })
 
   server.addDisconnectListener(new DisconnectListener {
     override def onDisconnect(client: SocketIOClient): Unit = {
       log.info(s"Disconnected ${client.getSessionId}")
+      val player = players.get(client.getSessionId)
+      if (player != null && player.room.disconnect(client)) {
+        // we can send message to clients that user is disconnected
+      }
     }
   })
+
+  def onNewPlayer(client: SocketIOClient, data: String): Unit = {
+    val room = findOrCreateRoom()
+    val player = Player(room, client, null)
+    room.connect(player)
+  }
+
+  def findOrCreateRoom(): Room = {
+    room
+  }
 
   def registerGameTimer(): Unit = {
     executor.scheduleWithFixedDelay(new Runnable {
       override def run(): Unit = {
-        rooms.forEach(new BiConsumer[UUID, Room] {
-          override def accept(id: UUID, room: Room): Unit = {
-            room.onTick()
-          }
-        })
+        room.onTick()
       }
     }, 0, gameTick, TimeUnit.MILLISECONDS)
   }
