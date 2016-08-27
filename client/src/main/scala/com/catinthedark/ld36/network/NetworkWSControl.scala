@@ -3,9 +3,8 @@ package com.catinthedark.ld36.network
 import java.net.URI
 
 import com.catinthedark.lib.network.IMessageBus.Callback
-import com.catinthedark.lib.network.messages.{DisconnectedMessage, GameStartedMessage}
 import com.catinthedark.lib.network.{JacksonConverterScala, MessageBus, SocketIOTransport}
-import com.catinthedark.models.{MessageConverter, ServerHelloMessage}
+import com.catinthedark.models.{DisconnectedMessage, GameStartedMessage, MessageConverter, ServerHelloMessage}
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 
@@ -21,8 +20,7 @@ class NetworkWSControl(val serverAddress: URI) extends NetworkControl {
   messageBus.subscribe(classOf[GameStartedMessage], new Callback[GameStartedMessage] {
     override def apply(message: GameStartedMessage, sender: String): Unit = {
       isConnected = Some()
-      isMain = message.getRole == "admin"
-      onGameStarted(message.getClientID, message.getRole)
+      onGameStarted(message.clientId)
     }
   })
   

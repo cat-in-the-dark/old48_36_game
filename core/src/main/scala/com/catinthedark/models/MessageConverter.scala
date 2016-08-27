@@ -1,11 +1,7 @@
 package com.catinthedark.models
 
-import com.catinthedark.lib.network.{JacksonConverterScala, NetworkTransport}
-import com.catinthedark.lib.network.NetworkTransport.Converter
+import com.catinthedark.lib.network.JacksonConverterScala
 
-/**
-  * Created by kirill on 27.08.16.
-  */
 object MessageConverter {
   def convertStateToString(state: State): String = {
     state match {
@@ -26,11 +22,15 @@ object MessageConverter {
   }
 
   def registerConverters(converter: JacksonConverterScala): Unit = {
+    //TODO: can be removed, but needs big refactoring work
     converter.registerConverter[ServerHelloMessage](classOf[ServerHelloMessage], data => {
       converter.objectMapper.convertValue(data, classOf[ServerHelloMessage])
-    })
-    converter.registerConverter[HelloMessage](classOf[HelloMessage], data => {
+    }).registerConverter[HelloMessage](classOf[HelloMessage], data => {
       converter.objectMapper.convertValue(data, classOf[HelloMessage])
+    }).registerConverter[GameStartedMessage](classOf[GameStartedMessage], data => {
+      converter.objectMapper.convertValue(data, classOf[GameStartedMessage])
+    }).registerConverter[DisconnectedMessage](classOf[DisconnectedMessage], data => {
+      converter.objectMapper.convertValue(data, classOf[DisconnectedMessage])
     })
 
     println(s"Converters ${converter.registeredConverters}")

@@ -1,11 +1,10 @@
 package com.catinthedark.server
 
 import java.util.UUID
-import java.util.concurrent.{ConcurrentHashMap, Executors, TimeUnit}
+import java.util.concurrent.{Executors, TimeUnit}
 
 import com.catinthedark.lib.network.JacksonConverterScala
-import com.catinthedark.lib.network.messages.GameStartedMessage
-import com.catinthedark.models.{HelloMessage, MessageConverter, ServerHelloMessage}
+import com.catinthedark.models.{GameStartedMessage, HelloMessage, MessageConverter, ServerHelloMessage}
 import com.catinthedark.server.models.{Player, Room}
 import com.corundumstudio.socketio._
 import com.corundumstudio.socketio.listener.{ConnectListener, DataListener, DisconnectListener}
@@ -30,7 +29,6 @@ class SocketIOService {
   private val executor = Executors.newScheduledThreadPool(4)
 
   private val room = Room(UUID.randomUUID())
-  private val players = new ConcurrentHashMap[UUID, Player]()
 
   server.addConnectListener(new ConnectListener {
     override def onConnect(client: SocketIOClient): Unit = {
@@ -49,9 +47,7 @@ class SocketIOService {
       wrapper.getData match {
         case msg: HelloMessage =>
           val player = onNewPlayer(client, msg.name)
-          val gsm = new GameStartedMessage()
-          gsm.setClientID(client.getSessionId.toString)
-          gsm.setRole("player")
+          val gsm = GameStartedMessage(client.getSessionId.toString)
           val response = converter.toJson(gsm)
           println(s"SEND: $response")
           client.sendEvent(MESSAGE, response)
@@ -63,10 +59,7 @@ class SocketIOService {
   server.addDisconnectListener(new DisconnectListener {
     override def onDisconnect(client: SocketIOClient): Unit = {
       log.info(s"Disconnected ${client.getSessionId}")
-      val player = players.get(client.getSessionId)
-      if (player != null && player.room.disconnect(client)) {
-        // we can send message to clients that user is disconnected
-      }
+      room.disconnect(client)
     }
   })
 
