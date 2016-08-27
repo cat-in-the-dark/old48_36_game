@@ -29,7 +29,6 @@ class GameState extends YieldUnit[Shared0, Stats] {
   }
 
   override def run(delta: Float): Option[Stats] = {
-
     children.foreach(_.run(delta))
     if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
       val stats = Stats(me = Stat("over", 1, 1), other = Seq(Stat("ilya", 0, 2), Stat("kirill", 10, 1)))

@@ -1,10 +1,12 @@
 package com.catinthedark.ld36.units
 
-import com.badlogic.gdx.{Input, Gdx}
+import com.badlogic.gdx.{Gdx, Input}
 import com.catinthedark.ld36.Shared0
 import com.catinthedark.ld36.common.Const
 import com.catinthedark.lib.SimpleUnit
 import Const.Balance
+import com.badlogic.gdx.math.Vector2
+import com.catinthedark.models.RUNNING
 
 /**
   * Created by kirill on 27.08.16.
@@ -18,8 +20,37 @@ class Control(shared: Shared0) extends SimpleUnit {
       shared.shootRage = 0
   }
 
-  override def run(delta: Float) = {
-    controlShoot(delta)
+  private def controlKeysPressed(): Boolean = {
+    Gdx.input.isKeyPressed(Input.Keys.A) ||
+      Gdx.input.isKeyPressed(Input.Keys.D) ||
+      Gdx.input.isKeyPressed(Input.Keys.W) ||
+      Gdx.input.isKeyPressed(Input.Keys.S)
   }
 
+  override def run(delta: Float) = {
+    controlShoot(delta)
+
+    val speed = new Vector2(0, 0)
+    val playerSpeed = Const.Balance.playerSpeed
+
+    if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+      speed.x -= playerSpeed
+    }
+
+    if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+      speed.x += playerSpeed
+    }
+
+    if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+      speed.y += playerSpeed
+    }
+
+    if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+      speed.y -= playerSpeed
+    }
+
+    if (speed.len() > 0) {
+      shared.networkControl.move(speed, shared.me.angle, RUNNING)
+    }
+  }
 }

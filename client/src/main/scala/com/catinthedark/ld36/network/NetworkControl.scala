@@ -4,7 +4,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.lib.Pipe
-import com.catinthedark.models.HelloMessage
+import com.catinthedark.models.{HelloMessage, MessageConverter, MoveMessage, State}
 
 trait NetworkControl extends Runnable {
   var isConnected: Option[Unit] = None
@@ -18,6 +18,10 @@ trait NetworkControl extends Runnable {
 
   def hello(name: String): Unit = {
     processOut(HelloMessage(name))
+  }
+
+  def move(speed: Vector2, angle: Float, state: State): Unit = {
+    processOut(MoveMessage(speed.x, speed.y, angle, MessageConverter.convertStateToString(state)))
   }
 
   def processIn() = {

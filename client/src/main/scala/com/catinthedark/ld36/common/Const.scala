@@ -21,11 +21,15 @@ object Const extends ConstDelegate {
 
   object HUD {
   }
+
   object Balance {
     val shootRageSpeed = 2f
     val maxShootRage = 1f
+    val playerSpeed = 5.0f
+    val playerSpeedBonus = 10.0f
+    val playerRadius = 100.0f
+    val brickRadius = 10.0f
   }
-
 
   object Projection {
     val width = 1161F

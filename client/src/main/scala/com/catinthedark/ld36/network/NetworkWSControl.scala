@@ -22,7 +22,7 @@ class NetworkWSControl(val serverAddress: URI) extends NetworkControl {
   })
   
   println(s"Converters ${messageConverter.registeredConverters}")
-  
+
   messageBus.subscribe(classOf[GameStartedMessage], new Callback[GameStartedMessage] {
     override def apply(message: GameStartedMessage, sender: String): Unit = {
       isConnected = Some()

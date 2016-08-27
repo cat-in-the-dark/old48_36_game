@@ -1,4 +1,4 @@
-package com.catinthedark.ld36
+package com.catinthedark.models
 
 /**
   * Created by kirill on 27.08.16.
