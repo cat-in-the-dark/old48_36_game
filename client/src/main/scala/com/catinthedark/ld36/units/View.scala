@@ -1,7 +1,8 @@
 package com.catinthedark.ld36.units
 
+import com.badlogic.gdx.{Input, Gdx}
 import com.catinthedark.ld36.{Shared0, Assets, Player, Shared1}
-import com.catinthedark.ld36.common.Const
+import com.catinthedark.ld36.common.{StatsRender, Stat, Stats, Const}
 import com.catinthedark.lib.{MagicSpriteBatch, SimpleUnit}
 
 /**
@@ -9,6 +10,7 @@ import com.catinthedark.lib.{MagicSpriteBatch, SimpleUnit}
   */
 class View(val shared: Shared0) extends SimpleUnit {
   val magicBatch = new MagicSpriteBatch(Const.debugEnabled())
+  val statsRender = new StatsRender()
 
   def drawField(): Unit = {
     magicBatch.managed { self =>
@@ -16,7 +18,13 @@ class View(val shared: Shared0) extends SimpleUnit {
     }
   }
 
+  def drawStats() = {
+    val stats = Stats(me = Stat("over", 1, 1), other = Seq(Stat("ilya", 0, 2), Stat("kirill", 10, 1)))
+    statsRender.render(stats)
+  }
+
   override def run(delta: Float): Unit = {
     drawField()
+    if (Gdx.input.isKeyPressed(Input.Keys.TAB)) drawStats()
   }
 }

@@ -3,34 +3,31 @@ package com.catinthedark.ld36
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.catinthedark.ld36.common.Stat
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
+import com.catinthedark.ld36.common.{StatsRender, Stats, Stat}
 import com.catinthedark.lib.{DelayState, YieldUnit}
 import com.catinthedark.lib.Magic._
 import org.lwjgl.opengl.GL11
 
 
-class StatsState extends YieldUnit[Seq[Stat], Unit] {
-  val batch = new SpriteBatch
+class StatsState extends YieldUnit[Stats, Unit] {
+  val statsRender = new StatsRender()
   val delay = 10f
   var stateTime: Float = 0
-  var stats: Seq[Stat] = _
+  var stats: Stats = _
 
 
   override def onExit() = {}
 
-  override def onActivate(data: Seq[Stat]): Unit = {
+  override def onActivate(data: Stats): Unit = {
     stats = data
     stateTime = 0
   }
 
   override def run(delta: Float): Option[Unit] = {
     Gdx.gl.glClear(GL11.GL_COLOR_BUFFER_BIT)
-    batch.managed { self: SpriteBatch =>
-      Assets.Fonts.enterName.draw(self, "Squatality!", 300, 400)
-      stats.zipWithIndex.foreach {
-        case (index, stat) =>
-      }
-    }
+    statsRender.render(stats)
 
     stateTime += delta
     if (stateTime > delay) Some(Unit)

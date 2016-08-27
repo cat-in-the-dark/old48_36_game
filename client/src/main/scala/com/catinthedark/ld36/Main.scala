@@ -2,7 +2,7 @@ package com.catinthedark.ld36
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.{Game, Gdx, Input}
-import com.catinthedark.ld36.common.Stat
+import com.catinthedark.ld36.common.{Stats, Stat}
 import com.catinthedark.lib._
 import com.catinthedark.yoba.EnterNameState
 
@@ -42,7 +42,7 @@ class Main(address: String) extends Game {
     rm.addRoute[Unit](logo, anyway => enterName)
     rm.addRoute[String](enterName, username => openConnection)
     rm.addRoute[Shared0](openConnection, shared => game)
-    rm.addRoute[Seq[Stat]](game, shared => scores)
+    rm.addRoute[Stats](game, shared => scores)
     rm.addRoute[Unit](scores, none => enterName)
 
     rm.start(logo)

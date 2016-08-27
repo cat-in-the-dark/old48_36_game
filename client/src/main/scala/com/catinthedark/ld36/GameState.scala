@@ -3,14 +3,14 @@ package com.catinthedark.ld36
 import com.catinthedark.ld36.units.{Control, View}
 import com.catinthedark.lib.{LocalDeferred, SimpleUnit, YieldUnit}
 import com.badlogic.gdx.{Gdx, Input}
-import com.catinthedark.ld36.common.Stat
+import com.catinthedark.ld36.common.{Stats, Stat}
 import com.catinthedark.lib.YieldUnit
 
 /**
   * Created by over on 18.04.15.
   */
 
-class GameState extends YieldUnit[Shared0, Seq[Stat]] {
+class GameState extends YieldUnit[Shared0, Stats] {
   var shared: Shared0 = _
   var shared1: Shared1 = _
   var view: View = _
@@ -29,10 +29,13 @@ class GameState extends YieldUnit[Shared0, Seq[Stat]] {
     children.foreach(_.onExit())
   }
 
-  override def run(delta: Float): Option[Seq[Stat]] = {
+  override def run(delta: Float): Option[Stats] = {
 
     children.foreach(_.run(delta))
-    if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) Some(Seq(Stat("over", 1, 1), Stat("ilya", 0, 2), Stat("kirill", 10, 1)))
+    if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+      val stats = Stats(me = Stat("over", 1, 1), other = Seq(Stat("ilya", 0, 2), Stat("kirill", 10, 1)))
+      Some(stats)
+    }
     else None
   }
 }

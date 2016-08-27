@@ -40,9 +40,17 @@ object Assets {
       font
     }
 
+    val statsMain2 = {
+      val params = new FreeTypeFontParameter()
+      params.size = 20
+      val font = mainGenerator.generateFont(params)
+      font.setColor(255f / 255, 255f / 255, 255 / 255, 1)
+      font
+    }
+
     val statsEntry = {
       val params = new FreeTypeFontParameter()
-      params.size = 30
+      params.size = 20
       val font = mainGenerator.generateFont(params)
       font.setColor(255f / 255, 0f / 255, 0 / 255, 1)
       font
@@ -73,7 +81,7 @@ object Assets {
       override val idle: TextureRegion = Textures.gopFrames(0)(0)
       override val running: Animation = loopingAnimation(Textures.gopFrames, (0, 1))
       override val killed: TextureRegion = Textures.gopFrames(0)(2)
-      override val throwing: Animation = normalAnimation(UI.throwBrickAnimationSpeed, Textures.gopFrames, (0,3))
+      override val throwing: Animation = normalAnimation(UI.throwBrickAnimationSpeed, Textures.gopFrames, (0, 3))
     }
   }
 
