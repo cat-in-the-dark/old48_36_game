@@ -15,6 +15,8 @@ object Const extends ConstDelegate {
     val darknessRed = 0.04f
     var darknessGreen = 0.04f
     var darknessBlue = 0.157f
+
+    val throwBrickAnimationSpeed = 0.1f
   }
 
   object HUD {

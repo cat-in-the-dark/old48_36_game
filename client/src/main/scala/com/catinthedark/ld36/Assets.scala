@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
 import com.badlogic.gdx.{Gdx, utils}
 import com.catinthedark.ld36.common.Const
+import com.catinthedark.ld36.common.Const.UI
 
 object Assets {
   object Maps {
@@ -13,7 +14,12 @@ object Assets {
   object Shaders {
   }
   object Textures {
+    val brick = new Texture(Gdx.files.internal("textures/brick.png"))
+    val field = new Texture(Gdx.files.internal("textures/field.png"))
+    val gop = new Texture(Gdx.files.internal("textures/gop.png"))
     val logo = new Texture(Gdx.files.internal("textures/logo.png"))
+
+    val gopFrames = TextureRegion.split(gop, 100, 100)
   }
 
   object Fonts {
@@ -28,7 +34,31 @@ object Assets {
   }
 
   object Animations {
+    private def loopingAnimation(frames: Array[Array[TextureRegion]], frameIndexes: (Int, Int)*): Animation = {
+      val array = new utils.Array[TextureRegion]
+      frameIndexes.foreach(i => array.add(frames(i._1)(i._2)))
+      new Animation(Const.UI.animationSpeed, array, Animation.PlayMode.LOOP)
+    }
 
+    private def normalAnimation(speed: Float, frames: Array[Array[TextureRegion]], frameIndexes: (Int, Int)*): Animation = {
+      val array = new utils.Array[TextureRegion]
+      frameIndexes.foreach(i => array.add(frames(i._1)(i._2)))
+      new Animation(speed, array, Animation.PlayMode.NORMAL)
+    }
+
+    trait PlayerAnimationPack {
+      val idle: TextureRegion
+      val running: Animation
+      val killed: TextureRegion
+      val throwing: Animation
+    }
+
+    object gopAnimationPack extends PlayerAnimationPack {
+      override val idle: TextureRegion = Textures.gopFrames(0)(0)
+      override val running: Animation = loopingAnimation(Textures.gopFrames, (0, 1))
+      override val killed: TextureRegion = Textures.gopFrames(0)(2)
+      override val throwing: Animation = normalAnimation(UI.throwBrickAnimationSpeed, Textures.gopFrames, (0,3))
+    }
   }
 
   object Audios {
