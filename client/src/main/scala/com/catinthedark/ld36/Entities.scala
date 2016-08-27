@@ -14,11 +14,18 @@ sealed trait Entity {
   var pos: Vector2
   var radius: Float
   var angle: Float
+
   def texture(delta: Float = 0): TextureRegion
+
   def name: String
 }
 
-case class Player(var pos: Vector2, var state: State, var pack: PlayerAnimationPack, var angle: Float, var radius: Float) extends Entity {
+case class PlayerView(var pos: Vector2,
+                      var state: State,
+                      var pack: PlayerAnimationPack,
+                      var angle: Float,
+                      var radius: Float,
+                      val hasBrick: Boolean = false) extends Entity {
   var animationCounter = 0f
 
   override def texture(delta: Float) = {
@@ -26,13 +33,13 @@ case class Player(var pos: Vector2, var state: State, var pack: PlayerAnimationP
       case IDLE =>
         pack.idle
       case RUNNING =>
-        animationCounter += delta
-        pack.running.getKeyFrame(delta)
+        animationCounter += delta * 2
+        pack.running.getKeyFrame(animationCounter)
       case KILLED =>
         pack.killed
       case THROWING =>
         animationCounter += delta
-        pack.throwing.getKeyFrame(delta)
+        pack.throwing.getKeyFrame(animationCounter)
     }
   }
 

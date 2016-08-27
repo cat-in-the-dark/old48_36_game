@@ -17,7 +17,8 @@ case class PlayerModel(id: UUID,
                        state: String,
                        bonuses: List[String],
                        frags: Int,
-                       deaths: Int
+                       deaths: Int,
+                       hasBrick: Boolean
                       )
 
 case class BulletModel(id: UUID,

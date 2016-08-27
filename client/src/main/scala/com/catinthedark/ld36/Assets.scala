@@ -20,7 +20,7 @@ object Assets {
     val gop = new Texture(Gdx.files.internal("textures/gop.png"))
     val logo = new Texture(Gdx.files.internal("textures/logo.png"))
 
-    val gopFrames = TextureRegion.split(gop, 100, 100)
+    val gopFrames = TextureRegion.split(gop, 108, 108)
   }
 
   object Fonts {
@@ -80,9 +80,9 @@ object Assets {
 
     object gopAnimationPack extends PlayerAnimationPack {
       override val idle: TextureRegion = Textures.gopFrames(0)(0)
-      override val running: Animation = loopingAnimation(Textures.gopFrames, (0, 1))
-      override val killed: TextureRegion = Textures.gopFrames(0)(2)
-      override val throwing: Animation = normalAnimation(UI.throwBrickAnimationSpeed, Textures.gopFrames, (0, 3))
+      override val running: Animation = loopingAnimation(Textures.gopFrames, (0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6))
+      override val killed: TextureRegion = Textures.gopFrames(0)(9)
+      override val throwing: Animation = normalAnimation(UI.throwBrickAnimationSpeed, Textures.gopFrames, (0, 7), (0, 8))
     }
   }
 

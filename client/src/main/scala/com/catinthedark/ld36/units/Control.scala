@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2
 import com.catinthedark.common.Const
 import com.catinthedark.common.Const.Balance
 import com.catinthedark.models.RUNNING
+import com.catinthedark.models.{IDLE, THROWING, RUNNING}
 
 /**
   * Created by kirill on 27.08.16.
@@ -14,8 +15,16 @@ import com.catinthedark.models.RUNNING
 class Control(shared: Shared0) extends SimpleUnit {
 
   def controlShoot(delta: Float) = {
-    if (Gdx.input.isButtonPressed(Input.Buttons.LEFT))
-      shared.shootRage = Math.min(shared.shootRage + Balance.shootRageSpeed * delta, Balance.maxShootRage)
+    if (shared.me.hasBrick && shared.me.state == IDLE)
+      if (Gdx.input.isButtonPressed(Input.Buttons.LEFT))
+        shared.shootRage = Math.min(shared.shootRage + Balance.shootRageSpeed * delta, Balance.maxShootRage)
+      else {
+        if (shared.shootRage != 0) {
+          shared.me.animationCounter = 0
+          shared.me.state = THROWING
+        }
+        shared.shootRage = 0
+      }
     else
       shared.shootRage = 0
   }

@@ -16,7 +16,7 @@ class View(val shared: Shared0) extends SimpleUnit {
   val magicBatch = new MagicSpriteBatch(Const.debugEnabled)
   val statsRender = new StatsRender()
   val shootRageRender = new ShootRageRender
-  val playerView = new PlayerView(shared)
+  val playerRender = new PlayerRender(shared)
 
   def drawField(): Unit = {
     magicBatch.managed { self =>
@@ -32,7 +32,7 @@ class View(val shared: Shared0) extends SimpleUnit {
   override def run(delta: Float): Unit = {
     drawField()
     shootRageRender.render(shared.shootRage)
-    playerView.render(delta, magicBatch)
+    playerRender.render(delta, magicBatch)
     if (Gdx.input.isKeyPressed(Input.Keys.TAB)) drawStats()
   }
 }
