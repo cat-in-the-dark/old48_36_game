@@ -5,6 +5,12 @@ import java.net.URLEncoder
 object Config {
   val pb = new ProcessBuilder()
 
+  def gameTick: Int = try {
+      pb.environment().getOrDefault("GAME_TICK", "20").toInt
+    } catch {
+      case e: Exception => 20
+    }
+
   def port: Int = try {
       pb.environment().getOrDefault("PORT", "9000").toInt
     } catch {
