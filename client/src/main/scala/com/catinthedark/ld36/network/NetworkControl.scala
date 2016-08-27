@@ -4,7 +4,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.lib.Pipe
-import com.catinthedark.models.{HelloMessage, MessageConverter, MoveMessage, State}
+import com.catinthedark.models._
 
 trait NetworkControl extends Runnable {
   var isConnected: Option[Unit] = None
@@ -29,7 +29,7 @@ trait NetworkControl extends Runnable {
       bufferIn.poll()()
   }
   
-  def processOut(message: Any)
+  def processOut(message: Message)
   
   def dispose(): Unit = {
     isConnected = None

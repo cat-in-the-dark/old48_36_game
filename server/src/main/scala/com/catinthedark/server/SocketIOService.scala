@@ -44,7 +44,7 @@ class SocketIOService {
     override def onData(client: SocketIOClient, data: String, ackSender: AckRequest): Unit = {
       println(s"GET: $data")
       val wrapper = converter.fromJson(data)
-      wrapper.getData match {
+      wrapper.data match {
         case msg: HelloMessage =>
           val player = onNewPlayer(client, msg.name)
           val gsm = GameStartedMessage(client.getSessionId.toString)

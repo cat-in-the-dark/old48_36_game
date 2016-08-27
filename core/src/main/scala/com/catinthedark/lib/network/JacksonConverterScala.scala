@@ -1,51 +1,30 @@
 package com.catinthedark.lib.network
 
-import java.io.IOException
-
-import com.catinthedark.lib.network.IMessageBus.Wrapper
-import com.catinthedark.models.{DisconnectedMessage, GameStartedMessage}
+import com.catinthedark.models.Message
 import com.fasterxml.jackson.databind.ObjectMapper
 
 import scala.collection.mutable
 
-class JacksonConverterScala(val objectMapper: ObjectMapper) extends NetworkTransport.Converter {
-  private val converters = new mutable.HashMap[String, Map[String, Any] => Any]()
+class JacksonConverterScala(val objectMapper: ObjectMapper) extends Converter {
+  private val converters = new mutable.HashMap[String, Map[String, Any] => Message]()
   
-  override def toJson(data: Any): String = {
-    val wrapper = ScalaWrapper(data = data, className = data.getClass.getCanonicalName, sender = null)
-    try {
-      objectMapper.writeValueAsString(wrapper)
-    } catch {
-      case e: Exception =>
-        throw new NetworkTransport.ConverterException(s"Can't convert to json $data : ${e.getMessage}", e)
-    }
+  override def toJson(data: Message): String = {
+    val wrapper = Wrapper(data = data, className = data.getClass.getCanonicalName, sender = null)
+    objectMapper.writeValueAsString(wrapper)
   }
 
   override def fromJson(json: String): Wrapper = {
-    try {
-      val wrapper = objectMapper.readValue(json, classOf[ScalaWrapper])
-      val converter = converters.getOrElse(wrapper.className, throw new NetworkTransport.ConverterException(s"There is no ${wrapper.className} converter"))
-      val data = converter.apply(wrapper.getData.asInstanceOf[Map[String, Any]])
+    val wrapper = objectMapper.readValue(json, classOf[Wrapper])
+    val converter = converters.getOrElse(wrapper.className, throw new Exception(s"There is no ${wrapper.className} converter"))
+    val data = converter.apply(wrapper.data.asInstanceOf[Map[String, Message]])
 
-      wrapper.copy(data = data)
-    } catch {
-      case e: IOException =>
-        throw new NetworkTransport.ConverterException(s"Can't parse $json : ${e.getMessage}", e)
-      case e: ClassCastException =>
-        throw new NetworkTransport.ConverterException(s"Can't parse $json : ${e.getMessage}", e)
-    }
+    wrapper.copy(data = data)
   }
   
-  def registerConverter[T](clazz: Class[T], converter: Map[String, Any] => T): JacksonConverterScala = {
+  def registerConverter[T](clazz: Class[T], converter: Map[String, Any] => Message): JacksonConverterScala = {
     converters.put(clazz.getCanonicalName, converter)
     this
   }
   
   def registeredConverters = converters.keySet
-}
-
-case class ScalaWrapper(data: Any, className: String, sender: String = null) extends Wrapper {
-  override def getData: AnyRef = data.asInstanceOf[AnyRef]
-
-  override def getSender: String = sender 
 }
