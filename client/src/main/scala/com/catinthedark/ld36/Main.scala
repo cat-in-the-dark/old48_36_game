@@ -29,7 +29,6 @@ class Main(address: String) extends Game {
   override def create() = {
 
     val logo = delayed("Logo", Assets.Textures.logo, 1.0f)
-    val t0 = keyAwait("start", Assets.Textures.t0)
 //    val t1 = keyAwait("Tutorial1", Assets.Textures.t1)
 //    val t2 = keyAwait("Tutorial2", Assets.Textures.t2)
 //    val t3 = keyAwait("Tutorial3", Assets.Textures.t3)
@@ -38,14 +37,9 @@ class Main(address: String) extends Game {
 //    val t6 = keyAwait("Tutorial4", Assets.Textures.t6)
 
     shared = new Shared0(new URI(address))
-
-    val pairing = new PairingState(shared, "Pairing")
-    
     val game = new GameState(shared)
-    val gameOver = new GameOverState(shared)
-    val gameWin = new GameWinScreen(shared)
 
-    rm.addRoute(logo, anyway => t0)
+    rm.addRoute(logo, anyway => game)
 //    rm.addRoute(t0, anyway => t1)
 //    rm.addRoute(t1, anyway => t2)
 //    rm.addRoute(t2, anyway => t3)
@@ -53,24 +47,6 @@ class Main(address: String) extends Game {
 //    rm.addRoute(t4, anyway => t5)
 //    rm.addRoute(t5, anyway => t6)
 //    rm.addRoute(t6, anyway => pairing)
-    rm.addRoute(t0, anyway => pairing)
-    rm.addRoute(pairing, anyway => game)
-    rm.addRoute(game, res => {
-      res match {
-        case true => gameWin
-        case false => gameOver
-      }
-    })
-
-    rm.addRoute(gameWin, anyway => {
-      shared.stopNetwork()
-      t0
-    })
-    rm.addRoute(gameOver, anyway => {
-      shared.stopNetwork()
-      t0
-    })
-
     rm.start(logo)
   }
 

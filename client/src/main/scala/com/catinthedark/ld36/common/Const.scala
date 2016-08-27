@@ -24,13 +24,5 @@ object Const extends ConstDelegate {
   object Projection {
     val width = 1161F
     val height = 652F
-    val mapWidth = 3200f
-    val mapHeight = 3200f
-
-    def calcX(screenX: Int): Int = (screenX.toFloat * Const.Projection.width / Gdx.graphics.getWidth).toInt
-    def calcY(screenY: Int): Int = (screenY.toFloat * Const.Projection.height / Gdx.graphics.getHeight).toInt
-  }
-
-  object Balance {
   }
 }
