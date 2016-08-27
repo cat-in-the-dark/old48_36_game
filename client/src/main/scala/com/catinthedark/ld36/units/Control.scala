@@ -12,7 +12,6 @@ import Const.Balance
 class Control(shared: Shared0) extends SimpleUnit {
 
   def controlShoot(delta: Float) = {
-    println(s"shoot rage: ${shared.shootRage}")
     if (Gdx.input.isButtonPressed(Input.Buttons.LEFT))
       shared.shootRage = Math.min(shared.shootRage + Balance.shootRageSpeed * delta, Balance.maxShootRage)
     else
