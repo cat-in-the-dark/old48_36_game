@@ -77,6 +77,9 @@ case class Room(
   }
 
   def connect(player: Player): Unit = {
+    players.values().iterator().foreach{ player =>
+      player.socket.sendEvent(EventNames.MESSAGE, converter.toJson(SoundMessage(SoundNames.Siklo.toString)))
+    }
     if (hasFreePlace()) {
       players.put(player.socket.getSessionId, player)
       checkTimer()

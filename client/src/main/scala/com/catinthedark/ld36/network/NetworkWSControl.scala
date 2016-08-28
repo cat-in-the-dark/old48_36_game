@@ -2,6 +2,7 @@ package com.catinthedark.ld36.network
 
 import java.net.URI
 
+import com.catinthedark.ld36.Assets
 import com.catinthedark.lib.network.{JacksonConverterScala, MessageBus, SocketIOTransport}
 import com.catinthedark.models._
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -38,6 +39,12 @@ class NetworkWSControl(val serverAddress: URI) extends NetworkControl {
   messageBus.subscribe(classOf[RoundEndsMessage], (message: RoundEndsMessage, sender: String) => {
     println(s"Round ends $message")
     onRoundEnds(message.gameStateModel)
+  })
+
+  messageBus.subscribe(classOf[SoundMessage], (message: SoundMessage, sender: String) => {
+    println(s"sound event $message")
+    val snd = SoundNames.withName(message.soundName)
+    Assets.Audios.soundMap(snd).play(0.6)
   })
 
   override def run(): Unit = {

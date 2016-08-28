@@ -37,8 +37,6 @@ class View(val shared: Shared0) extends SimpleUnit {
   }
 
   override def run(delta: Float): Unit = {
-    println(shared.me.pos.x)
-    println(shared.me.pos.y)
     if (shared.me.pos.x > Const.Projection.width / 2
       && shared.me.pos.x < Const.Projection.mapLeftBorder)
       camera.position.x = shared.me.pos.x - Const.Projection.width / 2

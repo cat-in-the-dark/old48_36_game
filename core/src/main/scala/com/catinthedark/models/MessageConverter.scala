@@ -37,6 +37,8 @@ object MessageConverter {
       converter.objectMapper.convertValue(data, classOf[GameStateMessage])
     }).registerConverter[RoundEndsMessage](classOf[RoundEndsMessage], date => {
       converter.objectMapper.convertValue(date, classOf[RoundEndsMessage])
+    }).registerConverter[SoundMessage](classOf[SoundMessage], date => {
+      converter.objectMapper.convertValue(date, classOf[SoundMessage])
     })
 
     println(s"Converters ${converter.registeredConverters}")
