@@ -48,7 +48,7 @@ object Const{
       ab.cpy()
     }
 
-    val bonusDelay = 10L
+    val bonusDelay = 5L
     val bonusesAtOnce = 2
     def randomBonus = {
       Bonus.hat

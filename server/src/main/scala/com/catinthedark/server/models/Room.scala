@@ -21,6 +21,7 @@ case class Room(
   def checkTimer() = {
     if (players.size() < 1) {
       timeRemains = Const.Balance.roundTime
+      bonuses.clear()
     }
   }
 
@@ -31,6 +32,7 @@ case class Room(
       val model = buildState(player)
       player._2.socket.sendEvent(EventNames.MESSAGE, converter.toJson(RoundEndsMessage(model)))
     })
+    bonuses.clear()
   }
 
   val players = new ConcurrentHashMap[UUID, Player]()
@@ -90,6 +92,7 @@ case class Room(
       val pos = Const.Balance.randomSpawn
       val typeName = Const.Balance.randomBonus
       bonuses += BonusModel(UUID.randomUUID(), pos.x, pos.y, typeName)
+      println(s"Bonuses: $bonuses")
     }
   }
 

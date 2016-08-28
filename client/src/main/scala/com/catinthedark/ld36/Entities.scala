@@ -60,3 +60,13 @@ case class Brick(var pos: Vector2, var angle: Float, val radius: Float) extends 
 
   override def name: String = "Brick"
 }
+
+sealed trait Bonus {
+  val id: UUID
+  var pos: Vector2
+  def texture(delta: Float = 0): TextureRegion
+}
+
+case class HatBonus(id: UUID, var pos: Vector2) extends Bonus {
+  override def texture(delta: Float): TextureRegion = new TextureRegion(Textures.kepa)
+}

@@ -3,17 +3,11 @@ package com.catinthedark.ld36
 import java.util.UUID
 
 import com.badlogic.gdx.math.Vector2
+import com.catinthedark.common.Const
+import com.catinthedark.ld36.common.Stats
 import com.catinthedark.ld36.units.{Control, View}
 import com.catinthedark.lib.{LocalDeferred, SimpleUnit, YieldUnit}
-import com.badlogic.gdx.{Gdx, Input}
-import com.catinthedark.common.Const.Balance
-import com.catinthedark.ld36.Assets.Animations.gopAnimationPack
-import com.catinthedark.ld36.common.{Stat, Stats}
-import com.catinthedark.lib.YieldUnit
-import com.catinthedark.models.{RUNNING, GameStateModel, IDLE, MessageConverter}
-
-import collection.JavaConversions._
-import scala.collection.mutable.ListBuffer
+import com.catinthedark.models.{GameStateModel, MessageConverter, RUNNING}
 
 /**
   * Created by over on 18.04.15.
@@ -92,6 +86,23 @@ class GameState extends YieldUnit[Shared0, Stats] {
       enemy.angle = remotePlayer.angle
       enemy.state = MessageConverter.stringToState(remotePlayer.state)
       enemy.hasBrick = remotePlayer.hasBrick
+    })
+
+    val remoteBonusesIDs: List[UUID] = gameStateModel.bonuses.map(_.id)
+    val localBonusesIDs: List[UUID] = shared.bonuses.map(_.id).toList
+
+    gameStateModel.bonuses.filter(el => {
+      localBonusesIDs.indexOf(el.id) == -1
+    }).foreach(el => {
+      el.typeName match {
+        case Const.Bonus.hat =>
+          shared.bonuses.insert(0, HatBonus(el.id, new Vector2(el.x, el.y)))
+        case _ => println(s"Undefined Bonus. Yo! $el")
+      }
+    })
+
+    shared.bonuses --= shared.bonuses.filter(el => {
+      remoteBonusesIDs.indexOf(el.id) == -1
     })
   }
 

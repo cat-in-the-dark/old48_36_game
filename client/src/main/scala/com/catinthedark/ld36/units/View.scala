@@ -23,6 +23,7 @@ class View(val shared: Shared0) extends SimpleUnit {
   val playerRender = new PlayerRender(shared)
   val timeRender = new TimerRender
   val fansRender = new FansRender
+  val bonusRender = new BonusRender(shared)
 
 
   def drawField(): Unit = {
@@ -56,6 +57,7 @@ class View(val shared: Shared0) extends SimpleUnit {
     magicBatch.setProjectionMatrix(camera.combined)
     drawField()
     fansRender.render(camera, delta, shared, shared.fansRageMode)
+    bonusRender.render(delta, magicBatch)
     playerRender.render(delta, magicBatch)
     timeRender.render(shared.timeRemains)
     shootRageRender.render(shared.shootRage)
