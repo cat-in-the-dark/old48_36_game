@@ -1,5 +1,9 @@
 package com.catinthedark.common
 
+import com.badlogic.gdx.math.Vector2
+
+import scala.util.Random
+
 object Const{
   val debugEnabled = false
 
@@ -22,6 +26,14 @@ object Const{
     val playerSpeedBonus = 10.0f
     val playerRadius = 100.0f
     val brickRadius = 10.0f
+    val spawnPoints = Array(
+      new Vector2(100,100),
+      new Vector2(500, 500))
+
+    def randomSpawn = {
+      val ab = spawnPoints(new Random().nextInt(spawnPoints.length))
+      ab.cpy()
+    }
   }
 
   object Projection {

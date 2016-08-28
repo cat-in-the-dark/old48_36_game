@@ -3,6 +3,7 @@ package com.catinthedark.server.models
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
+import com.catinthedark.common.Const
 import com.catinthedark.lib.network.JacksonConverterScala
 import com.catinthedark.models._
 import com.corundumstudio.socketio.SocketIOClient
@@ -33,6 +34,12 @@ case class Room(
     player.entity.y += msg.speedY
     player.entity.angle = msg.angle
     player.entity.state = msg.stateName
+  }
+
+  def spawnPlayer(client: SocketIOClient, playerName: String): Player = {
+    val pos = Const.Balance.randomSpawn
+    Player(this, client,
+      PlayerModel(UUID.randomUUID(), playerName, pos.x, pos.y, 0f, MessageConverter.convertStateToString(IDLE), List(), 0, 0, false))
   }
 
   def connect(player: Player): Boolean = {

@@ -74,8 +74,7 @@ class SocketIOService {
 
   def onNewPlayer(client: SocketIOClient, playerName: String): Unit = {
     val room = findOrCreateRoom()
-    val player = Player(room, client, PlayerModel(UUID.randomUUID(), playerName, 0f, 0f, 0f, MessageConverter.convertStateToString(IDLE), List(), 0, 0, false))
-    room.connect(player)
+    room.connect(room.spawnPlayer(client, playerName))
   }
 
   def findOrCreateRoom(): Room = {
