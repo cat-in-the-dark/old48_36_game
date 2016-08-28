@@ -109,6 +109,9 @@ object Assets {
     object blackFanAnimationPack extends FanAnimationPack {
       override val normalAnimation: Animation = loopingAnimation(Textures.fansFrames, (2, 0), (2, 1))
     }
+    object girlFanAnimationPack extends FanAnimationPack {
+      override val normalAnimation: Animation = loopingAnimation(Textures.fansFrames, (3, 0), (3, 1))
+    }
   }
 
   object Audios {
@@ -124,5 +127,8 @@ object Assets {
     val bgmSteps = Gdx.audio.newMusic(Gdx.files.internal("sound/run.mp3"))
     bgmSteps.setLooping(true)
     bgmSteps.setVolume(0.2f)
+    val bgm = Gdx.audio.newMusic(Gdx.files.internal("sound/bgm.mp3"))
+    bgm.setLooping(true)
+    bgm.setVolume(0.1f)
   }
 }

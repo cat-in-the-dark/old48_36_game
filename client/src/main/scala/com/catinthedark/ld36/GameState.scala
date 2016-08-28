@@ -33,6 +33,7 @@ class GameState extends YieldUnit[Shared0, Stats] {
     children = Seq(view, control)
     children.foreach(_.onActivate())
     activateControl()
+    Assets.Audios.bgm.play()
   }
 
   def activateControl(): Unit = {
@@ -123,6 +124,7 @@ class GameState extends YieldUnit[Shared0, Stats] {
     if (forceReload) {
       forceReload = false
       Assets.Audios.bgmSteps.stop()
+      Assets.Audios.bgm.stop()
       Some(shared.stats)
     }
     else None
