@@ -1,11 +1,8 @@
 package com.catinthedark.ld36.hud
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.catinthedark.common.Const
-import com.catinthedark.ld36.Assets
-import com.catinthedark.ld36.common.Stats
 
 class ShootRageRender {
   val shapeRenderer = new ShapeRenderer

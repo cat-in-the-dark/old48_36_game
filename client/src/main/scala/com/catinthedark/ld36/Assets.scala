@@ -9,8 +9,6 @@ import com.catinthedark.common.Const
 import com.catinthedark.common.Const.UI
 import com.catinthedark.models.SoundNames
 
-import scala.collection.mutable
-
 object Assets {
   object Maps {
   }
@@ -26,6 +24,7 @@ object Assets {
     val fans = new Texture(Gdx.files.internal("textures/fans.png"))
     val kepa = new Texture(Gdx.files.internal("textures/kepa.png"))
     val menu = new Texture(Gdx.files.internal("textures/menu.png"))
+    val t0 = new Texture(Gdx.files.internal("textures/title.png"))
 
     val gopFrames = TextureRegion.split(gop, 108, 108)
     val gopBrickFrames = TextureRegion.split(gopBrick, 108, 108)

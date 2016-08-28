@@ -6,7 +6,7 @@ import com.catinthedark.common.Const
 object DesktopLauncher {
   def main(args: Array[String]) {
     val conf = new LwjglApplicationConfiguration
-    conf.title = "LD36"
+    conf.title = "SQUATality"
     conf.height = Const.Projection.height.toInt
     conf.width = Const.Projection.width.toInt
     conf.x = 300
@@ -15,7 +15,8 @@ object DesktopLauncher {
     val address = if (args.length > 0) {
       args(0)
     } else {
-      "http://localhost:9000/"
+      "https://squatality.herokuapp.com"
+      //"http://localhost:9000/"
     }
 
     println(s"Would be connected to $address if can")

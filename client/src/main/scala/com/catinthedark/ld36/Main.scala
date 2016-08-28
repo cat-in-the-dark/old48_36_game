@@ -28,6 +28,7 @@ class Main(address: String) extends Game {
   override def create() = {
 
     val logo = delayed("Logo", Assets.Textures.logo, 1.0f)
+    val t0 = keyAwait("start", Assets.Textures.t0)
     //    val t1 = keyAwait("Tutorial1", Assets.Textures.t1)
     //    val t2 = keyAwait("Tutorial2", Assets.Textures.t2)
     //    val t3 = keyAwait("Tutorial3", Assets.Textures.t3)
@@ -40,7 +41,8 @@ class Main(address: String) extends Game {
     val menu = keyAwait("menu", Assets.Textures.menu)
     val scores = new StatsState
 
-    rm.addRoute[Unit](logo, anyway => menu)
+    rm.addRoute[Unit](logo, anyway => t0)
+    rm.addRoute[Unit](t0, anyway => menu)
     rm.addRoute[Unit](menu, anyway => enterName)
     rm.addRoute[String](enterName, username => openConnection)
     rm.addRoute[Shared0](openConnection, shared => game)
