@@ -37,9 +37,11 @@ class Main(address: String) extends Game {
     val enterName = new EnterNameState
     val openConnection = new ConnectState(address)
     val game = new GameState
+    val menu = keyAwait("menu", Assets.Textures.menu)
     val scores = new StatsState
 
-    rm.addRoute[Unit](logo, anyway => enterName)
+    rm.addRoute[Unit](logo, anyway => menu)
+    rm.addRoute[Unit](menu, anyway => enterName)
     rm.addRoute[String](enterName, username => openConnection)
     rm.addRoute[Shared0](openConnection, shared => game)
     rm.addRoute[Stats](game, shared => scores)
