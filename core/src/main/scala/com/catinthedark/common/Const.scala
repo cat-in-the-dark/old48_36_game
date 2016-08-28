@@ -40,5 +40,7 @@ object Const{
   object Projection {
     val width = 1161F
     val height = 652F
+    val mapLeftBorder = 665f
+    val mapTopBorder = 400f
   }
 }
