@@ -28,7 +28,7 @@ class View(val shared: Shared0) extends SimpleUnit {
   def drawField(): Unit = {
     magicBatch.managed { self =>
       val tex = Assets.Textures.field
-      self.draw(tex, -Const.Projection.width / 2, -Const.Projection.height / 2, tex.getWidth, tex.getHeight)
+      self.draw(tex, -Const.Projection.width / 2 - 155, -Const.Projection.height / 2 - 200, tex.getWidth, tex.getHeight)
     }
   }
 

@@ -10,7 +10,7 @@ import com.catinthedark.common.Const.Balance
 import com.catinthedark.ld36.Assets.Animations.gopAnimationPack
 import com.catinthedark.ld36.common.{Stat, Stats}
 import com.catinthedark.lib.YieldUnit
-import com.catinthedark.models.{GameStateModel, IDLE, MessageConverter}
+import com.catinthedark.models.{RUNNING, GameStateModel, IDLE, MessageConverter}
 
 import collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
@@ -104,11 +104,25 @@ class GameState extends YieldUnit[Shared0, Stats] {
     children.foreach(_.onExit())
   }
 
+  var isBgmStepsPlaying = false
+
   override def run(delta: Float): Option[Stats] = {
+    val isAnybodyRunning = (shared.me.state == RUNNING || shared.enemies.contains { enemy: PlayerView => enemy.state == RUNNING })
+    if (isAnybodyRunning) {
+      if (!isBgmStepsPlaying)
+        Assets.Audios.bgmSteps.play()
+      isBgmStepsPlaying = true
+    } else {
+      if (isBgmStepsPlaying)
+        Assets.Audios.bgmSteps.pause()
+      isBgmStepsPlaying = false
+    }
+
     shared.networkControl.processIn()
     children.foreach(_.run(delta))
     if (forceReload) {
       forceReload = false
+      Assets.Audios.bgmSteps.stop()
       Some(shared.stats)
     }
     else None

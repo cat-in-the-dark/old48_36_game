@@ -9,6 +9,8 @@ import com.catinthedark.common.Const
 import com.catinthedark.common.Const.UI
 import com.catinthedark.models.SoundNames
 
+import scala.collection.mutable
+
 object Assets {
   object Maps {
   }
@@ -16,7 +18,7 @@ object Assets {
   }
   object Textures {
     val brick = new Texture(Gdx.files.internal("textures/brick.png"))
-    val field = new Texture(Gdx.files.internal("textures/field.png"))
+    val field = new Texture(Gdx.files.internal("textures/gopofon.png"))
     val gop = new Texture(Gdx.files.internal("textures/gop.png"))
     val gopBrick = new Texture(Gdx.files.internal("textures/gop-brick.png"))
     val gopThrow = new Texture(Gdx.files.internal("textures/gop-throw.png"))
@@ -118,5 +120,8 @@ object Assets {
     )
 
     val stadiumNoise = Gdx.audio.newSound(Gdx.files.internal("sound/stadium.mp3"))
+    val bgmSteps = Gdx.audio.newMusic(Gdx.files.internal("sound/run.mp3"))
+    bgmSteps.setLooping(true)
+    bgmSteps.setVolume(0.2f)
   }
 }
