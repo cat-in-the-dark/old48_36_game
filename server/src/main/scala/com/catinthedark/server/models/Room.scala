@@ -23,12 +23,12 @@ case class Room(
   val bricks = new ListBuffer[Brick]
   val bonuses = new mutable.ListBuffer[BonusModel]
   var timeRemains = Const.Balance.roundTime
-  bricks.insert(0, spawnBrick())
 
   def checkTimer() = {
     if (players.size() < 1) {
       timeRemains = Const.Balance.roundTime
       bonuses.clear()
+      bricks.clear()
     }
   }
 
@@ -40,6 +40,7 @@ case class Room(
       player._2.socket.sendEvent(EventNames.MESSAGE, converter.toJson(RoundEndsMessage(model)))
     })
     bonuses.clear()
+    bricks.clear()
   }
 
   def intersectWalls(x: Float, y: Float): Boolean = {
@@ -63,18 +64,20 @@ case class Room(
         p1._2.entity.oldY = p1._2.entity.y
       }
 
-      val intersectedBricks = bricks.filter( brick => {
-        (new Vector2(p1._2.entity.x, p1._2.entity.y).dst(new Vector2(brick.entity.x, brick.entity.y))
-          < Balance.playerRadius + Balance.brickRadius)
-      })
+      if (!p1._2.entity.hasBrick) {
+        val intersectedBricks = bricks.filter(brick => {
+          (new Vector2(p1._2.entity.x, p1._2.entity.y).dst(new Vector2(brick.entity.x, brick.entity.y))
+            < Balance.playerRadius + Balance.brickRadius)
+        })
 
-      if (intersectedBricks.nonEmpty) {
-        p1._2.entity.hasBrick = true
-        bricks -= intersectedBricks.head
+        if (intersectedBricks.nonEmpty) {
+          p1._2.entity.hasBrick = true
+          bricks -= intersectedBricks.head
+        }
+
+        val gameStateModel = buildGameState(p1)
+        p1._2.socket.sendEvent(EventNames.MESSAGE, converter.toJson(GameStateMessage(gameStateModel)))
       }
-
-      val gameStateModel = buildGameState(p1)
-      p1._2.socket.sendEvent(EventNames.MESSAGE, converter.toJson(GameStateMessage(gameStateModel)))
     })
   }
 
@@ -122,6 +125,9 @@ case class Room(
     if (hasFreePlace()) {
       players.put(player.socket.getSessionId, player)
       checkTimer()
+      if (players.size() <= 1) {
+        bricks.insert(0, spawnBrick())
+      }
     }
   }
 
