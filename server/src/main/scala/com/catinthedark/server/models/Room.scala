@@ -24,11 +24,6 @@ case class Room(
   val bonuses = new mutable.ListBuffer[BonusModel]
   var timeRemains = Const.Balance.roundTime
   val executor = Executors.newScheduledThreadPool(1)
-//  executor.schedule(new Runnable {
-//    override def run(): Unit = {
-//
-//    }
-//  }, 2, TimeUnit.SECONDS)
 
   def checkTimer() = {
     if (players.size() < 1) {
@@ -97,6 +92,11 @@ case class Room(
             brick.currentSpeed = 0
             brick.initialSpeed = 0
           })
+          executor.schedule(new Runnable {
+            override def run(): Unit = {
+              p1._2.entity.state = MessageConverter.stateToString(IDLE)
+            }
+          }, 2, TimeUnit.SECONDS)
         }
         if (!p1._2.entity.hasBrick) {
           p1._2.entity.hasBrick = true
@@ -129,10 +129,12 @@ case class Room(
 
   def onMove(client: SocketIOClient, msg: MoveMessage): Unit = {
     val player: Player = players.get(client.getSessionId)
-    player.entity.x += msg.speedX
-    player.entity.y += msg.speedY
-    player.entity.angle = msg.angle
-    player.entity.state = msg.stateName
+    if (!player.entity.state.equals(MessageConverter.stateToString(KILLED))) {
+      player.entity.x += msg.speedX
+      player.entity.y += msg.speedY
+      player.entity.angle = msg.angle
+      player.entity.state = msg.stateName
+    }
   }
 
   def onThrow(client: SocketIOClient, msg: ThrowBrickMessage): Unit = {

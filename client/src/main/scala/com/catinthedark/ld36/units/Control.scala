@@ -83,13 +83,15 @@ abstract class Control(shared: Shared0) extends SimpleUnit with Deferred {
       speed.y -= playerSpeed
     }
 
-    if (speed.len() > 0) {
-      shared.me.state = RUNNING
-    } else {
-      shared.me.state = IDLE
-    }
+    if (shared.me.state != KILLED) {
+      if (speed.len() > 0) {
+        shared.me.state = RUNNING
+      } else {
+        shared.me.state = IDLE
+      }
 
-    shared.networkControl.move(speed, shared.me.angle, shared.me.state)
+      shared.networkControl.move(speed, shared.me.angle, shared.me.state)
+    }
   }
 
   override def onExit(): Unit = {
