@@ -54,38 +54,38 @@ case class Shared0(serverAddress: URI,
 
   val rand = new Random()
 
-  def tripletX(x: Int, y: Int) =
+  def tripletX(x: Int, y: Int, angle: Float) =
     Seq(
-      Fan(new Vector2(x, y), Assets.Animations.blueFanAnimationPack),
-      Fan(new Vector2(x + 100, y), Assets.Animations.blackFanAnimationPack),
-      Fan(new Vector2(x + 50, y), Assets.Animations.redFanAnimationPack)
+      Fan(new Vector2(x, y), Assets.Animations.blueFanAnimationPack, angle = angle),
+      Fan(new Vector2(x + 100, y), Assets.Animations.blackFanAnimationPack, angle = angle),
+      Fan(new Vector2(x + 50, y), Assets.Animations.redFanAnimationPack, angle = angle)
     )
 
-  def duetX(x: Int, y: Int) =
+  def duetX(x: Int, y: Int, angle: Float) =
     Seq(
-      Fan(new Vector2(x, y), Assets.Animations.blueFanAnimationPack),
-      Fan(new Vector2(x + 50, y), Assets.Animations.blackFanAnimationPack)
+      Fan(new Vector2(x, y), Assets.Animations.blueFanAnimationPack, angle = angle),
+      Fan(new Vector2(x + 50, y), Assets.Animations.blackFanAnimationPack, angle = angle)
     )
 
-  def quartetX(x: Int, y: Int) =
+  def quartetX(x: Int, y: Int, angle: Float) =
     Seq(
-      Fan(new Vector2(x, y + rand.nextInt(10)), Assets.Animations.blueFanAnimationPack),
-      Fan(new Vector2(x + 100, y), Assets.Animations.blueFanAnimationPack),
-      Fan(new Vector2(x + 50, y), Assets.Animations.blackFanAnimationPack),
-      Fan(new Vector2(x + 150, y), Assets.Animations.redFanAnimationPack)
+      Fan(new Vector2(x, y + rand.nextInt(10)), Assets.Animations.blueFanAnimationPack, angle = angle),
+      Fan(new Vector2(x + 100, y), Assets.Animations.blueFanAnimationPack, angle = angle),
+      Fan(new Vector2(x + 50, y), Assets.Animations.blackFanAnimationPack, angle = angle),
+      Fan(new Vector2(x + 150, y), Assets.Animations.redFanAnimationPack, angle = angle)
     )
 
-  def tripletY(x: Int, y: Int) =
+  def tripletY(x: Int, y: Int, angle: Float) =
     Seq(
-      Fan(new Vector2(x, y), Assets.Animations.blueFanAnimationPack, angle = -90),
-      Fan(new Vector2(x, y + 100), Assets.Animations.blackFanAnimationPack, angle = -90),
-      Fan(new Vector2(x, y + 50), Assets.Animations.redFanAnimationPack, angle = -90)
+      Fan(new Vector2(x, y), Assets.Animations.blueFanAnimationPack, angle = angle),
+      Fan(new Vector2(x, y + 100), Assets.Animations.blackFanAnimationPack, angle = angle),
+      Fan(new Vector2(x, y + 50), Assets.Animations.redFanAnimationPack, angle = angle)
     )
 
-  def duetY(x: Int, y: Int) =
+  def duetY(x: Int, y: Int, angle: Float) =
     Seq(
-      Fan(new Vector2(x, y), Assets.Animations.blueFanAnimationPack, angle = -90),
-      Fan(new Vector2(x, y + 50), Assets.Animations.redFanAnimationPack, angle = -90)
+      Fan(new Vector2(x, y), Assets.Animations.blueFanAnimationPack, angle = angle),
+      Fan(new Vector2(x, y + 50), Assets.Animations.redFanAnimationPack, angle = angle)
     )
 
   //
@@ -97,8 +97,11 @@ case class Shared0(serverAddress: URI,
   //      Fan(new Vector2(x + 150, y + rand.nextInt(10)), Assets.Animations.redFanAnimationPack)
   //    )
 
-  val fans = tripletX(200, 25) ++ duetX(400, 25) ++ duetX(500, 25) ++ quartetX(600, 25) ++
-    duetX(900, 25) ++ tripletY(60, 200) ++ tripletY(60, 340)
+  val fans = tripletX(200, 25, 0) ++ duetX(400, 25, 0) ++ duetX(500, 25, 0) ++ quartetX(600, 25, 0) ++ duetX(900, 25, 0) ++
+    tripletY(60, 200, -90) ++ tripletY(60, 340, -90) ++ tripletY(60, 560, -90) ++
+    tripletX(150, 695, 180) ++ duetX(400, 695, 180) ++ quartetX(600, 695, 180) ++ duetX(900, 695, 180) ++ duetX(1100, 695, 180) ++
+    tripletY(1170, 100, 90) ++ tripletY(1170, 440, 90)
+
   fans.foreach { fan =>
     fan.delta = rand.nextFloat() * 2
     fan.pos.x += 5 - rand.nextInt(10)

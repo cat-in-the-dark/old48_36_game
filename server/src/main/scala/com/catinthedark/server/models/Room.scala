@@ -3,7 +3,9 @@ package com.catinthedark.server.models
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
+import com.badlogic.gdx.math.Vector2
 import com.catinthedark.common.Const
+import com.catinthedark.common.Const.Balance
 import com.catinthedark.lib.network.JacksonConverterScala
 import com.catinthedark.models._
 import com.corundumstudio.socketio.SocketIOClient
@@ -34,9 +36,21 @@ case class Room(
   var timeRemains = Const.Balance.roundTime
 
   def onTick(): Unit = {
-    players.iterator.foreach( player => {
-      val gameStateModel = buildState(player)
-      player._2.socket.sendEvent(EventNames.MESSAGE, converter.toJson(GameStateMessage(gameStateModel)))
+    players.iterator.foreach( p1 => {
+      val gameStateModel = buildState(p1)
+      val intersectedPlayersCount = players.iterator.count(p2 => {
+        !p1._1.equals(p2._1) && (new Vector2(p1._2.entity.x, p1._2.entity.y).dst(new Vector2(p2._2.entity.x, p2._2.entity.y)) < Balance.playerRadius)
+      })
+
+      if (intersectedPlayersCount > 0) {
+        p1._2.entity.x = p1._2.entity.oldX
+        p1._2.entity.y = p1._2.entity.oldY
+      } else {
+        p1._2.entity.oldX = p1._2.entity.x
+        p1._2.entity.oldY = p1._2.entity.y
+      }
+
+      p1._2.socket.sendEvent(EventNames.MESSAGE, converter.toJson(GameStateMessage(gameStateModel)))
     })
   }
 
@@ -59,7 +73,7 @@ case class Room(
   def spawnPlayer(client: SocketIOClient, playerName: String): Player = {
     val pos = Const.Balance.randomSpawn
     Player(this, client,
-      PlayerModel(UUID.randomUUID(), playerName, pos.x, pos.y, 0f, MessageConverter.stateToString(IDLE), List(), 0, 0, false))
+      PlayerModel(UUID.randomUUID(), playerName, pos.x, pos.y, pos.x, pos.y, 0f, MessageConverter.stateToString(IDLE), List(), 0, 0, false))
   }
 
   def connect(player: Player): Unit = {

@@ -25,7 +25,7 @@ object Const{
     val maxShootRage = 1f
     val playerSpeed = 5.0f
     val playerSpeedBonus = 10.0f
-    val playerRadius = 100.0f
+    val playerRadius = 40.0f
     val brickRadius = 10.0f
     val spawnPoints = Array(
       new Vector2(100,100),
@@ -40,5 +40,7 @@ object Const{
   object Projection {
     val width = 1161F
     val height = 652F
+    val mapLeftBorder = 665f
+    val mapTopBorder = 400f
   }
 }
