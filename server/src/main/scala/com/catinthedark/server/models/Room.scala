@@ -13,12 +13,13 @@ import scala.collection.mutable
 
 import collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
+import scala.util.Random
 
 case class Room(
-  name: UUID,
-  converter: JacksonConverterScala,
-  maxPlayers: Int = 1000
-) {
+                 name: UUID,
+                 converter: JacksonConverterScala,
+                 maxPlayers: Int = 1000
+               ) {
   val players = new ConcurrentHashMap[UUID, Player]()
   val bricks = new ListBuffer[Brick]
   val bonuses = new mutable.ListBuffer[BonusModel]
@@ -52,7 +53,7 @@ case class Room(
   }
 
   def onTick(): Unit = {
-    bricks.foreach( brick => {
+    bricks.foreach(brick => {
       if (intersectWalls(brick.entity.x, brick.entity.y)) {
         brick.entity.hurting = false
         brick.initialSpeed = 0
@@ -63,7 +64,7 @@ case class Room(
       }
     })
 
-    players.iterator.foreach( p1 => {
+    players.iterator.foreach(p1 => {
       if (!p1._2.entity.state.equals(MessageConverter.stateToString(KILLED))) {
 
         val intersectedPlayersCount = players.iterator.count(p2 => {
@@ -92,6 +93,15 @@ case class Room(
           if (killerBricks.nonEmpty) {
             p1._2.entity.state = MessageConverter.stateToString(KILLED)
             p1._2.entity.deaths += 1
+            players.values().foreach { player =>
+              player.socket.sendEvent(EventNames.MESSAGE, converter.toJson(SoundMessage(
+                new Random().nextInt(10) match {
+                  case 1 => SoundNames.ChponkSuka.toString
+                  case 2 => SoundNames.Tooth.toString
+                  case _ => SoundNames.HeadShot.toString
+                }
+              )))
+            }
             killerBricks.foreach(brick => {
               if (brick.throwerID != null) {
                 val player = players.get(brick.throwerID)
@@ -127,8 +137,8 @@ case class Room(
     }
   }
 
-  def buildGameState(player: (UUID, Player)): GameStateModel ={
-    GameStateModel(player._2.entity, players.iterator.filter( p => {
+  def buildGameState(player: (UUID, Player)): GameStateModel = {
+    GameStateModel(player._2.entity, players.iterator.filter(p => {
       !p._1.equals(player._1)
     }).map(p => {
       p._2.entity
