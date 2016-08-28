@@ -21,10 +21,12 @@ object Assets {
     val gopBrick = new Texture(Gdx.files.internal("textures/gop-brick.png"))
     val gopThrow = new Texture(Gdx.files.internal("textures/gop-throw.png"))
     val logo = new Texture(Gdx.files.internal("textures/logo.png"))
+    val fans = new Texture(Gdx.files.internal("textures/fans.png"))
 
     val gopFrames = TextureRegion.split(gop, 108, 108)
     val gopBrickFrames = TextureRegion.split(gopBrick, 108, 108)
     val gopThrowFrames = TextureRegion.split(gopThrow, 108, 108)
+    val fansFrames = TextureRegion.split(fans, 100, 100)
   }
 
   object Fonts {
@@ -90,6 +92,20 @@ object Assets {
       override val killed: TextureRegion = Textures.gopFrames(0)(9)
       override val throwing: Animation = normalAnimation(UI.throwBrickAnimationSpeed, Textures.gopThrowFrames, (0, 0), (0, 2), (0, 1), (0, 3))
     }
+
+    trait FanAnimationPack {
+      val normalAnimation: Animation
+    }
+
+    object blueFanAnimationPack extends FanAnimationPack {
+      override val normalAnimation: Animation = loopingAnimation(Textures.fansFrames, (0, 0), (0, 1))
+    }
+    object redFanAnimationPack extends FanAnimationPack {
+      override val normalAnimation: Animation = loopingAnimation(Textures.fansFrames, (1, 0), (1, 1))
+    }
+    object blackFanAnimationPack extends FanAnimationPack {
+      override val normalAnimation: Animation = loopingAnimation(Textures.fansFrames, (2, 0), (2, 1))
+    }
   }
 
   object Audios {
@@ -100,5 +116,7 @@ object Assets {
       SoundNames.Siklo -> Gdx.audio.newSound(Gdx.files.internal("sound/siklo.mp3")),
       SoundNames.Throw -> Gdx.audio.newSound(Gdx.files.internal("sound/throw.mp3"))
     )
+
+    val stadiumNoise = Gdx.audio.newSound(Gdx.files.internal("sound/stadium.mp3"))
   }
 }

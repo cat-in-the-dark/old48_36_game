@@ -18,6 +18,7 @@ class View(val shared: Shared0) extends SimpleUnit {
   val shootRageRender = new ShootRageRender
   val playerRender = new PlayerRender(shared)
   val timeRender = new TimerRender
+  val fansRender = new FansRender
 
   def drawField(): Unit = {
     magicBatch.managed { self =>
@@ -32,6 +33,7 @@ class View(val shared: Shared0) extends SimpleUnit {
 
   override def run(delta: Float): Unit = {
     drawField()
+    fansRender.render(delta, shared, shared.fansRageMode)
     playerRender.render(delta, magicBatch)
     timeRender.render(73)
     shootRageRender.render(shared.shootRage)
