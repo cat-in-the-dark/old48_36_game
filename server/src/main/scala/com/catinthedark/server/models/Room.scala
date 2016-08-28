@@ -15,7 +15,19 @@ case class Room(
   converter: JacksonConverterScala,
   maxPlayers: Int = 1000
 ) {
+  def checkTimer() = {
+    if (players.size() < 2) {
+      timeRemains = Const.Balance.roundTime
+    }
+  }
+
+  def finishRound(): Unit = {
+    println("Round finished")
+    timeRemains = Const.Balance.roundTime
+  }
+
   val players = new ConcurrentHashMap[UUID, Player]()
+  var timeRemains = Const.Balance.roundTime
 
   def onTick(): Unit = {
     players.iterator.foreach( player => {
@@ -23,7 +35,7 @@ case class Room(
         !p._1.equals(player._1)
       }).map( p => {
         p._2.entity
-      }).toList, List(), List(), 0)
+      }).toList, List(), List(), timeRemains)
       player._2.socket.sendEvent(EventNames.MESSAGE, converter.toJson(GameStateMessage(gameStateModel)))
     })
   }
@@ -42,16 +54,16 @@ case class Room(
       PlayerModel(UUID.randomUUID(), playerName, pos.x, pos.y, 0f, MessageConverter.stateToString(IDLE), List(), 0, 0, false))
   }
 
-  def connect(player: Player): Boolean = {
+  def connect(player: Player): Unit = {
     if (hasFreePlace()) {
-      players.put(player.socket.getSessionId, player) != null
-    } else {
-      false
+      players.put(player.socket.getSessionId, player)
+      checkTimer()
     }
   }
 
-  def disconnect(client: SocketIOClient): Boolean = {
-    players.remove(client.getSessionId) != null
+  def disconnect(client: SocketIOClient): Unit = {
+    players.remove(client.getSessionId)
+    checkTimer()
   }
 
   def hasFreePlace(): Boolean = players.size() < maxPlayers

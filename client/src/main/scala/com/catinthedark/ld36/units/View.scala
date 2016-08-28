@@ -33,7 +33,7 @@ class View(val shared: Shared0) extends SimpleUnit {
   override def run(delta: Float): Unit = {
     drawField()
     playerRender.render(delta, magicBatch)
-    timeRender.render(73)
+    timeRender.render(shared.timeRemains)
     shootRageRender.render(shared.shootRage)
     if (Gdx.input.isKeyPressed(Input.Keys.TAB)) drawStats()
   }

@@ -44,6 +44,7 @@ class GameState extends YieldUnit[Shared0, Stats] {
   }
 
   def onGameState(gameStateModel: GameStateModel): Unit = {
+    shared.timeRemains = gameStateModel.time
     val remoteMe = gameStateModel.me
     if (shared.me.id == null) {
       shared.me.id = remoteMe.id

@@ -10,8 +10,12 @@ import com.catinthedark.lib.Magic._
 class TimerRender {
   val batch = new SpriteBatch
 
-  def render(remaings: Int) =
+  /**
+    * draw timer
+    * @param timeRemains is seconds until the END
+    */
+  def render(timeRemains: Long) =
     batch.managed { self: SpriteBatch =>
-      Assets.Fonts.statsMain2.draw(self, s"${"%02d".format(remaings / 60)}:${"%02d".format(remaings % 60)}", 555, 640)
+      Assets.Fonts.statsMain2.draw(self, s"${"%02d".format(timeRemains / 60)}:${"%02d".format(timeRemains % 60)}", 555, 640)
     }
 }

@@ -5,7 +5,7 @@ import java.util.concurrent.{Executors, TimeUnit}
 
 import com.catinthedark.lib.network.JacksonConverterScala
 import com.catinthedark.models._
-import com.catinthedark.server.models.{Player, Room}
+import com.catinthedark.server.models.Room
 import com.corundumstudio.socketio._
 import com.corundumstudio.socketio.listener.{ConnectListener, DataListener, DisconnectListener}
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -43,18 +43,18 @@ class SocketIOService {
 
   server.addEventListener(EventNames.MESSAGE, classOf[String], new DataListener[String] {
     override def onData(client: SocketIOClient, data: String, ackSender: AckRequest): Unit = {
-      println(s"GET: $data")
       val wrapper = converter.fromJson(data)
       wrapper.data match {
         case msg: HelloMessage =>
+          log.info(s"GET: $data")
           val player = onNewPlayer(client, msg.name)
           val gsm = GameStartedMessage(client.getSessionId.toString)
           val response = converter.toJson(gsm)
-          println(s"SEND: $response")
+          log.info(s"SEND: $response")
           client.sendEvent(EventNames.MESSAGE, response)
         case msg: MoveMessage =>
           room.onMove(client, msg)
-        case _ => println("Undefined msg!!!!!")
+        case _ => log.warn("Undefined msg!!!!!")
       }
     }
   })
@@ -68,6 +68,7 @@ class SocketIOService {
       room.players.values().iterator.foreach(p => {
         p.socket.sendEvent(EventNames.MESSAGE, msg)
       })
+      room.checkTimer()
       log.info(s"Remaining players: ${room.players.values().map(_.entity.name).mkString(", ")}")
     }
   })
@@ -87,6 +88,17 @@ class SocketIOService {
         room.onTick()
       }
     }, 0, gameTick, TimeUnit.MILLISECONDS)
+
+    executor.scheduleWithFixedDelay(new Runnable {
+      override def run(): Unit = {
+        room.checkTimer()
+        if (room.timeRemains > 0) {
+          room.timeRemains -= 1
+        } else {
+          room.finishRound()
+        }
+      }
+    }, 0, 1, TimeUnit.SECONDS)
   }
 
   def start(): Unit = {
