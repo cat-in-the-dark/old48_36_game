@@ -66,7 +66,7 @@ class SocketIOService {
       log.info(s"SEND: $msg")
       room.disconnect(client)
       room.players.values().iterator.foreach(p => {
-        p.socket.sendEvent(MESSAGE, msg)
+        p.socket.sendEvent(EventNames.MESSAGE, msg)
       })
     }
   })
