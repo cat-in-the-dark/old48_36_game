@@ -33,9 +33,11 @@ object Const{
     val playerSpeedBonus = 10.0f
     val playerRadius = 40.0f
     val brickRadius = 10.0f
-    val spawnPoints = Array(
-      new Vector2(100,100),
-      new Vector2(500, 500))
+    val spawnPoints: List[Vector2] = 2.to(9).flatMap(x => {
+      1.to(6).map(y => {
+        new Vector2(x*100, y*100)
+      })
+    }).toList
 
     def randomSpawn = {
       val ab = spawnPoints(new Random().nextInt(spawnPoints.length))

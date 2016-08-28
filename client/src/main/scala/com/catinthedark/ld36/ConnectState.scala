@@ -32,6 +32,7 @@ class ConnectState(address: String) extends YieldUnit[String, Shared0] {
   }
 
   override def onExit(): Unit = {
+    Gdx.input.setInputProcessor(null)
   }
 
   override def run(delta: Float): Option[Shared0] = {
