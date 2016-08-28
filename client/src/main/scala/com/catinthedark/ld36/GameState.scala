@@ -69,17 +69,30 @@ class GameState extends YieldUnit[Shared0, Stats] {
       enemy.id
     }).toList
 
+    val remotePlayersIds: List[UUID] = gameStateModel.players.map(p => {
+      p.id
+    })
+
     gameStateModel.players.filter(p => {
       enemiesIDs.indexOf(p.id) == -1
     }).foreach(p => {
       shared.enemies.insert(0, PlayerView(new Vector2(p.x, p.y), MessageConverter.stringToState(p.state), p.angle, p.id, p.hasBrick))
     })
 
-    //    shared.enemies.foreach( enemy => {
-    //      gameStateModel.players.find( p => {
-    //        p.
-    //      })
-    //    })
+    shared.enemies --= shared.enemies.filter(enemy => {
+      remotePlayersIds.indexOf(enemy.id) == -1
+    })
+
+    shared.enemies.foreach(enemy => {
+      val remotePlayer = gameStateModel.players.find(p => {
+        p.id.equals(enemy.id)
+      }).toList.head
+      enemy.pos.x = remotePlayer.x
+      enemy.pos.y = remotePlayer.y
+      enemy.angle = remotePlayer.angle
+      enemy.state = MessageConverter.stringToState(remotePlayer.state)
+      enemy.hasBrick = remotePlayer.hasBrick
+    })
   }
 
   def buildStats(): Stats = {
