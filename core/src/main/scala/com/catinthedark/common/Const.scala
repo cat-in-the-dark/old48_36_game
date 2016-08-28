@@ -25,6 +25,10 @@ object Const{
   object HUD {
   }
 
+  object Bonus {
+    val hat = "hat"
+  }
+
   object Balance {
     val roundTime: Long = 20
     val shootRageSpeed = 2f
@@ -42,6 +46,12 @@ object Const{
     def randomSpawn = {
       val ab = spawnPoints(new Random().nextInt(spawnPoints.length))
       ab.cpy()
+    }
+
+    val bonusDelay = 10L
+    val bonusesAtOnce = 2
+    def randomBonus = {
+      Bonus.hat
     }
   }
 

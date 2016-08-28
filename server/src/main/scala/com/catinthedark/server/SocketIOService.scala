@@ -3,6 +3,7 @@ package com.catinthedark.server
 import java.util.UUID
 import java.util.concurrent.{Executors, TimeUnit}
 
+import com.catinthedark.common.Const
 import com.catinthedark.lib.network.JacksonConverterScala
 import com.catinthedark.models._
 import com.catinthedark.server.models.Room
@@ -99,6 +100,12 @@ class SocketIOService {
         }
       }
     }, 0, 1, TimeUnit.SECONDS)
+
+    executor.scheduleWithFixedDelay(new Runnable {
+      override def run(): Unit = {
+        room.spawnBonus()
+      }
+    }, Const.Balance.bonusDelay, Const.Balance.bonusDelay, TimeUnit.SECONDS)
   }
 
   def start(): Unit = {

@@ -9,6 +9,7 @@ import com.catinthedark.common.Const.{Balance, UI}
 import com.catinthedark.lib.network.JacksonConverterScala
 import com.catinthedark.models._
 import com.corundumstudio.socketio.SocketIOClient
+import scala.collection.mutable
 
 import collection.JavaConversions._
 
@@ -34,6 +35,7 @@ case class Room(
 
   val players = new ConcurrentHashMap[UUID, Player]()
   var timeRemains = Const.Balance.roundTime
+  val bonuses = new mutable.ListBuffer[BonusModel]
 
   def intersectWalls(x: Float, y: Float): Boolean = {
     (x < UI.horizontalBorderWidth
@@ -66,7 +68,7 @@ case class Room(
       !p._1.equals(player._1)
     }).map( p => {
       p._2.entity
-    }).toList, List(), List(), timeRemains)
+    }).toList, List(), bonuses.toList, timeRemains)
   }
 
   def onMove(client: SocketIOClient, msg: MoveMessage): Unit = {
@@ -81,6 +83,14 @@ case class Room(
     val pos = Const.Balance.randomSpawn
     Player(this, client,
       PlayerModel(UUID.randomUUID(), playerName, pos.x, pos.y, pos.x, pos.y, 0f, MessageConverter.stateToString(IDLE), List(), 0, 0, false))
+  }
+
+  def spawnBonus(): Unit = {
+    if (bonuses.length < Const.Balance.bonusesAtOnce && players.size() > 1) {
+      val pos = Const.Balance.randomSpawn
+      val typeName = Const.Balance.randomBonus
+      bonuses += BonusModel(UUID.randomUUID(), pos.x, pos.y, typeName)
+    }
   }
 
   def connect(player: Player): Unit = {
