@@ -3,6 +3,7 @@ package com.catinthedark.yoba
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.{Gdx, Input, InputAdapter}
+import com.catinthedark.common.Const
 import com.catinthedark.ld36.Assets
 import com.catinthedark.lib.Magic._
 import com.catinthedark.lib.YieldUnit
@@ -14,12 +15,12 @@ class EnterNameState extends YieldUnit[Any, String] {
   override def toString: String = "EnterNameState"
 
   val batch = new SpriteBatch
-  var username = "anon"
+  var username = Const.defaultName
   var done = false
   var state = 0f
 
   override def onActivate(none: Any): Unit = {
-    username = "anon"
+    username = Const.defaultName
     done = false
     Gdx.input.setInputProcessor(new InputAdapter {
 

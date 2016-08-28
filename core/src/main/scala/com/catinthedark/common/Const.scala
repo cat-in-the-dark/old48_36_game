@@ -29,6 +29,9 @@ object Const{
     val hat = "hat"
   }
 
+  val names = Seq("Anon", "Anonas", "Anton", "Antonina", "Nanas", "Adidos", "Pipos", "Mimos", "Pisos", "Anonim", "Antonim", "Zasos", "Abibas", "Bibos", "Poltos")
+  def defaultName = names(new Random().nextInt(names.length))
+
   object Balance {
     val roundTime: Long = 20
     val shootRageSpeed = 2f
