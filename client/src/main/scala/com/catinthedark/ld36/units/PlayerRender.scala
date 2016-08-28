@@ -23,8 +23,8 @@ class PlayerRender(val shared: Shared0) extends SimpleUnit {
       shared.enemies.foreach(enemy => {
         val enemyTex = enemy.texture(delta)
         self.draw(enemyTex,
-          enemy.pos.x - enemyTex.getRegionWidth / 2,
-          enemy.pos.y - enemyTex.getRegionHeight / 2,
+          enemy.pos.x - enemyTex.getRegionWidth / 2 - Const.Projection.width / 2,
+          enemy.pos.y - enemyTex.getRegionHeight / 2 - Const.Projection.height / 2,
           enemyTex.getRegionWidth / 2, enemyTex.getRegionHeight / 2,
           enemyTex.getRegionWidth, enemyTex.getRegionHeight,
           1, 1,
