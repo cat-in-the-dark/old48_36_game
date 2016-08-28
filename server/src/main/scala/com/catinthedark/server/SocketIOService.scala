@@ -62,7 +62,7 @@ class SocketIOService {
   server.addDisconnectListener(new DisconnectListener {
     override def onDisconnect(client: SocketIOClient): Unit = {
       log.info(s"Disconnected ${client.getSessionId}")
-      val msg = converter.toJson(DisconnectedMessage(client.getSessionId.toString))
+      val msg = converter.toJson(EnemyDisconnectedMessage(client.getSessionId.toString))
       log.info(s"SEND: $msg")
       room.disconnect(client)
       room.players.values().iterator.foreach(p => {

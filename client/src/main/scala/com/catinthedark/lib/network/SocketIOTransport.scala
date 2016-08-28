@@ -16,16 +16,19 @@ class SocketIOTransport(override val converter: Converter, val uri: URI) extends
     .on(Socket.EVENT_CONNECT, new Listener {
       override def call(args: AnyRef*): Unit = {
         println("Connected to server")
+        onConnect()
       }
     })
     .on(Socket.EVENT_DISCONNECT, new Listener {
       override def call(args: AnyRef*): Unit = {
         println("Disconnected from server")
+        onDisconnect()
       }
     })
     .on(Socket.EVENT_CONNECT_ERROR, new Listener {
       override def call(args: AnyRef*): Unit = {
         println(s"Can 't connect to $uri")
+        onConnectionError()
       }
     })
     .on(Socket.EVENT_MESSAGE, new Listener {

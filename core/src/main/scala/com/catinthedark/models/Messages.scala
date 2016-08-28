@@ -1,7 +1,7 @@
 package com.catinthedark.models
 
 sealed class Message
-case class DisconnectedMessage(clientId: String) extends Message
+case class EnemyDisconnectedMessage(clientId: String) extends Message
 case class GameStartedMessage(clientId: String) extends Message
 case class HelloMessage(name: String) extends Message
 case class ServerHelloMessage(clientId: String) extends Message
