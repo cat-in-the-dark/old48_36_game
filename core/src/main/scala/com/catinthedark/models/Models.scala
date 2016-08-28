@@ -11,13 +11,13 @@ case class GameStateModel(me: PlayerModel,
 
 case class PlayerModel(id: UUID,
                        name: String,
-                       x: Float,
-                       y: Float,
-                       angle: Float,
-                       state: String,
-                       bonuses: List[String],
-                       frags: Int,
-                       deaths: Int,
+                       var x: Float,
+                       var y: Float,
+                       var angle: Float,
+                       var state: String,
+                       var bonuses: List[String],
+                       var frags: Int,
+                       var deaths: Int,
                        hasBrick: Boolean
                       )
 
@@ -33,4 +33,3 @@ case class BonusModel(id: UUID,
                       y: Float,
                       typeName: String
                      )
-

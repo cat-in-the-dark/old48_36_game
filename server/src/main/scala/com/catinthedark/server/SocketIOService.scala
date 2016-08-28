@@ -53,7 +53,7 @@ class SocketIOService {
           println(s"SEND: $response")
           client.sendEvent(EventNames.MESSAGE, response)
         case msg: MoveMessage =>
-          println("got move")
+          room.onMove(client, msg)
         case _ => println("Undefined msg!!!!!")
       }
     }
@@ -68,12 +68,13 @@ class SocketIOService {
       room.players.values().iterator.foreach(p => {
         p.socket.sendEvent(EventNames.MESSAGE, msg)
       })
+      log.info(s"Remaining players: ${room.players.values().map(_.entity.name).mkString(", ")}")
     }
   })
 
-  def onNewPlayer(client: SocketIOClient, data: String): Unit = {
+  def onNewPlayer(client: SocketIOClient, playerName: String): Unit = {
     val room = findOrCreateRoom()
-    val player = Player(room, client, null)
+    val player = Player(room, client, PlayerModel(UUID.randomUUID(), playerName, 0f, 0f, 0f, MessageConverter.convertStateToString(IDLE), List(), 0, 0, false))
     room.connect(player)
   }
 

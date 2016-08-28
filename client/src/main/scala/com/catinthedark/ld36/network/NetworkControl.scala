@@ -15,6 +15,7 @@ trait NetworkControl extends Runnable {
   val onJumpPipe = new Pipe[(Vector2, Float, Float)]()
   val onEnemyDisconnected = new Pipe[Unit]()
   val onServerHello = new Pipe[Unit]()
+  val onGameStatePipe = new Pipe[GameStateModel]()
 
   def hello(name: String): Unit = {
     processOut(HelloMessage(name))
@@ -41,4 +42,8 @@ trait NetworkControl extends Runnable {
   protected def onShoot(objName: String, shotFrom: Vector2) = bufferIn.add(() => onShootPipe(shotFrom, objName))
   protected def onJump(msg: (Vector2, Float, Float)) = bufferIn.add(() => onJumpPipe(msg))
   protected def onGameStarted(msg: (String)) = println(s"Received GameStart package $msg")
+  protected def onGameState(gameState: (GameStateModel)) = {
+    println(s"State: $gameState")
+    bufferIn.add(() => onGameStatePipe(gameState))
+  }
 }

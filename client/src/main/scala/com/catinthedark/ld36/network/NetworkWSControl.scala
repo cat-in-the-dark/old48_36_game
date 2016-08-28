@@ -31,6 +31,10 @@ class NetworkWSControl(val serverAddress: URI) extends NetworkControl {
     onServerHello()
   })
 
+  messageBus.subscribe(classOf[GameStateMessage], (message: GameStateMessage, sender: String) => {
+    onGameState(message.gameStateModel)
+  })
+
   override def run(): Unit = {
     transport.connect()
   }
