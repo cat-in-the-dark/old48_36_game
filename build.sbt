@@ -32,6 +32,7 @@ lazy val server = project.in(file("./server"))
   .dependsOn(core)
   .settings(commonSettings: _*)
   .settings(assemblyJarName in assembly := "server.jar")
+  .enablePlugins(JavaAppPackaging)
   .settings(assemblyMergeStrategy in assembly := {
     case _ => MergeStrategy.first
   })

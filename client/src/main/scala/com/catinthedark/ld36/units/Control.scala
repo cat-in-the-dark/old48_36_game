@@ -2,7 +2,7 @@ package com.catinthedark.ld36.units
 
 import com.badlogic.gdx.{Gdx, Input}
 import com.catinthedark.ld36.{Assets, Shared0}
-import com.catinthedark.lib.{LocalDeferred, Deferred, SimpleUnit}
+import com.catinthedark.lib.{Deferred, LocalDeferred, SimpleUnit}
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.{Gdx, Input, InputAdapter}
 import com.catinthedark.common.Const
@@ -51,13 +51,6 @@ abstract class Control(shared: Shared0) extends SimpleUnit with Deferred {
       shared.shootRage = 0
   }
 
-  def controlRotation() = {
-    val pointerX = Gdx.input.getX
-    val pointerY = Gdx.input.getY
-    val newAngle = new Vector2(pointerX, Const.Projection.height - pointerY).sub(shared.me.pos).angle() - 90
-    shared.me.angle = newAngle
-  }
-
   private def controlKeysPressed(): Boolean = {
     Gdx.input.isKeyPressed(Input.Keys.A) ||
       Gdx.input.isKeyPressed(Input.Keys.D) ||
@@ -67,7 +60,6 @@ abstract class Control(shared: Shared0) extends SimpleUnit with Deferred {
 
   override def run(delta: Float) = {
     controlShoot(delta)
-    controlRotation()
 
     val speed = new Vector2(0, 0)
     val playerSpeed = Const.Balance.playerSpeed

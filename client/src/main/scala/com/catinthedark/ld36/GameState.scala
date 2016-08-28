@@ -95,19 +95,6 @@ class GameState extends YieldUnit[Shared0, Stats] {
     })
   }
 
-  def buildStats(): Stats = {
-    if (shared.gameState != null) {
-      Stats(
-        Stat(shared.gameState.me.name, shared.gameState.me.frags, shared.gameState.me.deaths),
-        shared.gameState.players.map(p => {
-          Stat(p.name, p.frags, p.deaths)
-        })
-      )
-    } else {
-      null
-    }
-  }
-
   def stopNetworkThread(): Unit = {
     println("Trying to stop network thread")
     shared.stopNetwork()
@@ -122,8 +109,7 @@ class GameState extends YieldUnit[Shared0, Stats] {
     children.foreach(_.run(delta))
     if (forceReload) {
       forceReload = false
-      val stats = buildStats()
-      Some(stats)
+      Some(shared.stats)
     }
     else None
   }

@@ -1,8 +1,9 @@
 package com.catinthedark.ld36.units
 
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.{Gdx, Input}
-import com.catinthedark.ld36.hud.{TimerRender, ShootRageRender, StatsRender}
+import com.catinthedark.ld36.hud.{ShootRageRender, StatsRender, TimerRender}
 import com.catinthedark.ld36.{Assets, Shared0}
 import com.badlogic.gdx.{Gdx, Input}
 import com.catinthedark.common.Const
@@ -32,8 +33,14 @@ class View(val shared: Shared0) extends SimpleUnit {
   }
 
   def drawStats() = {
-    val stats = Stats(me = Stat("over", 1, 1), other = Seq(Stat("ilya", 0, 2), Stat("kirill", 10, 1)))
-    statsRender.render(stats)
+    statsRender.render(shared.stats)
+  }
+
+  def controlRotation() = {
+    val pointerX = Const.Projection.calcX(Gdx.input.getX()) + camera.position.x
+    val pointerY = Const.Projection.height - Const.Projection.calcY(Gdx.input.getY()) + camera.position.y
+    val newAngle = new Vector2(pointerX, pointerY).sub(shared.me.pos).angle() - 90
+    shared.me.angle = newAngle
   }
 
   override def run(delta: Float): Unit = {

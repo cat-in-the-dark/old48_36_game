@@ -44,7 +44,7 @@ class NetworkWSControl(val serverAddress: URI) extends NetworkControl {
   messageBus.subscribe(classOf[SoundMessage], (message: SoundMessage, sender: String) => {
     println(s"sound event $message")
     val snd = SoundNames.withName(message.soundName)
-    Assets.Audios.soundMap(snd).play(0.6)
+    Assets.Audios.soundMap(snd).play(0.6f)
   })
 
   override def run(): Unit = {

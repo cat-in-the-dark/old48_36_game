@@ -1,5 +1,6 @@
 package com.catinthedark.common
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
 
 import scala.util.Random
@@ -42,5 +43,8 @@ object Const{
     val height = 652F
     val mapLeftBorder = 665f
     val mapTopBorder = 400f
+
+    def calcX(screenX: Int): Int = (screenX.toFloat * Const.Projection.width / Gdx.graphics.getWidth).toInt
+    def calcY(screenY: Int): Int = (screenY.toFloat * Const.Projection.height / Gdx.graphics.getHeight).toInt
   }
 }
