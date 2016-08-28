@@ -84,7 +84,8 @@ case class Shared0(serverAddress: URI,
   //    )
 
   val fans = tripletX(200, 25) ++ duetX(400, 25) ++ duetX(500, 25) ++ quartetX(600, 25) ++
-    duetX(900, 25) ++ tripletY(60, 200) ++ tripletY(60, 340)
+    duetX(900, 25) ++ tripletY(60, 200) ++ tripletY(60, 340) ++
+    tripletX(200, 695) ++ duetX(400, 695) ++ duetX(500, 695) ++ quartetX(600, 695)
   fans.foreach { fan =>
     fan.delta = rand.nextFloat() * 2
     fan.pos.x += 5 - rand.nextInt(10)
