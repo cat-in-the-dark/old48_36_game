@@ -88,15 +88,6 @@ case class Shared0(serverAddress: URI,
       Fan(new Vector2(x, y + 50), Assets.Animations.redFanAnimationPack, angle = angle)
     )
 
-  //
-  //  def quartetX(x: Int, y: Int) =
-  //    Seq(
-  //      Fan(new Vector2(x, y + rand.nextInt(10)), Assets.Animations.blueFanAnimationPack),
-  //      Fan(new Vector2(x + 100, y + rand.nextInt(10)), Assets.Animations.blueFanAnimationPack),
-  //      Fan(new Vector2(x + 50, y + rand.nextInt(10)), Assets.Animations.blackFanAnimationPack),
-  //      Fan(new Vector2(x + 150, y + rand.nextInt(10)), Assets.Animations.redFanAnimationPack)
-  //    )
-
   val fans = tripletX(200, 25, 0) ++ duetX(400, 25, 0) ++ duetX(500, 25, 0) ++ quartetX(600, 25, 0) ++ duetX(900, 25, 0) ++
     tripletY(60, 200, -90) ++ tripletY(60, 340, -90) ++ tripletY(60, 560, -90) ++
     tripletX(150, 695, 180) ++ duetX(400, 695, 180) ++ quartetX(600, 695, 180) ++ duetX(900, 695, 180) ++ duetX(1100, 695, 180) ++
