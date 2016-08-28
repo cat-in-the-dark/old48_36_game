@@ -37,7 +37,11 @@ abstract class Control(shared: Shared0) extends SimpleUnit with Deferred {
   def controlShoot(delta: Float) = {
     if (shared.me.hasBrick && shared.me.state == IDLE)
       if (Gdx.input.isButtonPressed(Input.Buttons.LEFT))
-        shared.shootRage = Math.min(shared.shootRage + Balance.shootRageSpeed * delta, Balance.maxShootRage)
+        if (shared.shootRage == 0) {
+          shared.shootRage = Balance.minShootRange
+        } else {
+          shared.shootRage = Math.min(shared.shootRage + Balance.shootRageSpeed * delta, Balance.maxShootRage)
+        }
       else {
         if (shared.shootRage != 0) {
           shared.me.animationCounter = 0

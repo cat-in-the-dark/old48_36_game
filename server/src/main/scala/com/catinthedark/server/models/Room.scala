@@ -67,7 +67,9 @@ case class Room(
       if (!p1._2.entity.state.equals(MessageConverter.stateToString(KILLED))) {
 
         val intersectedPlayersCount = players.iterator.count(p2 => {
-          !p1._1.equals(p2._1) && (new Vector2(p1._2.entity.x, p1._2.entity.y).dst(new Vector2(p2._2.entity.x, p2._2.entity.y)) < Balance.playerRadius * 2)
+          (!p1._1.equals(p2._1)
+            && (new Vector2(p1._2.entity.x, p1._2.entity.y).dst(new Vector2(p2._2.entity.x, p2._2.entity.y)) < Balance.playerRadius * 2)
+            && !p2._2.entity.state.equals(MessageConverter.stateToString(KILLED)))
         })
 
         if (intersectedPlayersCount > 0 || intersectWalls(p1._2.entity.x, p1._2.entity.y)) {
@@ -103,8 +105,7 @@ case class Room(
                 p1._2.entity.state = MessageConverter.stateToString(IDLE)
               }
             }, 2, TimeUnit.SECONDS)
-          }
-          if (!p1._2.entity.hasBrick) {
+          } else if (!p1._2.entity.hasBrick) {
             p1._2.entity.hasBrick = true
             bricks -= intersectedBricks.head
           }

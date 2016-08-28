@@ -35,8 +35,9 @@ object Const{
   object Balance {
     val hatRadius = 20f
     val roundTime: Long = 120
-    val shootRageSpeed = 20f
+    val shootRageSpeed = 50f
     val maxShootRage = 10f
+    val minShootRange = 10f
     val playerSpeed = 5.0f
     val playerSpeedBonus = 10.0f
     val playerRadius = 40.0f
