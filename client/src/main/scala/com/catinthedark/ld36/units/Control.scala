@@ -42,8 +42,8 @@ abstract class Control(shared: Shared0) extends SimpleUnit with Deferred {
         if (shared.shootRage != 0) {
           shared.me.animationCounter = 0
           shared.me.state = THROWING
-          val brickX = shared.me.pos.x + (Balance.playerRadius + Balance.brickRadius) * Math.cos(shared.me.angle).toFloat
-          val brickY = shared.me.pos.y + (Balance.playerRadius + Balance.brickRadius) * Math.sin(shared.me.angle).toFloat
+          val brickX = shared.me.pos.x - (Balance.playerRadius + Balance.brickRadius + 1) * Math.sin(Math.toRadians(shared.me.angle)).toFloat
+          val brickY = shared.me.pos.y + (Balance.playerRadius + Balance.brickRadius + 1) * Math.cos(Math.toRadians(shared.me.angle)).toFloat
           shared.networkControl.throwBrick(new Vector2(brickX, brickY), shared.shootRage, shared.me.angle)
           Assets.Audios.soundMap(SoundNames.Throw).play()
           defer(0.2f, () => shared.me.state = IDLE)

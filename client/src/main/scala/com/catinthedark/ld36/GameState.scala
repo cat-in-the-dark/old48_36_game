@@ -116,7 +116,6 @@ class GameState extends YieldUnit[Shared0, Stats] {
   }
 
   def onGameState(gameStateModel: GameStateModel): Unit = {
-    println("on game state")
     shared.gameState = gameStateModel
     shared.timeRemains = gameStateModel.time
     val remoteMe = gameStateModel.me

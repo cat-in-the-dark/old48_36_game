@@ -74,10 +74,10 @@ case class Room(
           p1._2.entity.hasBrick = true
           bricks -= intersectedBricks.head
         }
-
-        val gameStateModel = buildGameState(p1)
-        p1._2.socket.sendEvent(EventNames.MESSAGE, converter.toJson(GameStateMessage(gameStateModel)))
       }
+
+      val gameStateModel = buildGameState(p1)
+      p1._2.socket.sendEvent(EventNames.MESSAGE, converter.toJson(GameStateMessage(gameStateModel)))
     })
   }
 
@@ -95,6 +95,11 @@ case class Room(
     player.entity.y += msg.speedY
     player.entity.angle = msg.angle
     player.entity.state = msg.stateName
+  }
+
+  def onThrow(client: SocketIOClient, msg: ThrowBrickMessage): Unit = {
+    bricks.insert(0, Brick(msg.force, BrickModel(UUID.randomUUID(), msg.x, msg.y, msg.angle, hurting = true)))
+    players.get(client.getSessionId).entity.hasBrick = false
   }
 
   def spawnPlayer(client: SocketIOClient, playerName: String): Player = {
