@@ -9,3 +9,4 @@ case class ServerHelloMessage(clientId: String) extends Message
 case class MoveMessage(speedX: Float, speedY: Float, angle: Float, stateName: String) extends Message
 case class GameStateMessage(gameStateModel: GameStateModel) extends Message
 case class SoundMessage(soundName: String) extends Message
+case class ThrowBrickMessage(x: Float, y: Float, force: Float, angle: Float) extends Message

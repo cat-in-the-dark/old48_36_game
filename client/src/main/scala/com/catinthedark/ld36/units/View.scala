@@ -10,6 +10,7 @@ import com.catinthedark.common.Const
 import com.catinthedark.ld36.common.{Stat, Stats}
 import com.catinthedark.ld36.{Assets, Shared0}
 import com.catinthedark.lib.{MagicSpriteBatch, SimpleUnit}
+import com.catinthedark.models.{IDLE, RUNNING}
 
 /**
   * Created by kirill on 27.08.16.
@@ -21,6 +22,7 @@ class View(val shared: Shared0) extends SimpleUnit {
   val statsRender = new StatsRender()
   val shootRageRender = new ShootRageRender
   val playerRender = new PlayerRender(shared)
+  val brickRenderer = new BrickRenderer(shared)
   val timeRender = new TimerRender
   val fansRender = new FansRender
   val bonusRender = new BonusRender(shared)
@@ -45,11 +47,22 @@ class View(val shared: Shared0) extends SimpleUnit {
   }
 
   override def run(delta: Float): Unit = {
-    controlRotation()
     camera.position.x  = Math.max(-130, Math.min(220, shared.me.pos.x - Const.Projection.width / 2));
     camera.position.y  = Math.max(-160, Math.min(220, shared.me.pos.y - Const.Projection.height / 2));
 //    camera.position.x = Math.min(shared.me.pos.x - Const.Projection.width / 2, 700)
 //    camera.position.y = Math.min(shared.me.pos.y - Const.Projection.height / 2, 500)
+    shared.me.state match {
+      case IDLE | RUNNING =>
+        controlRotation()
+      case _ =>
+    }
+
+    if (shared.me.pos.x > Const.Projection.width / 2
+      && shared.me.pos.x < Const.Projection.mapLeftBorder)
+      camera.position.x = shared.me.pos.x - Const.Projection.width / 2
+    if (shared.me.pos.y > Const.Projection.height / 2
+      && shared.me.pos.y < Const.Projection.mapTopBorder)
+      camera.position.y = shared.me.pos.y - Const.Projection.height / 2
 
     camera.update()
 
@@ -57,6 +70,7 @@ class View(val shared: Shared0) extends SimpleUnit {
     drawField()
     fansRender.render(camera, delta, shared, shared.fansRageMode)
     bonusRender.render(delta, magicBatch)
+    brickRenderer.render(delta, magicBatch)
     playerRender.render(delta, magicBatch)
     timeRender.render(shared.timeRemains)
     shootRageRender.render(shared.shootRage)

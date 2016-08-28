@@ -42,6 +42,9 @@ abstract class Control(shared: Shared0) extends SimpleUnit with Deferred {
         if (shared.shootRage != 0) {
           shared.me.animationCounter = 0
           shared.me.state = THROWING
+          val brickX = shared.me.pos.x + (Balance.playerRadius + Balance.brickRadius) * Math.cos(shared.me.angle).toFloat
+          val brickY = shared.me.pos.y + (Balance.playerRadius + Balance.brickRadius) * Math.sin(shared.me.angle).toFloat
+          shared.networkControl.throwBrick(new Vector2(brickX, brickY), shared.shootRage, shared.me.angle)
           Assets.Audios.soundMap(SoundNames.Throw).play()
           defer(0.2f, () => shared.me.state = IDLE)
         }
@@ -81,10 +84,12 @@ abstract class Control(shared: Shared0) extends SimpleUnit with Deferred {
     }
 
     if (speed.len() > 0) {
-      shared.networkControl.move(speed, shared.me.angle, RUNNING)
+      shared.me.state = RUNNING
     } else {
-      shared.networkControl.move(speed, shared.me.angle, IDLE)
+      shared.me.state = IDLE
     }
+
+    shared.networkControl.move(speed, shared.me.angle, shared.me.state)
   }
 
   override def onExit(): Unit = {

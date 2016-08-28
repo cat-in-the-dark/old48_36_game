@@ -55,6 +55,8 @@ class SocketIOService {
           client.sendEvent(EventNames.MESSAGE, response)
         case msg: MoveMessage =>
           room.onMove(client, msg)
+        case msg: ThrowBrickMessage =>
+          println("THROW")
         case _ => log.warn("Undefined msg!!!!!")
       }
     }

@@ -4,7 +4,7 @@ import java.util.UUID
 
 case class GameStateModel(me: PlayerModel,
                           players: List[PlayerModel],
-                          bullets: List[BulletModel],
+                          bricks: List[BrickModel],
                           bonuses: List[BonusModel],
                           time: Long
                          )
@@ -20,14 +20,14 @@ case class PlayerModel(id: UUID,
                        var bonuses: List[String],
                        var frags: Int,
                        var deaths: Int,
-                       hasBrick: Boolean
+                       var hasBrick: Boolean
                       )
 
-case class BulletModel(id: UUID,
-                       x: Float,
-                       y: Float,
-                       angle: Float,
-                       hurting: Boolean
+case class BrickModel(id: UUID,
+                      x: Float,
+                      y: Float,
+                      angle: Float,
+                      hurting: Boolean
                       )
 
 case class BonusModel(id: UUID,

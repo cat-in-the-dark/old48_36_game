@@ -26,6 +26,10 @@ trait NetworkControl extends Runnable {
     processOut(MoveMessage(speed.x, speed.y, angle, MessageConverter.stateToString(state)))
   }
 
+  def throwBrick(pos: Vector2, force: Float, angle: Float): Unit = {
+    processOut(ThrowBrickMessage(pos.x, pos.y, force, angle))
+  }
+
   def processIn() = {
     while(!bufferIn.isEmpty)
       bufferIn.poll()()

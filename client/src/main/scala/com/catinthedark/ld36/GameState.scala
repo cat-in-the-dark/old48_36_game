@@ -8,6 +8,15 @@ import com.catinthedark.ld36.common.Stats
 import com.catinthedark.ld36.units.{Control, View}
 import com.catinthedark.lib.{LocalDeferred, SimpleUnit, YieldUnit}
 import com.catinthedark.models.{GameStateModel, MessageConverter, RUNNING}
+import com.badlogic.gdx.{Gdx, Input}
+import com.catinthedark.common.Const.Balance
+import com.catinthedark.ld36.Assets.Animations.gopAnimationPack
+import com.catinthedark.ld36.common.{Stat, Stats}
+import com.catinthedark.lib.YieldUnit
+import com.catinthedark.models._
+
+import collection.JavaConversions._
+import scala.collection.mutable.ListBuffer
 
 /**
   * Created by over on 18.04.15.
@@ -46,7 +55,68 @@ class GameState extends YieldUnit[Shared0, Stats] {
     stopNetworkThread()
   }
 
+  def updateEnemies(players: List[PlayerModel]): Unit = {
+    val enemiesIDs: List[UUID] = shared.enemies.map(enemy => {
+      enemy.id
+    }).toList
+
+    val remotePlayersIds: List[UUID] = players.map(p => {
+      p.id
+    })
+
+    players.filter(p => {
+      enemiesIDs.indexOf(p.id) == -1
+    }).foreach(p => {
+      shared.enemies.insert(0, PlayerView(new Vector2(p.x, p.y), MessageConverter.stringToState(p.state), p.angle, p.id, p.hasBrick, hasArmor = false))
+    })
+
+    shared.enemies --= shared.enemies.filter(enemy => {
+      remotePlayersIds.indexOf(enemy.id) == -1
+    })
+
+    shared.enemies.foreach(enemy => {
+      val remotePlayer = players.find(p => {
+        p.id.equals(enemy.id)
+      }).toList.head
+      enemy.pos.x = remotePlayer.x
+      enemy.pos.y = remotePlayer.y
+      enemy.angle = remotePlayer.angle
+      enemy.state = MessageConverter.stringToState(remotePlayer.state)
+      enemy.hasBrick = remotePlayer.hasBrick
+    })
+  }
+
+  def updateBricks(bricks: List[BrickModel]): Unit = {
+    val brickIDs: List[UUID] = shared.bricks.map(brick => {
+      brick.id
+    }).toList
+
+    val remoteBrickIds: List[UUID] = bricks.map(brick => {
+      brick.id
+    })
+
+    bricks.filter(brick => {
+      brickIDs.indexOf(brick.id) == -1
+    }).foreach(brick => {
+      shared.bricks.insert(0, Brick(new Vector2(brick.x, brick.y), brick.angle, brick.id, Balance.brickRadius))
+    })
+
+    shared.bricks --= shared.bricks.filter(brick => {
+      remoteBrickIds.indexOf(brick.id) == -1
+    })
+
+    shared.bricks.foreach(brick => {
+      val remoteBrick = bricks.find(brick => {
+        brick.id.equals(brick.id)
+      }).toList.head
+      brick.pos.x = remoteBrick.x
+      brick.pos.y = remoteBrick.y
+      brick.angle = remoteBrick.angle
+    })
+  }
+
   def onGameState(gameStateModel: GameStateModel): Unit = {
+    println("on game state")
     shared.gameState = gameStateModel
     shared.timeRemains = gameStateModel.time
     val remoteMe = gameStateModel.me
@@ -60,34 +130,8 @@ class GameState extends YieldUnit[Shared0, Stats] {
       shared.me.hasBrick = remoteMe.hasBrick
     }
 
-    val enemiesIDs: List[UUID] = shared.enemies.map(enemy => {
-      enemy.id
-    }).toList
-
-    val remotePlayersIds: List[UUID] = gameStateModel.players.map(p => {
-      p.id
-    })
-
-    gameStateModel.players.filter(p => {
-      enemiesIDs.indexOf(p.id) == -1
-    }).foreach(p => {
-      shared.enemies.insert(0, PlayerView(new Vector2(p.x, p.y), MessageConverter.stringToState(p.state), p.angle, p.id, p.hasBrick, hasArmor = false))
-    })
-
-    shared.enemies --= shared.enemies.filter(enemy => {
-      remotePlayersIds.indexOf(enemy.id) == -1
-    })
-
-    shared.enemies.foreach(enemy => {
-      val remotePlayer = gameStateModel.players.find(p => {
-        p.id.equals(enemy.id)
-      }).toList.head
-      enemy.pos.x = remotePlayer.x
-      enemy.pos.y = remotePlayer.y
-      enemy.angle = remotePlayer.angle
-      enemy.state = MessageConverter.stringToState(remotePlayer.state)
-      enemy.hasBrick = remotePlayer.hasBrick
-    })
+    updateEnemies(gameStateModel.players)
+    updateBricks(gameStateModel.bricks)
 
     val remoteBonusesIDs: List[UUID] = gameStateModel.bonuses.map(_.id)
     val localBonusesIDs: List[UUID] = shared.bonuses.map(_.id).toList

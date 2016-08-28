@@ -39,6 +39,8 @@ object MessageConverter {
       converter.objectMapper.convertValue(date, classOf[RoundEndsMessage])
     }).registerConverter[SoundMessage](classOf[SoundMessage], date => {
       converter.objectMapper.convertValue(date, classOf[SoundMessage])
+    }).registerConverter[ThrowBrickMessage](classOf[ThrowBrickMessage], data => {
+      converter.objectMapper.convertValue(data, classOf[ThrowBrickMessage])
     })
 
     println(s"Converters ${converter.registeredConverters}")

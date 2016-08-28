@@ -55,7 +55,10 @@ case class PlayerView(var pos: Vector2,
 
 case class Fan(pos: Vector2, animation: FanAnimationPack, var delta: Float = 0, angle: Float = 0, var speed: Float = 1f)
 
-case class Brick(var pos: Vector2, var angle: Float, val radius: Float) extends Entity {
+case class Brick(var pos: Vector2,
+                 var angle: Float,
+                 var id: UUID,
+                 radius: Float = Balance.brickRadius) extends Entity {
   override def texture(delta: Float): TextureRegion = new TextureRegion(Textures.brick)
 
   override def name: String = "Brick"

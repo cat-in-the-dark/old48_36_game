@@ -12,12 +12,19 @@ import com.corundumstudio.socketio.SocketIOClient
 import scala.collection.mutable
 
 import collection.JavaConversions._
+import scala.collection.mutable.ListBuffer
 
 case class Room(
   name: UUID,
   converter: JacksonConverterScala,
   maxPlayers: Int = 1000
 ) {
+  val players = new ConcurrentHashMap[UUID, Player]()
+  val bricks = new ListBuffer[Brick]
+  val bonuses = new mutable.ListBuffer[BonusModel]
+  var timeRemains = Const.Balance.roundTime
+  bricks.insert(0, spawnBrick())
+
   def checkTimer() = {
     if (players.size() < 1) {
       timeRemains = Const.Balance.roundTime
@@ -29,15 +36,11 @@ case class Room(
     println("Round finished")
     timeRemains = Const.Balance.roundTime
     players.iterator.foreach(player => {
-      val model = buildState(player)
+      val model = buildGameState(player)
       player._2.socket.sendEvent(EventNames.MESSAGE, converter.toJson(RoundEndsMessage(model)))
     })
     bonuses.clear()
   }
-
-  val players = new ConcurrentHashMap[UUID, Player]()
-  var timeRemains = Const.Balance.roundTime
-  val bonuses = new mutable.ListBuffer[BonusModel]
 
   def intersectWalls(x: Float, y: Float): Boolean = {
     (x < UI.horizontalBorderWidth
@@ -48,9 +51,8 @@ case class Room(
 
   def onTick(): Unit = {
     players.iterator.foreach( p1 => {
-      val gameStateModel = buildState(p1)
       val intersectedPlayersCount = players.iterator.count(p2 => {
-        !p1._1.equals(p2._1) && (new Vector2(p1._2.entity.x, p1._2.entity.y).dst(new Vector2(p2._2.entity.x, p2._2.entity.y)) < Balance.playerRadius)
+        !p1._1.equals(p2._1) && (new Vector2(p1._2.entity.x, p1._2.entity.y).dst(new Vector2(p2._2.entity.x, p2._2.entity.y)) < Balance.playerRadius * 2)
       })
 
       if (intersectedPlayersCount > 0 || intersectWalls(p1._2.entity.x, p1._2.entity.y)) {
@@ -61,16 +63,27 @@ case class Room(
         p1._2.entity.oldY = p1._2.entity.y
       }
 
+      val intersectedBricks = bricks.filter( brick => {
+        (new Vector2(p1._2.entity.x, p1._2.entity.y).dst(new Vector2(brick.entity.x, brick.entity.y))
+          < Balance.playerRadius + Balance.brickRadius)
+      })
+
+      if (intersectedBricks.nonEmpty) {
+        p1._2.entity.hasBrick = true
+        bricks -= intersectedBricks.head
+      }
+
+      val gameStateModel = buildGameState(p1)
       p1._2.socket.sendEvent(EventNames.MESSAGE, converter.toJson(GameStateMessage(gameStateModel)))
     })
   }
 
-  def buildState(player: (UUID, Player)): GameStateModel ={
+  def buildGameState(player: (UUID, Player)): GameStateModel ={
     GameStateModel(player._2.entity, players.iterator.filter( p => {
       !p._1.equals(player._1)
     }).map( p => {
       p._2.entity
-    }).toList, List(), bonuses.toList, timeRemains)
+    }).toList, bricks.map(b => b.entity).toList, bonuses.toList, timeRemains)
   }
 
   def onMove(client: SocketIOClient, msg: MoveMessage): Unit = {
@@ -94,6 +107,12 @@ case class Room(
       bonuses += BonusModel(UUID.randomUUID(), pos.x, pos.y, typeName)
       println(s"Bonuses: $bonuses")
     }
+  }
+
+  def spawnBrick() = {
+    println("spawn brick")
+    val pos = Balance.randomBrickSpawn
+    Brick(0, BrickModel(UUID.randomUUID(), pos.x, pos.y, 0.0f, hurting = false))
   }
 
   def connect(player: Player): Unit = {

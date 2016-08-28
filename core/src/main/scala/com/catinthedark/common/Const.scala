@@ -46,6 +46,12 @@ object Const{
       })
     }).toList
 
+    val spawnBrickPoints = Array(
+      new Vector2(200, 200),
+      new Vector2(400, 100),
+      new Vector2(120, 500)
+    )
+
     def randomSpawn = {
       val ab = spawnPoints(new Random().nextInt(spawnPoints.length))
       ab.cpy()
@@ -55,6 +61,11 @@ object Const{
     val bonusesAtOnce = 2
     def randomBonus = {
       Bonus.hat
+    }
+
+    def randomBrickSpawn = {
+      val ab = spawnBrickPoints(new Random().nextInt(spawnBrickPoints.length))
+      ab.cpy()
     }
   }
 
