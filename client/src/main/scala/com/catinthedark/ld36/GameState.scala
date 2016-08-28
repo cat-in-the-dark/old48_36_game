@@ -37,13 +37,22 @@ class GameState extends YieldUnit[Shared0, Stats] {
 
   def activateControl(): Unit = {
     shared.networkControl.onGameStatePipe.ports += onGameState
+    shared.networkControl.onRoundEndsPipe.ports += onRoundEnds
     control.onGameReload + (_ => {
       forceReload = true
       stopNetworkThread()
     })
   }
 
+  def onRoundEnds(gameStateModel: GameStateModel): Unit = {
+    println("Will go to stats!!")
+    onGameState(gameStateModel) // update the last tick
+    forceReload = true
+    stopNetworkThread()
+  }
+
   def onGameState(gameStateModel: GameStateModel): Unit = {
+    shared.gameState = gameStateModel
     shared.timeRemains = gameStateModel.time
     val remoteMe = gameStateModel.me
     if (shared.me.id == null) {
@@ -60,17 +69,30 @@ class GameState extends YieldUnit[Shared0, Stats] {
       enemy.id
     }).toList
 
-    gameStateModel.players.filter( p => {
+    gameStateModel.players.filter(p => {
       enemiesIDs.indexOf(p.id) == -1
-    }).foreach( p => {
-      shared.enemies.add(0, PlayerView(new Vector2(p.x, p.y), MessageConverter.stringToState(p.state), p.angle, p.id, p.hasBrick))
+    }).foreach(p => {
+      shared.enemies.insert(0, PlayerView(new Vector2(p.x, p.y), MessageConverter.stringToState(p.state), p.angle, p.id, p.hasBrick))
     })
 
-//    shared.enemies.foreach( enemy => {
-//      gameStateModel.players.find( p => {
-//        p.
-//      })
-//    })
+    //    shared.enemies.foreach( enemy => {
+    //      gameStateModel.players.find( p => {
+    //        p.
+    //      })
+    //    })
+  }
+
+  def buildStats(): Stats = {
+    if (shared.gameState != null) {
+      Stats(
+        Stat(shared.gameState.me.name, shared.gameState.me.frags, shared.gameState.me.deaths),
+        shared.gameState.players.map(p => {
+          Stat(p.name, p.frags, p.deaths)
+        })
+      )
+    } else {
+      null
+    }
   }
 
   def stopNetworkThread(): Unit = {
@@ -87,7 +109,7 @@ class GameState extends YieldUnit[Shared0, Stats] {
     children.foreach(_.run(delta))
     if (forceReload) {
       forceReload = false
-      val stats = Stats(me = Stat("over", 1, 1), other = Seq(Stat("ilya", 0, 2), Stat("kirill", 10, 1)))
+      val stats = buildStats()
       Some(stats)
     }
     else None

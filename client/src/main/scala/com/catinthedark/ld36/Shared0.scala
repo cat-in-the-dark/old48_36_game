@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2
 import com.catinthedark.ld36.Assets.Animations.gopAnimationPack
 import com.catinthedark.common.Const.Balance
 import com.catinthedark.ld36.network.{NetworkControl, NetworkWSControl}
-import com.catinthedark.models.{IDLE, KILLED, RUNNING, THROWING}
+import com.catinthedark.models._
 
 import scala.collection.mutable
 import scala.util.Random
@@ -15,6 +15,7 @@ import scala.util.Random
 case class Shared0(serverAddress: URI,
                    enemies: mutable.ListBuffer[PlayerView] = new mutable.ListBuffer[PlayerView],
                    bricks: mutable.ListBuffer[Brick] = new mutable.ListBuffer[Brick],
+                   var gameState: GameStateModel = null,
                    var timeRemains: Long = 0,
                    var me: PlayerView = PlayerView(new Vector2(0, 0), IDLE, 0.0f, null, false),
                    var shootRage: Float = 0) {

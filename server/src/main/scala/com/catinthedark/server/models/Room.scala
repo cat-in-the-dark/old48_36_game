@@ -16,7 +16,7 @@ case class Room(
   maxPlayers: Int = 1000
 ) {
   def checkTimer() = {
-    if (players.size() < 2) {
+    if (players.size() < 1) {
       timeRemains = Const.Balance.roundTime
     }
   }
@@ -24,6 +24,10 @@ case class Room(
   def finishRound(): Unit = {
     println("Round finished")
     timeRemains = Const.Balance.roundTime
+    players.iterator.foreach(player => {
+      val model = buildState(player)
+      player._2.socket.sendEvent(EventNames.MESSAGE, converter.toJson(RoundEndsMessage(model)))
+    })
   }
 
   val players = new ConcurrentHashMap[UUID, Player]()
@@ -31,13 +35,17 @@ case class Room(
 
   def onTick(): Unit = {
     players.iterator.foreach( player => {
-      val gameStateModel = GameStateModel(player._2.entity, players.iterator.filter( p => {
-        !p._1.equals(player._1)
-      }).map( p => {
-        p._2.entity
-      }).toList, List(), List(), timeRemains)
+      val gameStateModel = buildState(player)
       player._2.socket.sendEvent(EventNames.MESSAGE, converter.toJson(GameStateMessage(gameStateModel)))
     })
+  }
+
+  def buildState(player: (UUID, Player)): GameStateModel ={
+    GameStateModel(player._2.entity, players.iterator.filter( p => {
+      !p._1.equals(player._1)
+    }).map( p => {
+      p._2.entity
+    }).toList, List(), List(), timeRemains)
   }
 
   def onMove(client: SocketIOClient, msg: MoveMessage): Unit = {

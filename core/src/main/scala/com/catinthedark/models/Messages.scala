@@ -3,6 +3,7 @@ package com.catinthedark.models
 sealed class Message
 case class EnemyDisconnectedMessage(clientId: String) extends Message
 case class GameStartedMessage(clientId: String) extends Message
+case class RoundEndsMessage(gameStateModel: GameStateModel) extends Message
 case class HelloMessage(name: String) extends Message
 case class ServerHelloMessage(clientId: String) extends Message
 case class MoveMessage(speedX: Float, speedY: Float, angle: Float, stateName: String) extends Message

@@ -35,6 +35,11 @@ class NetworkWSControl(val serverAddress: URI) extends NetworkControl {
     onGameState(message.gameStateModel)
   })
 
+  messageBus.subscribe(classOf[RoundEndsMessage], (message: RoundEndsMessage, sender: String) => {
+    println(s"Round ends $message")
+    onRoundEnds(message.gameStateModel)
+  })
+
   override def run(): Unit = {
     transport.connect()
   }

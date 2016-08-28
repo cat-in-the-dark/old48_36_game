@@ -20,7 +20,7 @@ object Const{
   }
 
   object Balance {
-    val roundTime: Long = 60
+    val roundTime: Long = 20
     val shootRageSpeed = 2f
     val maxShootRage = 1f
     val playerSpeed = 5.0f
