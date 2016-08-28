@@ -64,43 +64,50 @@ case class Room(
     })
 
     players.iterator.foreach( p1 => {
-      val intersectedPlayersCount = players.iterator.count(p2 => {
-        !p1._1.equals(p2._1) && (new Vector2(p1._2.entity.x, p1._2.entity.y).dst(new Vector2(p2._2.entity.x, p2._2.entity.y)) < Balance.playerRadius * 2)
-      })
+      if (!p1._2.entity.state.equals(MessageConverter.stateToString(KILLED))) {
 
-      if (intersectedPlayersCount > 0 || intersectWalls(p1._2.entity.x, p1._2.entity.y)) {
-        p1._2.entity.x = p1._2.entity.oldX
-        p1._2.entity.y = p1._2.entity.oldY
-      } else {
-        p1._2.entity.oldX = p1._2.entity.x
-        p1._2.entity.oldY = p1._2.entity.y
-      }
-
-      val intersectedBricks = bricks.filter(brick => {
-        (new Vector2(p1._2.entity.x, p1._2.entity.y).dst(new Vector2(brick.entity.x, brick.entity.y))
-          < Balance.playerRadius + Balance.brickRadius)
-      })
-
-      if (intersectedBricks.nonEmpty) {
-        val killerBricks = intersectedBricks.filter( brick => {
-          brick.entity.hurting
+        val intersectedPlayersCount = players.iterator.count(p2 => {
+          !p1._1.equals(p2._1) && (new Vector2(p1._2.entity.x, p1._2.entity.y).dst(new Vector2(p2._2.entity.x, p2._2.entity.y)) < Balance.playerRadius * 2)
         })
-        if (killerBricks.nonEmpty) {
-          p1._2.entity.state = MessageConverter.stateToString(KILLED)
-          killerBricks.foreach( brick => {
-            brick.entity.hurting = false
-            brick.currentSpeed = 0
-            brick.initialSpeed = 0
-          })
-          executor.schedule(new Runnable {
-            override def run(): Unit = {
-              p1._2.entity.state = MessageConverter.stateToString(IDLE)
-            }
-          }, 2, TimeUnit.SECONDS)
+
+        if (intersectedPlayersCount > 0 || intersectWalls(p1._2.entity.x, p1._2.entity.y)) {
+          p1._2.entity.x = p1._2.entity.oldX
+          p1._2.entity.y = p1._2.entity.oldY
+        } else {
+          p1._2.entity.oldX = p1._2.entity.x
+          p1._2.entity.oldY = p1._2.entity.y
         }
-        if (!p1._2.entity.hasBrick) {
-          p1._2.entity.hasBrick = true
-          bricks -= intersectedBricks.head
+
+        val intersectedBricks = bricks.filter(brick => {
+          (new Vector2(p1._2.entity.x, p1._2.entity.y).dst(new Vector2(brick.entity.x, brick.entity.y))
+            < Balance.playerRadius + Balance.brickRadius)
+        })
+
+        if (intersectedBricks.nonEmpty) {
+          val killerBricks = intersectedBricks.filter(brick => {
+            brick.entity.hurting
+          })
+          if (killerBricks.nonEmpty) {
+            p1._2.entity.state = MessageConverter.stateToString(KILLED)
+            p1._2.entity.deaths += 1
+            killerBricks.foreach(brick => {
+              if (brick.throwerID != null) {
+                val player = players.get(brick.throwerID)
+                if (player != null) {
+                  player.entity.frags += 1
+                }
+              }
+            })
+            executor.schedule(new Runnable {
+              override def run(): Unit = {
+                p1._2.entity.state = MessageConverter.stateToString(IDLE)
+              }
+            }, 2, TimeUnit.SECONDS)
+          }
+          if (!p1._2.entity.hasBrick) {
+            p1._2.entity.hasBrick = true
+            bricks -= intersectedBricks.head
+          }
         }
       }
 
@@ -138,7 +145,7 @@ case class Room(
   }
 
   def onThrow(client: SocketIOClient, msg: ThrowBrickMessage): Unit = {
-    bricks.insert(0, Brick(msg.force, msg.force, BrickModel(UUID.randomUUID(), msg.x, msg.y, msg.angle, hurting = true)))
+    bricks.insert(0, Brick(msg.force, msg.force, BrickModel(UUID.randomUUID(), msg.x, msg.y, msg.angle, hurting = true), client.getSessionId))
     players.get(client.getSessionId).entity.hasBrick = false
   }
 

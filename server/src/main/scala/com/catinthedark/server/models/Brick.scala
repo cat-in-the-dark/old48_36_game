@@ -1,5 +1,7 @@
 package com.catinthedark.server.models
 
+import java.util.UUID
+
 import com.catinthedark.models.BrickModel
 
 /**
@@ -8,6 +10,7 @@ import com.catinthedark.models.BrickModel
 case class Brick(
   var initialSpeed: Float,
   var currentSpeed: Float,
-  entity: BrickModel
+  entity: BrickModel,
+  var throwerID: UUID = null
 ) {
 }
