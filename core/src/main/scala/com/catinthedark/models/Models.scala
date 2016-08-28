@@ -17,7 +17,7 @@ case class PlayerModel(id: UUID,
                        var oldY: Float,
                        var angle: Float,
                        var state: String,
-                       var bonuses: List[String],
+                       var bonuses: scala.collection.mutable.ListBuffer[String],
                        var frags: Int,
                        var deaths: Int,
                        var hasBrick: Boolean

@@ -79,12 +79,22 @@ case class Room(
       val gameStateModel = buildGameState(p1)
       p1._2.socket.sendEvent(EventNames.MESSAGE, converter.toJson(GameStateMessage(gameStateModel)))
     })
+
+    players.values().foreach { player =>
+      val hats = bonuses.filter(_.typeName == Const.Bonus.hat).toList
+      hats.foreach { hat =>
+        if (new Vector2(hat.x, hat.y).dst(new Vector2(player.entity.x, player.entity.y)) < Const.Balance.playerRadius + Const.Balance.hatRadius) {
+          player.entity.bonuses += hat.typeName
+          bonuses -= hat
+        }
+      }
+    }
   }
 
   def buildGameState(player: (UUID, Player)): GameStateModel ={
     GameStateModel(player._2.entity, players.iterator.filter( p => {
       !p._1.equals(player._1)
-    }).map( p => {
+    }).map(p => {
       p._2.entity
     }).toList, bricks.map(b => b.entity).toList, bonuses.toList, timeRemains)
   }
@@ -105,7 +115,7 @@ case class Room(
   def spawnPlayer(client: SocketIOClient, playerName: String): Player = {
     val pos = Const.Balance.randomSpawn
     Player(this, client,
-      PlayerModel(UUID.randomUUID(), playerName, pos.x, pos.y, pos.x, pos.y, 0f, MessageConverter.stateToString(IDLE), List(), 0, 0, false))
+      PlayerModel(UUID.randomUUID(), playerName, pos.x, pos.y, pos.x, pos.y, 0f, MessageConverter.stateToString(IDLE), mutable.ListBuffer(), 0, 0, false))
   }
 
   def spawnBonus(): Unit = {
@@ -124,7 +134,7 @@ case class Room(
   }
 
   def connect(player: Player): Unit = {
-    players.values().iterator().foreach{ player =>
+    players.values().iterator().foreach { player =>
       player.socket.sendEvent(EventNames.MESSAGE, converter.toJson(SoundMessage(SoundNames.Siklo.toString)))
     }
     if (hasFreePlace()) {

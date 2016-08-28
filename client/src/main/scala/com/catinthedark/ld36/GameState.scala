@@ -82,7 +82,7 @@ class GameState extends YieldUnit[Shared0, Stats] {
       enemy.pos.y = remotePlayer.y
       enemy.angle = remotePlayer.angle
       enemy.state = MessageConverter.stringToState(remotePlayer.state)
-      enemy.hasBrick = remotePlayer.hasBrick
+      enemy.hasArmor = remotePlayer.bonuses.contains(Const.Bonus.hat)
     })
   }
 
@@ -118,7 +118,14 @@ class GameState extends YieldUnit[Shared0, Stats] {
   def onGameState(gameStateModel: GameStateModel): Unit = {
     shared.gameState = gameStateModel
     shared.timeRemains = gameStateModel.time
+
+    shared.gameState = gameStateModel
+    shared.timeRemains = gameStateModel.time
+
     val remoteMe = gameStateModel.me
+
+    shared.me.hasArmor = remoteMe.bonuses.contains(Const.Bonus.hat)
+
     if (shared.me.id == null) {
       shared.me.id = remoteMe.id
     } else {
@@ -162,6 +169,7 @@ class GameState extends YieldUnit[Shared0, Stats] {
   var isBgmStepsPlaying = false
 
   override def run(delta: Float): Option[Stats] = {
+    println(shared.bonuses)
     val isAnybodyRunning = (shared.me.state == RUNNING || shared.enemies.contains { enemy: PlayerView => enemy.state == RUNNING })
     if (isAnybodyRunning) {
       if (!isBgmStepsPlaying)

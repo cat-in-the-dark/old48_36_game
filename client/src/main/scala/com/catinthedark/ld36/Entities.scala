@@ -30,7 +30,7 @@ case class PlayerView(var pos: Vector2,
                       var hasBrick: Boolean,
                       radius: Float = Balance.playerRadius,
                       pack: PlayerAnimationPack = gopAnimationPack,
-                      hasArmor: Boolean) extends Entity {
+                      var hasArmor: Boolean) extends Entity {
   var animationCounter = 0f
 
   override def texture(delta: Float) = {

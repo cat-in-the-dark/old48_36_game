@@ -42,7 +42,20 @@ class PlayerRender(val shared: Shared0) extends SimpleUnit {
           enemyTex.getRegionWidth, enemyTex.getRegionHeight,
           1, 1,
           enemy.angle)
+
+        if (enemy.hasArmor) {
+          println("here")
+          val tex = new TextureRegion(Assets.Textures.kepa)
+          self.draw(tex,
+            enemy.pos.x - tex.getRegionWidth / 2 - Const.Projection.width / 2,
+            enemy.pos.y - tex.getRegionHeight / 2 - Const.Projection.height / 2,
+            tex.getRegionWidth / 2, tex.getRegionHeight / 2,
+            tex.getRegionWidth, tex.getRegionHeight,
+            1, 1,
+            enemy.angle)
+        }
       })
+
     }
   }
 }
