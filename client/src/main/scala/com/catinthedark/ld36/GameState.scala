@@ -76,7 +76,7 @@ class GameState extends YieldUnit[Shared0, Stats] {
     gameStateModel.players.filter(p => {
       enemiesIDs.indexOf(p.id) == -1
     }).foreach(p => {
-      shared.enemies.insert(0, PlayerView(new Vector2(p.x, p.y), MessageConverter.stringToState(p.state), p.angle, p.id, p.hasBrick))
+      shared.enemies.insert(0, PlayerView(new Vector2(p.x, p.y), MessageConverter.stringToState(p.state), p.angle, p.id, p.hasBrick, hasArmor = false))
     })
 
     shared.enemies --= shared.enemies.filter(enemy => {

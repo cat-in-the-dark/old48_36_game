@@ -18,7 +18,7 @@ case class Shared0(serverAddress: URI,
                    bricks: mutable.ListBuffer[Brick] = new mutable.ListBuffer[Brick],
                    var gameState: GameStateModel = null,
                    var timeRemains: Long = 0,
-                   var me: PlayerView = PlayerView(new Vector2(0, 0), IDLE, 0.0f, null, false),
+                   var me: PlayerView = PlayerView(new Vector2(0, 0), IDLE, 0.0f, null, false, hasArmor = true),
                    var shootRage: Float = 0) {
   val networkControl: NetworkControl = new NetworkWSControl(serverAddress)
   private var networkControlThread: Thread = _

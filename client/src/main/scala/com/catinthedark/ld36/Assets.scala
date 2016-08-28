@@ -24,6 +24,7 @@ object Assets {
     val gopThrow = new Texture(Gdx.files.internal("textures/gop-throw.png"))
     val logo = new Texture(Gdx.files.internal("textures/logo.png"))
     val fans = new Texture(Gdx.files.internal("textures/fans.png"))
+    val kepa = new Texture(Gdx.files.internal("textures/kepa.png"))
 
     val gopFrames = TextureRegion.split(gop, 108, 108)
     val gopBrickFrames = TextureRegion.split(gopBrick, 108, 108)
