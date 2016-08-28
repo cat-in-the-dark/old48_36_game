@@ -33,6 +33,8 @@ object MessageConverter {
       converter.objectMapper.convertValue(data, classOf[DisconnectedMessage])
     }).registerConverter[MoveMessage](classOf[MoveMessage], data => {
       converter.objectMapper.convertValue(data, classOf[MoveMessage])
+    }).registerConverter[GameStateMessage](classOf[GameStateMessage], data => {
+      converter.objectMapper.convertValue(data, classOf[GameStateMessage])
     })
 
     println(s"Converters ${converter.registeredConverters}")

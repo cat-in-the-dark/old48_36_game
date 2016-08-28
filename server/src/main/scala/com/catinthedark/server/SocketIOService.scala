@@ -4,7 +4,7 @@ import java.util.UUID
 import java.util.concurrent.{Executors, TimeUnit}
 
 import com.catinthedark.lib.network.JacksonConverterScala
-import com.catinthedark.models.{GameStartedMessage, HelloMessage, MessageConverter, ServerHelloMessage}
+import com.catinthedark.models._
 import com.catinthedark.server.models.{Player, Room}
 import com.corundumstudio.socketio._
 import com.corundumstudio.socketio.listener.{ConnectListener, DataListener, DisconnectListener}
@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory
 
 class SocketIOService {
   private val gameTick = Config.gameTick
-  private val MESSAGE = "message"
   private val log = LoggerFactory.getLogger(classOf[SocketIOService])
   private val config = new Configuration
   config.setPort(Config.port)
@@ -28,7 +27,7 @@ class SocketIOService {
   MessageConverter.registerConverters(converter)
   private val executor = Executors.newScheduledThreadPool(4)
 
-  private val room = Room(UUID.randomUUID())
+  private val room = Room(UUID.randomUUID(), converter)
 
   server.addConnectListener(new ConnectListener {
     override def onConnect(client: SocketIOClient): Unit = {
@@ -36,11 +35,11 @@ class SocketIOService {
       val msg = ServerHelloMessage(client.getSessionId.toString)
       val data = converter.toJson(msg)
       println(s"SEND: $data")
-      client.sendEvent(MESSAGE, data)
+      client.sendEvent(EventNames.MESSAGE, data)
     }
   })
 
-  server.addEventListener(MESSAGE, classOf[String], new DataListener[String] {
+  server.addEventListener(EventNames.MESSAGE, classOf[String], new DataListener[String] {
     override def onData(client: SocketIOClient, data: String, ackSender: AckRequest): Unit = {
       println(s"GET: $data")
       val wrapper = converter.fromJson(data)
@@ -50,7 +49,9 @@ class SocketIOService {
           val gsm = GameStartedMessage(client.getSessionId.toString)
           val response = converter.toJson(gsm)
           println(s"SEND: $response")
-          client.sendEvent(MESSAGE, response)
+          client.sendEvent(EventNames.MESSAGE, response)
+        case msg: MoveMessage =>
+          println("got move")
         case _ => println("Undefined msg!!!!!")
       }
     }
