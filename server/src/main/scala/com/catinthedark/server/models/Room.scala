@@ -91,30 +91,37 @@ case class Room(
             brick.entity.hurting
           })
           if (killerBricks.nonEmpty) {
-            p1._2.entity.state = MessageConverter.stateToString(KILLED)
-            p1._2.entity.deaths += 1
-            players.values().foreach { player =>
-              player.socket.sendEvent(EventNames.MESSAGE, converter.toJson(SoundMessage(
-                new Random().nextInt(10) match {
-                  case 1 => SoundNames.ChponkSuka.toString
-                  case 2 => SoundNames.Tooth.toString
-                  case _ => SoundNames.HeadShot.toString
+            if (p1._2.entity.bonuses.nonEmpty) {
+              p1._2.entity.bonuses.clear()
+              killerBricks.foreach(brick => {
+                brick.entity.angle += 180.0f
+              })
+            } else {
+              p1._2.entity.state = MessageConverter.stateToString(KILLED)
+              p1._2.entity.deaths += 1
+              players.values().foreach { player =>
+                player.socket.sendEvent(EventNames.MESSAGE, converter.toJson(SoundMessage(
+                  new Random().nextInt(10) match {
+                    case 1 => SoundNames.ChponkSuka.toString
+                    case 2 => SoundNames.Tooth.toString
+                    case _ => SoundNames.HeadShot.toString
+                  }
+                )))
+              }
+              killerBricks.foreach(brick => {
+                if (brick.throwerID != null) {
+                  val player = players.get(brick.throwerID)
+                  if (player != null) {
+                    player.entity.frags += 1
+                  }
                 }
-              )))
+              })
+              executor.schedule(new Runnable {
+                override def run(): Unit = {
+                  p1._2.entity.state = MessageConverter.stateToString(IDLE)
+                }
+              }, 2, TimeUnit.SECONDS)
             }
-            killerBricks.foreach(brick => {
-              if (brick.throwerID != null) {
-                val player = players.get(brick.throwerID)
-                if (player != null) {
-                  player.entity.frags += 1
-                }
-              }
-            })
-            executor.schedule(new Runnable {
-              override def run(): Unit = {
-                p1._2.entity.state = MessageConverter.stateToString(IDLE)
-              }
-            }, 2, TimeUnit.SECONDS)
           } else if (!p1._2.entity.hasBrick) {
             p1._2.entity.hasBrick = true
             bricks -= intersectedBricks.head
@@ -189,6 +196,7 @@ case class Room(
       players.put(player.socket.getSessionId, player)
       checkTimer()
       if (players.size() <= 1) {
+        bricks.insert(0, spawnBrick())
         bricks.insert(0, spawnBrick())
       }
     }
