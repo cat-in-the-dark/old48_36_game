@@ -1,18 +1,17 @@
 package com.catinthedark.ld36.units
 
 import com.badlogic.gdx.{Gdx, Input}
-import com.catinthedark.ld36.Shared0
-import com.catinthedark.lib.SimpleUnit
+import com.catinthedark.ld36.{Assets, Shared0}
+import com.catinthedark.lib.{LocalDeferred, Deferred, SimpleUnit}
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.common.Const
 import com.catinthedark.common.Const.Balance
-import com.catinthedark.models.RUNNING
-import com.catinthedark.models.{IDLE, THROWING, RUNNING}
+import com.catinthedark.models._
 
 /**
   * Created by kirill on 27.08.16.
   */
-class Control(shared: Shared0) extends SimpleUnit {
+abstract class Control(shared: Shared0) extends SimpleUnit with Deferred {
 
   def controlShoot(delta: Float) = {
     if (shared.me.hasBrick && shared.me.state == IDLE)
@@ -22,6 +21,8 @@ class Control(shared: Shared0) extends SimpleUnit {
         if (shared.shootRage != 0) {
           shared.me.animationCounter = 0
           shared.me.state = THROWING
+          Assets.Audios.soundMap(SoundNames.Throw).play()
+          defer(0.2f, () => shared.me.state = IDLE)
         }
         shared.shootRage = 0
       }

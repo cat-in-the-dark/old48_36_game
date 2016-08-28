@@ -18,9 +18,13 @@ object Assets {
     val brick = new Texture(Gdx.files.internal("textures/brick.png"))
     val field = new Texture(Gdx.files.internal("textures/field.png"))
     val gop = new Texture(Gdx.files.internal("textures/gop.png"))
+    val gopBrick = new Texture(Gdx.files.internal("textures/gop-brick.png"))
+    val gopThrow = new Texture(Gdx.files.internal("textures/gop-throw.png"))
     val logo = new Texture(Gdx.files.internal("textures/logo.png"))
 
     val gopFrames = TextureRegion.split(gop, 108, 108)
+    val gopBrickFrames = TextureRegion.split(gopBrick, 108, 108)
+    val gopThrowFrames = TextureRegion.split(gopThrow, 108, 108)
   }
 
   object Fonts {
@@ -74,6 +78,7 @@ object Assets {
     trait PlayerAnimationPack {
       val idle: TextureRegion
       val running: Animation
+      val runningWithBrick: Animation
       val killed: TextureRegion
       val throwing: Animation
     }
@@ -81,8 +86,9 @@ object Assets {
     object gopAnimationPack extends PlayerAnimationPack {
       override val idle: TextureRegion = Textures.gopFrames(0)(0)
       override val running: Animation = loopingAnimation(Textures.gopFrames, (0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6))
+      override val runningWithBrick: Animation = loopingAnimation(Textures.gopBrickFrames, (0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6))
       override val killed: TextureRegion = Textures.gopFrames(0)(9)
-      override val throwing: Animation = normalAnimation(UI.throwBrickAnimationSpeed, Textures.gopFrames, (0, 7), (0, 8))
+      override val throwing: Animation = normalAnimation(UI.throwBrickAnimationSpeed, Textures.gopThrowFrames, (0, 0), (0, 2), (0, 1), (0, 3))
     }
   }
 
@@ -91,7 +97,8 @@ object Assets {
       SoundNames.ChponkSuka -> Gdx.audio.newSound(Gdx.files.internal("sound/chponk_suka.mp3")),
       SoundNames.HeadShot -> Gdx.audio.newSound(Gdx.files.internal("sound/head_shot.mp3")),
       SoundNames.Tooth -> Gdx.audio.newSound(Gdx.files.internal("sound/zuby_po_vsey_ulitse.mp3")),
-      SoundNames.Siklo -> Gdx.audio.newSound(Gdx.files.internal("sound/siklo.mp3"))
+      SoundNames.Siklo -> Gdx.audio.newSound(Gdx.files.internal("sound/siklo.mp3")),
+      SoundNames.Throw -> Gdx.audio.newSound(Gdx.files.internal("sound/throw.mp3"))
     )
   }
 }

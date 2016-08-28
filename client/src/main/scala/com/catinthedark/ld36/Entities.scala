@@ -34,7 +34,8 @@ case class PlayerView(var pos: Vector2,
         pack.idle
       case RUNNING =>
         animationCounter += delta * 2
-        pack.running.getKeyFrame(animationCounter)
+        if(hasBrick) pack.runningWithBrick.getKeyFrame(animationCounter)
+        else pack.running.getKeyFrame(animationCounter)
       case KILLED =>
         pack.killed
       case THROWING =>

@@ -9,7 +9,7 @@ object Const{
     var darknessGreen = 0.04f
     var darknessBlue = 0.157f
 
-    val throwBrickAnimationSpeed = 0.1f
+    val throwBrickAnimationSpeed = 0.05f
   }
 
   object HUD {

@@ -19,19 +19,19 @@ class ShootRageRender {
   def render(rage: Float) = {
     shapeRenderer.begin(ShapeType.Filled)
     shapeRenderer.setColor(1, 1, 1, 1)
-    shapeRenderer.rect(barPosX - 5, barPosY - 5, 210, 40)
+    shapeRenderer.rect(barPosX - 5, barPosY - 5, 210, 30)
 
     if (rage > Const.Balance.maxShootRage * 0.9) {
       shapeRenderer.setColor(1, 0, 0, 1)
-      shapeRenderer.rect(barPosX, barPosY, barSize * rage, 30)
+      shapeRenderer.rect(barPosX, barPosY, barSize * rage, 20)
     }
     if (rage > Const.Balance.maxShootRage * 0.45) {
       shapeRenderer.setColor(1, 1, 0, 1)
-      shapeRenderer.rect(barPosX, barPosY, barSize * Math.min(rage, 0.9f), 30)
+      shapeRenderer.rect(barPosX, barPosY, barSize * Math.min(rage, 0.9f), 20)
     }
 
     shapeRenderer.setColor(0, 1, 0, 1)
-    shapeRenderer.rect(barPosX, barPosY, barSize * Math.min(rage, 0.45f), 30)
+    shapeRenderer.rect(barPosX, barPosY, barSize * Math.min(rage, 0.45f), 20)
 
     shapeRenderer.end()
   }

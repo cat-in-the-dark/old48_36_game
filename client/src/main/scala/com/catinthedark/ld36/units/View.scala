@@ -1,7 +1,7 @@
 package com.catinthedark.ld36.units
 
 import com.badlogic.gdx.{Gdx, Input}
-import com.catinthedark.ld36.hud.{ShootRageRender, StatsRender}
+import com.catinthedark.ld36.hud.{TimerRender, ShootRageRender, StatsRender}
 import com.catinthedark.ld36.{Assets, Shared0}
 import com.badlogic.gdx.{Gdx, Input}
 import com.catinthedark.common.Const
@@ -17,6 +17,7 @@ class View(val shared: Shared0) extends SimpleUnit {
   val statsRender = new StatsRender()
   val shootRageRender = new ShootRageRender
   val playerRender = new PlayerRender(shared)
+  val timeRender = new TimerRender
 
   def drawField(): Unit = {
     magicBatch.managed { self =>
@@ -31,8 +32,9 @@ class View(val shared: Shared0) extends SimpleUnit {
 
   override def run(delta: Float): Unit = {
     drawField()
-    shootRageRender.render(shared.shootRage)
     playerRender.render(delta, magicBatch)
+    timeRender.render(73)
+    shootRageRender.render(shared.shootRage)
     if (Gdx.input.isKeyPressed(Input.Keys.TAB)) drawStats()
   }
 }

@@ -11,7 +11,7 @@ import com.catinthedark.models.{KILLED, THROWING, RUNNING, IDLE}
 import scala.collection.mutable
 
 case class Shared0(serverAddress: URI,
-                   me: PlayerView = new PlayerView(new Vector2(0, 0), KILLED, gopAnimationPack, 0.0f, Balance.playerRadius, hasBrick = true),
+                   me: PlayerView = new PlayerView(new Vector2(0, 0), IDLE, gopAnimationPack, 0.0f, Balance.playerRadius, hasBrick = true),
                    enemies: mutable.ListBuffer[PlayerView] = new mutable.ListBuffer[PlayerView],
                    bricks: mutable.ListBuffer[Brick] = new mutable.ListBuffer[Brick],
                    var shootRage: Float = 0) {
