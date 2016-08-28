@@ -27,8 +27,7 @@ class View(val shared: Shared0) extends SimpleUnit {
   }
 
   def drawStats() = {
-    val stats = Stats(me = Stat("over", 1, 1), other = Seq(Stat("ilya", 0, 2), Stat("kirill", 10, 1)))
-    statsRender.render(stats)
+    statsRender.render(shared.stats)
   }
 
   override def run(delta: Float): Unit = {

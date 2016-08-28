@@ -6,6 +6,7 @@ import java.util.UUID
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.ld36.Assets.Animations.gopAnimationPack
 import com.catinthedark.common.Const.Balance
+import com.catinthedark.ld36.common.{Stat, Stats}
 import com.catinthedark.ld36.network.{NetworkControl, NetworkWSControl}
 import com.catinthedark.models._
 
@@ -21,6 +22,19 @@ case class Shared0(serverAddress: URI,
                    var shootRage: Float = 0) {
   val networkControl: NetworkControl = new NetworkWSControl(serverAddress)
   private var networkControlThread: Thread = _
+
+  def stats: Stats = {
+    if (gameState != null) {
+      Stats(
+        Stat(gameState.me.name, gameState.me.frags, gameState.me.deaths),
+        gameState.players.map(p => {
+          Stat(p.name, p.frags, p.deaths)
+        })
+      )
+    } else {
+      null
+    }
+  }
 
   def stopNetwork(): Unit = {
     networkControl.dispose()
