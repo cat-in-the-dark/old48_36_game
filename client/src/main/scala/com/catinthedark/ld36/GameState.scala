@@ -83,6 +83,7 @@ class GameState extends YieldUnit[Shared0, Stats] {
       enemy.angle = remotePlayer.angle
       enemy.state = MessageConverter.stringToState(remotePlayer.state)
       enemy.hasArmor = remotePlayer.bonuses.contains(Const.Bonus.hat)
+      enemy.hasBrick = remotePlayer.hasBrick
     })
   }
 
