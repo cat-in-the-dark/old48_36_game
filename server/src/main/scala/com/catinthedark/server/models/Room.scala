@@ -57,6 +57,17 @@ case class Room(
   }
 
   def onTick(): Unit = {
+    bricks.foreach( brick => {
+      if (intersectWalls(brick.entity.x, brick.entity.y)) {
+        brick.entity.hurting = false
+        brick.initialSpeed = 0
+        brick.currentSpeed = 0
+      } else {
+        brick.entity.x -= brick.currentSpeed * Math.sin(Math.toRadians(brick.entity.angle)).toFloat
+        brick.entity.y += brick.currentSpeed * Math.cos(Math.toRadians(brick.entity.angle)).toFloat
+      }
+    })
+
     players.iterator.foreach( p1 => {
       val intersectedPlayersCount = players.iterator.count(p2 => {
         !p1._1.equals(p2._1) && (new Vector2(p1._2.entity.x, p1._2.entity.y).dst(new Vector2(p2._2.entity.x, p2._2.entity.y)) < Balance.playerRadius * 2)
