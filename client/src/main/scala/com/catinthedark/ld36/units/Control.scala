@@ -23,6 +23,10 @@ abstract class Control(shared: Shared0) extends SimpleUnit with Deferred {
       override def keyDown(keycode: Int): Boolean = {
         keycode match {
           case Input.Keys.ESCAPE => onGameReload()
+          case Input.Keys.R =>
+            shared.fansRageMode = true
+            Assets.Audios.stadiumNoise.play(0.5f)
+            defer(1f, () => shared.fansRageMode = false)
           case _ =>
         }
         true

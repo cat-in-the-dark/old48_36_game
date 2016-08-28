@@ -5,7 +5,7 @@ import java.util.UUID
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.common.Const.Balance
-import com.catinthedark.ld36.Assets.Animations.{PlayerAnimationPack, gopAnimationPack}
+import com.catinthedark.ld36.Assets.Animations.{FanAnimationPack, PlayerAnimationPack, gopAnimationPack}
 import com.catinthedark.ld36.Assets.Textures
 import com.catinthedark.models._
 
@@ -38,7 +38,7 @@ case class PlayerView(var pos: Vector2,
         pack.idle
       case RUNNING =>
         animationCounter += delta * 2
-        if(hasBrick) pack.runningWithBrick.getKeyFrame(animationCounter)
+        if (hasBrick) pack.runningWithBrick.getKeyFrame(animationCounter)
         else pack.running.getKeyFrame(animationCounter)
       case KILLED =>
         pack.killed
@@ -51,7 +51,10 @@ case class PlayerView(var pos: Vector2,
   override def name: String = "Player"
 }
 
-case class Brick(var pos: Vector2, var angle: Float, radius: Float) extends Entity {
+
+case class Fan(pos: Vector2, animation: FanAnimationPack, var delta: Float = 0, angle: Float = 0, var speed: Float = 1f)
+
+case class Brick(var pos: Vector2, var angle: Float, val radius: Float) extends Entity {
   override def texture(delta: Float): TextureRegion = new TextureRegion(Textures.brick)
 
   override def name: String = "Brick"
