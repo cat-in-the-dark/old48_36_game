@@ -15,6 +15,7 @@ class GameState extends YieldUnit[Shared0, Stats] {
   var view: View = _
   var control: Control = _
   var children: Seq[SimpleUnit] = Seq()
+  var forceReload = false
 
   override def onActivate(data: Shared0): Unit = {
     shared = data
@@ -22,6 +23,19 @@ class GameState extends YieldUnit[Shared0, Stats] {
     control = new Control(shared)
     children = Seq(view, control)
     children.foreach(_.onActivate())
+    activateControl()
+  }
+
+  def activateControl(): Unit = {
+    control.onGameReload + (_ => {
+      forceReload = true
+      stopNetworkThread()
+    })
+  }
+
+  def stopNetworkThread(): Unit = {
+    println("Trying to stop network thread")
+    shared.stopNetwork()
   }
 
   override def onExit(): Unit = {
@@ -30,7 +44,8 @@ class GameState extends YieldUnit[Shared0, Stats] {
 
   override def run(delta: Float): Option[Stats] = {
     children.foreach(_.run(delta))
-    if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+    if (forceReload) {
+      forceReload = false
       val stats = Stats(me = Stat("over", 1, 1), other = Seq(Stat("ilya", 0, 2), Stat("kirill", 10, 1)))
       Some(stats)
     }
