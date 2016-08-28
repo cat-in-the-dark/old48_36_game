@@ -36,15 +36,10 @@ case class Room(
   var timeRemains = Const.Balance.roundTime
 
   def intersectWalls(x: Float, y: Float): Boolean = {
-    println(s"pos: $x, $y")
-    if (x < UI.horizontalBorderWidth
+    (x < UI.horizontalBorderWidth
       || x > UI.horizontalBorderWidth + UI.fieldWidth
       || y < UI.verticalBorderWidth
-      || y > UI.verticalBorderWidth + UI.fieldHeight) {
-      println("intersect walls")
-      return true
-    }
-    false
+      || y > UI.verticalBorderWidth + UI.fieldHeight
   }
 
   def onTick(): Unit = {
