@@ -4,14 +4,31 @@ import com.badlogic.gdx.{Gdx, Input}
 import com.catinthedark.ld36.{Assets, Shared0}
 import com.catinthedark.lib.{LocalDeferred, Deferred, SimpleUnit}
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.{Gdx, Input, InputAdapter}
 import com.catinthedark.common.Const
 import com.catinthedark.common.Const.Balance
 import com.catinthedark.models._
+import com.catinthedark.ld36.Shared0
+import com.catinthedark.lib.{Pipe, SimpleUnit}
+import com.catinthedark.models.{IDLE, RUNNING, THROWING}
 
 /**
   * Created by kirill on 27.08.16.
   */
 abstract class Control(shared: Shared0) extends SimpleUnit with Deferred {
+  val onGameReload = new Pipe[Unit]()
+
+  override def onActivate(): Unit = {
+    Gdx.input.setInputProcessor(new InputAdapter {
+      override def keyDown(keycode: Int): Boolean = {
+        keycode match {
+          case Input.Keys.ESCAPE => onGameReload()
+          case _ =>
+        }
+        true
+      }
+    })
+  }
 
   def controlShoot(delta: Float) = {
     if (shared.me.hasBrick && shared.me.state == IDLE)
@@ -73,5 +90,9 @@ abstract class Control(shared: Shared0) extends SimpleUnit with Deferred {
     if (speed.len() > 0) {
       shared.networkControl.move(speed, shared.me.angle, RUNNING)
     }
+  }
+
+  override def onExit(): Unit = {
+    Gdx.input.setInputProcessor(null)
   }
 }

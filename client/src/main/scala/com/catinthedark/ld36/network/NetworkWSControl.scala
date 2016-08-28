@@ -21,7 +21,7 @@ class NetworkWSControl(val serverAddress: URI) extends NetworkControl {
     onGameStarted(message.clientId)
   })
 
-  messageBus.subscribe(classOf[DisconnectedMessage], (message: DisconnectedMessage, sender: String) => {
+  messageBus.subscribe(classOf[EnemyDisconnectedMessage], (message: EnemyDisconnectedMessage, sender: String) => {
     println(s"onEnemyDisconnected $message")
     onEnemyDisconnected()
   })

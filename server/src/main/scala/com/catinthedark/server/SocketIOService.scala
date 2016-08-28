@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.slf4j.LoggerFactory
 
+import scala.collection.JavaConversions._
+
 class SocketIOService {
   private val gameTick = Config.gameTick
   private val log = LoggerFactory.getLogger(classOf[SocketIOService])
@@ -60,7 +62,12 @@ class SocketIOService {
   server.addDisconnectListener(new DisconnectListener {
     override def onDisconnect(client: SocketIOClient): Unit = {
       log.info(s"Disconnected ${client.getSessionId}")
+      val msg = converter.toJson(EnemyDisconnectedMessage(client.getSessionId.toString))
+      log.info(s"SEND: $msg")
       room.disconnect(client)
+      room.players.values().iterator.foreach(p => {
+        p.socket.sendEvent(EventNames.MESSAGE, msg)
+      })
     }
   })
 

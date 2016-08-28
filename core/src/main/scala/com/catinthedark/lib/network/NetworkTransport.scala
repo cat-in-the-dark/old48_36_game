@@ -14,9 +14,20 @@ abstract class NetworkTransport(val converter: Converter) extends Transport {
     }
   }
 
+  def onConnect(): Unit ={
+
+  }
+
+  def onDisconnect(): Unit ={
+
+  }
+
+  def onConnectionError(): Unit ={
+
+  }
+
   def onReceive(json: String): Unit = {
     try {
-      println(s"RAW DATA: $json")
       val data = converter.fromJson(json)
       receiver(data)
     } catch {

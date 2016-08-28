@@ -29,8 +29,8 @@ object MessageConverter {
       converter.objectMapper.convertValue(data, classOf[HelloMessage])
     }).registerConverter[GameStartedMessage](classOf[GameStartedMessage], data => {
       converter.objectMapper.convertValue(data, classOf[GameStartedMessage])
-    }).registerConverter[DisconnectedMessage](classOf[DisconnectedMessage], data => {
-      converter.objectMapper.convertValue(data, classOf[DisconnectedMessage])
+    }).registerConverter[EnemyDisconnectedMessage](classOf[EnemyDisconnectedMessage], data => {
+      converter.objectMapper.convertValue(data, classOf[EnemyDisconnectedMessage])
     }).registerConverter[MoveMessage](classOf[MoveMessage], data => {
       converter.objectMapper.convertValue(data, classOf[MoveMessage])
     }).registerConverter[GameStateMessage](classOf[GameStateMessage], data => {
