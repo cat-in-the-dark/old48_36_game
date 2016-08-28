@@ -1,7 +1,7 @@
 package com.catinthedark.server.models
 
 import java.util.UUID
-import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.{TimeUnit, Executors, ConcurrentHashMap}
 
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.common.Const
@@ -23,6 +23,12 @@ case class Room(
   val bricks = new ListBuffer[Brick]
   val bonuses = new mutable.ListBuffer[BonusModel]
   var timeRemains = Const.Balance.roundTime
+  val executor = Executors.newScheduledThreadPool(1)
+//  executor.schedule(new Runnable {
+//    override def run(): Unit = {
+//
+//    }
+//  }, 2, TimeUnit.SECONDS)
 
   def checkTimer() = {
     if (players.size() < 1) {
