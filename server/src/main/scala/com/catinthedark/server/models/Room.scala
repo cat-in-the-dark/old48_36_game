@@ -39,7 +39,7 @@ case class Room(
     (x < UI.horizontalBorderWidth
       || x > UI.horizontalBorderWidth + UI.fieldWidth
       || y < UI.verticalBorderWidth
-      || y > UI.verticalBorderWidth + UI.fieldHeight
+      || y > UI.verticalBorderWidth + UI.fieldHeight)
   }
 
   def onTick(): Unit = {
