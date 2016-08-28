@@ -51,9 +51,6 @@ abstract class Control(shared: Shared0) extends SimpleUnit with Deferred {
     val pointerX = Gdx.input.getX
     val pointerY = Gdx.input.getY
     val newAngle = new Vector2(pointerX, Const.Projection.height - pointerY).sub(shared.me.pos).angle() - 90
-    println(pointerX)
-    println(pointerY)
-    println(newAngle)
     shared.me.angle = newAngle
   }
 
