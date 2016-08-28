@@ -35,27 +35,26 @@ abstract class Control(shared: Shared0) extends SimpleUnit with Deferred {
   }
 
   def controlShoot(delta: Float) = {
-    if (shared.me.hasBrick && shared.me.state == IDLE)
-      if (Gdx.input.isButtonPressed(Input.Buttons.LEFT))
+    if (shared.me.hasBrick && shared.me.state == IDLE) {
+      if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
         if (shared.shootRage == 0) {
           shared.shootRage = Balance.minShootRange
         } else {
           shared.shootRage = Math.min(shared.shootRage + Balance.shootRageSpeed * delta, Balance.maxShootRage)
         }
-      else {
-        if (shared.shootRage != 0) {
-          shared.me.animationCounter = 0
-          shared.me.state = THROWING
-          val brickX = shared.me.pos.x - (Balance.playerRadius + Balance.brickRadius + 1) * Math.sin(Math.toRadians(shared.me.angle)).toFloat
-          val brickY = shared.me.pos.y + (Balance.playerRadius + Balance.brickRadius + 1) * Math.cos(Math.toRadians(shared.me.angle)).toFloat
-          shared.networkControl.throwBrick(new Vector2(brickX, brickY), shared.shootRage, shared.me.angle)
-          Assets.Audios.soundMap(SoundNames.Throw).play()
-          defer(0.2f, () => shared.me.state = IDLE)
-        }
+      } else if (shared.shootRage != 0) {
+        shared.me.animationCounter = 0
+        shared.me.state = THROWING
+        val brickX = shared.me.pos.x - (Balance.playerRadius + Balance.brickRadius + 1) * Math.sin(Math.toRadians(shared.me.angle)).toFloat
+        val brickY = shared.me.pos.y + (Balance.playerRadius + Balance.brickRadius + 1) * Math.cos(Math.toRadians(shared.me.angle)).toFloat
+        shared.networkControl.throwBrick(new Vector2(brickX, brickY), shared.shootRage, shared.me.angle)
+        Assets.Audios.soundMap(SoundNames.Throw).play()
+        defer(0.2f, () => shared.me.state = IDLE)
         shared.shootRage = 0
       }
-    else
+    } else {
       shared.shootRage = 0
+    }
   }
 
   private def controlKeysPressed(): Boolean = {
