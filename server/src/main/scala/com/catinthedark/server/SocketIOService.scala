@@ -4,13 +4,15 @@ import java.util.UUID
 import java.util.concurrent.{Executors, TimeUnit}
 
 import com.catinthedark.lib.network.JacksonConverterScala
-import com.catinthedark.models.{GameStartedMessage, HelloMessage, MessageConverter, ServerHelloMessage}
+import com.catinthedark.models._
 import com.catinthedark.server.models.{Player, Room}
 import com.corundumstudio.socketio._
 import com.corundumstudio.socketio.listener.{ConnectListener, DataListener, DisconnectListener}
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule
 import org.slf4j.LoggerFactory
+
+import scala.collection.JavaConversions._
 
 class SocketIOService {
   private val gameTick = Config.gameTick
@@ -59,7 +61,12 @@ class SocketIOService {
   server.addDisconnectListener(new DisconnectListener {
     override def onDisconnect(client: SocketIOClient): Unit = {
       log.info(s"Disconnected ${client.getSessionId}")
+      val msg = converter.toJson(DisconnectedMessage(client.getSessionId.toString))
+      log.info(s"SEND: $msg")
       room.disconnect(client)
+      room.players.values().iterator.foreach(p => {
+        p.socket.sendEvent(MESSAGE, msg)
+      })
     }
   })
 
