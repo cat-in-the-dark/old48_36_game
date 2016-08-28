@@ -44,11 +44,10 @@ class View(val shared: Shared0) extends SimpleUnit {
   }
 
   override def run(delta: Float): Unit = {
-    if (shared.me.pos.x > Const.Projection.width / 2
-      && shared.me.pos.x < Const.Projection.mapLeftBorder)
+    controlRotation()
+    if (shared.me.pos.x > Const.Projection.width / 2)
       camera.position.x = shared.me.pos.x - Const.Projection.width / 2
-    if (shared.me.pos.y > Const.Projection.height / 2
-      && shared.me.pos.y < Const.Projection.mapTopBorder)
+    if (shared.me.pos.y > Const.Projection.height / 2)
       camera.position.y = shared.me.pos.y - Const.Projection.height / 2
 
     camera.update()
