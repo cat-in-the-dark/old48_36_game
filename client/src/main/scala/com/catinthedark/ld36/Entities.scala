@@ -36,7 +36,8 @@ case class PlayerView(var pos: Vector2,
   override def texture(delta: Float) = {
     state match {
       case IDLE =>
-        pack.idle
+        if(hasBrick) Assets.Textures.gopBrickFrames(0)(0)
+        else pack.idle
       case RUNNING =>
         animationCounter += delta * 2
         if (hasBrick) pack.runningWithBrick.getKeyFrame(animationCounter)
