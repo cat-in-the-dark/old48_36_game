@@ -15,6 +15,11 @@ object Const{
     var darknessBlue = 0.157f
 
     val throwBrickAnimationSpeed = 0.05f
+
+    val horizontalBorderWidth = 80f
+    val verticalBorderWidth = 40f
+    val fieldWidth = 1081f
+    val fieldHeight = 652f
   }
 
   object HUD {
