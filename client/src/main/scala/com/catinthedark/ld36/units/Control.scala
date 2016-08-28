@@ -30,6 +30,16 @@ abstract class Control(shared: Shared0) extends SimpleUnit with Deferred {
       shared.shootRage = 0
   }
 
+  def controlRotation() = {
+    val pointerX = Gdx.input.getX
+    val pointerY = Gdx.input.getY
+    val newAngle = new Vector2(pointerX, Const.Projection.height - pointerY).sub(shared.me.pos).angle() - 90
+    println(pointerX)
+    println(pointerY)
+    println(newAngle)
+    shared.me.angle = newAngle
+  }
+
   private def controlKeysPressed(): Boolean = {
     Gdx.input.isKeyPressed(Input.Keys.A) ||
       Gdx.input.isKeyPressed(Input.Keys.D) ||
@@ -39,6 +49,7 @@ abstract class Control(shared: Shared0) extends SimpleUnit with Deferred {
 
   override def run(delta: Float) = {
     controlShoot(delta)
+    controlRotation()
 
     val speed = new Vector2(0, 0)
     val playerSpeed = Const.Balance.playerSpeed
