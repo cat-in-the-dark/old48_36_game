@@ -169,7 +169,6 @@ class GameState extends YieldUnit[Shared0, Stats] {
   var isBgmStepsPlaying = false
 
   override def run(delta: Float): Option[Stats] = {
-    println(shared.bonuses)
     val isAnybodyRunning = (shared.me.state == RUNNING || shared.enemies.contains { enemy: PlayerView => enemy.state == RUNNING })
     if (isAnybodyRunning) {
       if (!isBgmStepsPlaying)

@@ -44,7 +44,6 @@ class PlayerRender(val shared: Shared0) extends SimpleUnit {
           enemy.angle)
 
         if (enemy.hasArmor) {
-          println("here")
           val tex = new TextureRegion(Assets.Textures.kepa)
           self.draw(tex,
             enemy.pos.x - tex.getRegionWidth / 2 - Const.Projection.width / 2,
