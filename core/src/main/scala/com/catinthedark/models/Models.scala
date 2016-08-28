@@ -24,10 +24,10 @@ case class PlayerModel(id: UUID,
                       )
 
 case class BrickModel(id: UUID,
-                      x: Float,
-                      y: Float,
-                      angle: Float,
-                      hurting: Boolean
+                      var x: Float,
+                      var y: Float,
+                      var angle: Float,
+                      var hurting: Boolean
                       )
 
 case class BonusModel(id: UUID,
