@@ -86,6 +86,8 @@ abstract class Control(shared: Shared0) extends SimpleUnit with Deferred {
 
     if (speed.len() > 0) {
       shared.networkControl.move(speed, shared.me.angle, RUNNING)
+    } else {
+      shared.networkControl.move(speed, shared.me.angle, IDLE)
     }
   }
 

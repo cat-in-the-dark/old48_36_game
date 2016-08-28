@@ -43,7 +43,6 @@ trait NetworkControl extends Runnable {
   protected def onJump(msg: (Vector2, Float, Float)) = bufferIn.add(() => onJumpPipe(msg))
   protected def onGameStarted(msg: (String)) = println(s"Received GameStart package $msg")
   protected def onGameState(gameState: (GameStateModel)) = {
-    println(s"State: $gameState")
     bufferIn.add(() => onGameStatePipe(gameState))
   }
 }
