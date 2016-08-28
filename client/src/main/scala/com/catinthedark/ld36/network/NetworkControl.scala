@@ -22,7 +22,7 @@ trait NetworkControl extends Runnable {
   }
 
   def move(speed: Vector2, angle: Float, state: State): Unit = {
-    processOut(MoveMessage(speed.x, speed.y, angle, MessageConverter.convertStateToString(state)))
+    processOut(MoveMessage(speed.x, speed.y, angle, MessageConverter.stateToString(state)))
   }
 
   def processIn() = {

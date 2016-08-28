@@ -3,7 +3,7 @@ package com.catinthedark.models
 import com.catinthedark.lib.network.JacksonConverterScala
 
 object MessageConverter {
-  def convertStateToString(state: State): String = {
+  def stateToString(state: State): String = {
     state match {
       case IDLE => "IDLE"
       case RUNNING => "RUNNING"
@@ -12,7 +12,7 @@ object MessageConverter {
     }
   }
 
-  def convertStringToState(state: String): State = {
+  def stringToState(state: String): State = {
     state match {
       case "IDLE" => IDLE
       case "RUNNING" => RUNNING

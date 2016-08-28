@@ -1,19 +1,20 @@
 package com.catinthedark.ld36
 
 import java.net.URI
+import java.util.UUID
 
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.ld36.Assets.Animations.gopAnimationPack
 import com.catinthedark.common.Const.Balance
 import com.catinthedark.ld36.network.{NetworkControl, NetworkWSControl}
-import com.catinthedark.models.{KILLED, THROWING, RUNNING, IDLE}
+import com.catinthedark.models.{IDLE, KILLED, RUNNING, THROWING}
 
 import scala.collection.mutable
 
 case class Shared0(serverAddress: URI,
-                   me: PlayerView = new PlayerView(new Vector2(100, 50), IDLE, gopAnimationPack, 180f, Balance.playerRadius, hasBrick = true),
                    enemies: mutable.ListBuffer[PlayerView] = new mutable.ListBuffer[PlayerView],
                    bricks: mutable.ListBuffer[Brick] = new mutable.ListBuffer[Brick],
+                   var me: PlayerView = new PlayerView(new Vector2(0, 0), IDLE, 0.0f, null, false),
                    var shootRage: Float = 0) {
   val networkControl: NetworkControl = new NetworkWSControl(serverAddress)
   private var networkControlThread: Thread = _

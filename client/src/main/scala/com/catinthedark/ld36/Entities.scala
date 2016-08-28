@@ -1,8 +1,11 @@
 package com.catinthedark.ld36
 
+import java.util.UUID
+
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
-import com.catinthedark.ld36.Assets.Animations.PlayerAnimationPack
+import com.catinthedark.common.Const.Balance
+import com.catinthedark.ld36.Assets.Animations.{PlayerAnimationPack, gopAnimationPack}
 import com.catinthedark.ld36.Assets.Textures
 import com.catinthedark.models._
 
@@ -12,7 +15,7 @@ import com.catinthedark.models._
 
 sealed trait Entity {
   var pos: Vector2
-  var radius: Float
+  val radius: Float
   var angle: Float
 
   def texture(delta: Float = 0): TextureRegion
@@ -22,10 +25,11 @@ sealed trait Entity {
 
 case class PlayerView(var pos: Vector2,
                       var state: State,
-                      var pack: PlayerAnimationPack,
                       var angle: Float,
-                      var radius: Float,
-                      val hasBrick: Boolean = false) extends Entity {
+                      var id: UUID,
+                      var hasBrick: Boolean,
+                      radius: Float = Balance.playerRadius,
+                      pack: PlayerAnimationPack = gopAnimationPack) extends Entity {
   var animationCounter = 0f
 
   override def texture(delta: Float) = {
@@ -47,7 +51,7 @@ case class PlayerView(var pos: Vector2,
   override def name: String = "Player"
 }
 
-case class Brick(var pos: Vector2, var angle: Float, var radius: Float) extends Entity {
+case class Brick(var pos: Vector2, var angle: Float, radius: Float) extends Entity {
   override def texture(delta: Float): TextureRegion = new TextureRegion(Textures.brick)
 
   override def name: String = "Brick"
