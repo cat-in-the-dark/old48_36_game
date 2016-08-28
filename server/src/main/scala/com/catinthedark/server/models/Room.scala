@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap
 
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.common.Const
-import com.catinthedark.common.Const.Balance
+import com.catinthedark.common.Const.{Balance, UI}
 import com.catinthedark.lib.network.JacksonConverterScala
 import com.catinthedark.models._
 import com.corundumstudio.socketio.SocketIOClient
@@ -35,6 +35,13 @@ case class Room(
   val players = new ConcurrentHashMap[UUID, Player]()
   var timeRemains = Const.Balance.roundTime
 
+  def intersectWalls(x: Float, y: Float): Boolean = {
+    (x < UI.horizontalBorderWidth
+      || x > UI.horizontalBorderWidth + UI.fieldWidth
+      || y < UI.verticalBorderWidth
+      || y > UI.verticalBorderWidth + UI.fieldHeight)
+  }
+
   def onTick(): Unit = {
     players.iterator.foreach( p1 => {
       val gameStateModel = buildState(p1)
@@ -42,7 +49,7 @@ case class Room(
         !p1._1.equals(p2._1) && (new Vector2(p1._2.entity.x, p1._2.entity.y).dst(new Vector2(p2._2.entity.x, p2._2.entity.y)) < Balance.playerRadius)
       })
 
-      if (intersectedPlayersCount > 0) {
+      if (intersectedPlayersCount > 0 || intersectWalls(p1._2.entity.x, p1._2.entity.y)) {
         p1._2.entity.x = p1._2.entity.oldX
         p1._2.entity.y = p1._2.entity.oldY
       } else {
