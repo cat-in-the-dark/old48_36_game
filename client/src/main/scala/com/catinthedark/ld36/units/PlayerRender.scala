@@ -29,7 +29,8 @@ class PlayerRender(val shared: Shared0) extends SimpleUnit {
 
     magicBatch.managed { self =>
       val me = shared.me
-      me.currentPos = MathUtilsLib.roundVector(MathUtilsLib.lerp(me.previousPos, me.pos, alpha))
+//      me.currentPos = MathUtilsLib.roundVector(MathUtilsLib.lerp(me.previousPos, me.pos, alpha))
+      me.currentPos = me.pos
       draw(self, me.texture(delta), me.currentPos, me.angle)
       if (me.hasArmor) {
         draw(self, Assets.Textures.kepaRegion, me.currentPos, me.angle)
