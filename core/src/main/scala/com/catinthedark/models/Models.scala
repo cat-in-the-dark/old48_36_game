@@ -2,6 +2,9 @@ package com.catinthedark.models
 
 import java.util.UUID
 
+import com.badlogic.gdx.math.Vector2
+import com.catinthedark.common.Const.Balance
+
 case class GameStateModel(me: PlayerModel,
                           players: List[PlayerModel],
                           bricks: List[BrickModel],
@@ -13,15 +16,14 @@ case class PlayerModel(id: UUID,
                        name: String,
                        var x: Float,
                        var y: Float,
-                       var oldX: Float,
-                       var oldY: Float,
                        var angle: Float,
                        var state: String,
                        var bonuses: scala.collection.mutable.ListBuffer[String],
                        var frags: Int,
                        var deaths: Int,
                        var hasBrick: Boolean
-                      )
+                      ) {
+}
 
 case class BrickModel(id: UUID,
                       var x: Float,
