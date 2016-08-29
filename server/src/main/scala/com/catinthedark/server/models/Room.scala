@@ -1,17 +1,18 @@
 package com.catinthedark.server.models
 
 import java.util.UUID
-import java.util.concurrent.{TimeUnit, Executors, ConcurrentHashMap}
+import java.util.concurrent.{ConcurrentHashMap, TimeUnit}
 
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.common.Const
 import com.catinthedark.common.Const.{Balance, UI}
 import com.catinthedark.lib.network.JacksonConverterScala
 import com.catinthedark.models._
+import com.catinthedark.server.Intervals
 import com.corundumstudio.socketio.SocketIOClient
-import scala.collection.mutable
 
-import collection.JavaConversions._
+import scala.collection.JavaConversions._
+import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import scala.util.Random
 
@@ -24,13 +25,22 @@ case class Room(
   val bricks = new ListBuffer[Brick]
   val bonuses = new mutable.ListBuffer[BonusModel]
   var timeRemains = Const.Balance.roundTime
-  val executor = Executors.newScheduledThreadPool(1)
+  val executor = new Intervals(1)
 
-  def checkTimer() = {
+  def checkTimer(): Unit = {
     if (players.size() < 1) {
       timeRemains = Const.Balance.roundTime
       bonuses.clear()
       bricks.clear()
+    }
+  }
+
+  def timerTick(): Unit = {
+    checkTimer()
+    if (timeRemains > 0) {
+      timeRemains -= 1
+    } else {
+      finishRound()
     }
   }
 
@@ -116,11 +126,9 @@ case class Room(
                   }
                 }
               })
-              executor.schedule(new Runnable {
-                override def run(): Unit = {
-                  p1._2.entity.state = MessageConverter.stateToString(IDLE)
-                }
-              }, 2, TimeUnit.SECONDS)
+              executor.deffer(2, TimeUnit.SECONDS, () => {
+                p1._2.entity.state = MessageConverter.stateToString(IDLE)
+              })
             }
           } else if (!p1._2.entity.hasBrick) {
             p1._2.entity.hasBrick = true
@@ -167,10 +175,11 @@ case class Room(
     players.get(client.getSessionId).entity.hasBrick = false
   }
 
-  def spawnPlayer(client: SocketIOClient, playerName: String): Player = {
+  def spawnPlayer(client: SocketIOClient, playerName: String): Boolean = {
     val pos = Const.Balance.randomSpawn
-    Player(this, client,
+    val player = Player(this, client,
       PlayerModel(UUID.randomUUID(), playerName, pos.x, pos.y, pos.x, pos.y, 0f, MessageConverter.stateToString(IDLE), mutable.ListBuffer(), 0, 0, false))
+    connect(player)
   }
 
   def spawnBonus(): Unit = {
@@ -188,17 +197,20 @@ case class Room(
     Brick(0, 0, BrickModel(UUID.randomUUID(), pos.x, pos.y, 0.0f, hurting = false))
   }
 
-  def connect(player: Player): Unit = {
-    players.values().iterator().foreach { player =>
-      player.socket.sendEvent(EventNames.MESSAGE, converter.toJson(SoundMessage(SoundNames.Siklo.toString)))
-    }
+  def connect(player: Player): Boolean = {
     if (hasFreePlace()) {
+      players.values().iterator().foreach { player =>
+        player.socket.sendEvent(EventNames.MESSAGE, converter.toJson(SoundMessage(SoundNames.Siklo.toString)))
+      }
       players.put(player.socket.getSessionId, player)
       checkTimer()
       if (players.size() <= 1) {
         bricks.insert(0, spawnBrick())
         bricks.insert(0, spawnBrick())
       }
+      true
+    } else {
+      false
     }
   }
 

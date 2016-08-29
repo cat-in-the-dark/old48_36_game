@@ -1,7 +1,7 @@
 package com.catinthedark.server
 
 import java.util.UUID
-import java.util.concurrent.{Executors, TimeUnit}
+import java.util.concurrent.TimeUnit
 
 import com.catinthedark.common.Const
 import com.catinthedark.lib.network.JacksonConverterScala
@@ -28,7 +28,7 @@ class SocketIOService {
   mapper.registerModule(DefaultScalaModule)
   private val converter = new JacksonConverterScala(mapper)
   MessageConverter.registerConverters(converter)
-  private val executor = Executors.newScheduledThreadPool(4)
+  private val executor = new Intervals(4)
 
   private val room = Room(UUID.randomUUID(), converter)
 
@@ -36,9 +36,7 @@ class SocketIOService {
     override def onConnect(client: SocketIOClient): Unit = {
       log.info(s"New connection ${client.getSessionId} of ${server.getAllClients.size()}")
       val msg = ServerHelloMessage(client.getSessionId.toString)
-      val data = converter.toJson(msg)
-      println(s"SEND: $data")
-      client.sendEvent(EventNames.MESSAGE, data)
+      client.sendEvent(EventNames.MESSAGE, converter.toJson(msg))
     }
   })
 
@@ -47,12 +45,7 @@ class SocketIOService {
       val wrapper = converter.fromJson(data)
       wrapper.data match {
         case msg: HelloMessage =>
-          log.info(s"GET: $data")
-          val player = onNewPlayer(client, msg.name)
-          val gsm = GameStartedMessage(client.getSessionId.toString)
-          val response = converter.toJson(gsm)
-          log.info(s"SEND: $response")
-          client.sendEvent(EventNames.MESSAGE, response)
+          onNewPlayer(client, msg.name)
         case msg: MoveMessage =>
           room.onMove(client, msg)
         case msg: ThrowBrickMessage =>
@@ -66,7 +59,6 @@ class SocketIOService {
     override def onDisconnect(client: SocketIOClient): Unit = {
       log.info(s"Disconnected ${client.getSessionId}")
       val msg = converter.toJson(EnemyDisconnectedMessage(client.getSessionId.toString))
-      log.info(s"SEND: $msg")
       room.disconnect(client)
       room.players.values().iterator.foreach(p => {
         p.socket.sendEvent(EventNames.MESSAGE, msg)
@@ -78,7 +70,12 @@ class SocketIOService {
 
   def onNewPlayer(client: SocketIOClient, playerName: String): Unit = {
     val room = findOrCreateRoom()
-    room.connect(room.spawnPlayer(client, playerName))
+    if (room.spawnPlayer(client, playerName)) {
+      val gsm = GameStartedMessage(client.getSessionId.toString)
+      client.sendEvent(EventNames.MESSAGE, converter.toJson(gsm))
+    } else {
+      log.warn("Room is full!!")
+    }
   }
 
   def findOrCreateRoom(): Room = {
@@ -86,28 +83,9 @@ class SocketIOService {
   }
 
   def registerGameTimer(): Unit = {
-    executor.scheduleWithFixedDelay(new Runnable {
-      override def run(): Unit = {
-        room.onTick()
-      }
-    }, 0, gameTick, TimeUnit.MILLISECONDS)
-
-    executor.scheduleWithFixedDelay(new Runnable {
-      override def run(): Unit = {
-        room.checkTimer()
-        if (room.timeRemains > 0) {
-          room.timeRemains -= 1
-        } else {
-          room.finishRound()
-        }
-      }
-    }, 0, 1, TimeUnit.SECONDS)
-
-    executor.scheduleWithFixedDelay(new Runnable {
-      override def run(): Unit = {
-        room.spawnBonus()
-      }
-    }, Const.Balance.bonusDelay, Const.Balance.bonusDelay, TimeUnit.SECONDS)
+    executor.repeat(gameTick, TimeUnit.MILLISECONDS, room.onTick)
+    executor.repeat(Const.Balance.bonusDelay, TimeUnit.SECONDS, room.spawnBonus)
+    executor.repeat(1, TimeUnit.SECONDS, room.timerTick)
   }
 
   def start(): Unit = {

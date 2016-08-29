@@ -80,4 +80,8 @@ object Const{
     def calcX(screenX: Int): Int = (screenX.toFloat * Const.Projection.width / Gdx.graphics.getWidth).toInt
     def calcY(screenY: Int): Int = (screenY.toFloat * Const.Projection.height / Gdx.graphics.getHeight).toInt
   }
+
+  object Networking {
+    val tickDelay = 20 // delay of a tick in ms
+  }
 }

@@ -2,13 +2,15 @@ package com.catinthedark.server
 
 import java.net.URLEncoder
 
+import com.catinthedark.common.Const
+
 object Config {
   val pb = new ProcessBuilder()
 
   def gameTick: Int = try {
-      pb.environment().getOrDefault("GAME_TICK", "20").toInt
+      pb.environment().getOrDefault("GAME_TICK", Const.Networking.tickDelay.toString).toInt
     } catch {
-      case e: Exception => 20
+      case e: Exception => Const.Networking.tickDelay
     }
 
   def port: Int = try {
