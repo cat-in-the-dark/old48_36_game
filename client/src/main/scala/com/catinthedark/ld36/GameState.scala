@@ -107,8 +107,8 @@ class GameState extends YieldUnit[Shared0, Stats] {
     })
 
     shared.bricks.foreach(brick => {
-      val remoteBrick = bricks.find(brick => {
-        brick.id.equals(brick.id)
+      val remoteBrick = bricks.find(b => {
+        b.id.equals(brick.id)
       }).toList.head
       brick.pos.x = remoteBrick.x
       brick.pos.y = remoteBrick.y
