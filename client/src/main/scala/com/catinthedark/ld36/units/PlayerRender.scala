@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.common.Const
 import com.catinthedark.ld36.{Assets, Shared0}
-import com.catinthedark.lib.{MagicSpriteBatch, SimpleUnit}
+import com.catinthedark.lib.{MagicSpriteBatch, MathUtilsLib, SimpleUnit}
 
 /**
   * Created by kirill on 27.08.16.
@@ -21,17 +21,23 @@ class PlayerRender(val shared: Shared0) extends SimpleUnit {
   }
 
   def render(delta: Float, magicBatch: MagicSpriteBatch) = {
+    var alpha = (shared.syncTime / shared.syncDelay).toFloat
+    // just check alpha for bounds
+    if (alpha.isNaN) alpha = 1
+    if (alpha > 1) alpha = 1
+    if (alpha < 0) alpha = 0
+
     magicBatch.managed { self =>
       val me = shared.me
-      me.currentPos = me.previousPos.lerp(me.pos, (shared.syncTime / shared.syncDelay).toFloat)
+      me.currentPos = MathUtilsLib.roundVector(MathUtilsLib.lerp(me.previousPos, me.pos, alpha))
       draw(self, me.texture(delta), me.currentPos, me.angle)
       if (me.hasArmor) {
         draw(self, Assets.Textures.kepaRegion, me.currentPos, me.angle)
       }
 
       shared.enemies.foreach(enemy => {
-        enemy.currentPos = enemy.previousPos.lerp(enemy.pos, (shared.syncTime / shared.syncDelay).toFloat)
-        draw(magicBatch, enemy.texture(delta), enemy.currentPos, enemy.angle)
+        enemy.currentPos = MathUtilsLib.roundVector(MathUtilsLib.lerp(enemy.previousPos, enemy.pos, alpha))
+        draw(self, enemy.texture(delta), enemy.currentPos, enemy.angle)
         if (enemy.hasArmor) {
           draw(self, Assets.Textures.kepaRegion, enemy.currentPos, enemy.angle)
         }
