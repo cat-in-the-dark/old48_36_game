@@ -55,16 +55,32 @@ case class Room(
     bricks.clear()
   }
 
-  def intersectWalls(x: Float, y: Float): Boolean = {
-    (x < UI.horizontalBorderWidth
-      || x > UI.horizontalBorderWidth + UI.fieldWidth
-      || y < UI.verticalBorderWidth
-      || y > UI.verticalBorderWidth + UI.fieldHeight)
+  def intersectWalls(x: Float, y: Float, radius: Float): Boolean = {
+    (topWallpenetration(y, radius) > 0
+      || bottomWallPenetration(y, radius) > 0
+      || leftWallPenetration(x, radius) > 0
+      || rightWallPenetration(x, radius) > 0)
+  }
+
+  def topWallpenetration(y: Float, radius: Float): Float = {
+    Math.max(0f, UI.verticalBorderWidth - (y - radius))
+  }
+
+  def bottomWallPenetration(y: Float, radius: Float): Float = {
+    Math.max(0f, y + radius - (UI.verticalBorderWidth + UI.fieldHeight))
+  }
+
+  def leftWallPenetration(x: Float, radius: Float): Float = {
+    Math.max(0f, UI.horizontalBorderWidth - (x - radius))
+  }
+
+  def rightWallPenetration(x: Float, radius: Float): Float = {
+    Math.max(0f, x + radius - (UI.horizontalBorderWidth + UI.fieldWidth))
   }
 
   def onTick(): Unit = {
     bricks.foreach(brick => {
-      if (intersectWalls(brick.entity.x, brick.entity.y)) {
+      if (intersectWalls(brick.entity.x, brick.entity.y, Balance.brickRadius)) {
         brick.entity.hurting = false
         brick.initialSpeed = 0
         brick.currentSpeed = 0
@@ -76,20 +92,21 @@ case class Room(
 
     players.iterator.foreach(p1 => {
       if (!p1._2.entity.state.equals(MessageConverter.stateToString(KILLED))) {
-
-        val intersectedPlayersCount = players.iterator.count(p2 => {
+        players.iterator.filter(p2 => {
           (!p1._1.equals(p2._1)
-            && (new Vector2(p1._2.entity.x, p1._2.entity.y).dst(new Vector2(p2._2.entity.x, p2._2.entity.y)) < Balance.playerRadius * 2)
+            && p1._2.intersect(p2._2)
             && !p2._2.entity.state.equals(MessageConverter.stateToString(KILLED)))
+        }).foreach( p2 => {
+          p1._2.moveVector.add(p1._2.pos.sub(p2._2.pos).setLength(Balance.playerRadius - p1._2.pos.dst(p2._2.pos) / 2))
         })
 
-        if (intersectedPlayersCount > 0 || intersectWalls(p1._2.entity.x, p1._2.entity.y)) {
-          p1._2.entity.x = p1._2.entity.oldX
-          p1._2.entity.y = p1._2.entity.oldY
-        } else {
-          p1._2.entity.oldX = p1._2.entity.x
-          p1._2.entity.oldY = p1._2.entity.y
-        }
+        val wallShiftVector = new Vector2()
+          .add(leftWallPenetration(p1._2.entity.x + p1._2.moveVector.x, Balance.playerRadius),
+            topWallpenetration(p1._2.entity.y + p1._2.moveVector.y, Balance.playerRadius))
+          .sub(rightWallPenetration(p1._2.entity.x + p1._2.moveVector.x, Balance.playerRadius),
+            bottomWallPenetration(p1._2.entity.y + p1._2.moveVector.y, Balance.playerRadius))
+
+        p1._2.moveVector.add(wallShiftVector)
 
         val intersectedBricks = bricks.filter(brick => {
           (new Vector2(p1._2.entity.x, p1._2.entity.y).dst(new Vector2(brick.entity.x, brick.entity.y))
@@ -137,6 +154,12 @@ case class Room(
         }
       }
 
+      players.iterator.foreach( p => {
+        p._2.entity.x += p._2.moveVector.x
+        p._2.entity.y += p._2.moveVector.y
+        p._2.moveVector.setZero()
+      })
+
       val gameStateModel = buildGameState(p1)
       p1._2.socket.sendEvent(EventNames.MESSAGE, converter.toJson(GameStateMessage(gameStateModel)))
     })
@@ -178,7 +201,7 @@ case class Room(
   def spawnPlayer(client: SocketIOClient, playerName: String): Boolean = {
     val pos = Const.Balance.randomSpawn
     val player = Player(this, client,
-      PlayerModel(UUID.randomUUID(), playerName, pos.x, pos.y, pos.x, pos.y, 0f, MessageConverter.stateToString(IDLE), mutable.ListBuffer(), 0, 0, false))
+      PlayerModel(UUID.randomUUID(), playerName, pos.x, pos.y, 0f, MessageConverter.stateToString(IDLE), mutable.ListBuffer(), 0, 0, false))
     connect(player)
   }
 
