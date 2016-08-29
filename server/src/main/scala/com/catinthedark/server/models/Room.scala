@@ -203,6 +203,10 @@ case class Room(
   }
 
   def disconnect(client: SocketIOClient): Unit = {
+    val playerToRemove = players.get(client.getSessionId)
+    if (playerToRemove.entity.hasBrick) {
+      bricks += Brick(0f, 0f, BrickModel(UUID.randomUUID(), playerToRemove.entity.x, playerToRemove.entity.y, 0f, hurting = false))
+    }
     players.remove(client.getSessionId)
     checkTimer()
   }
