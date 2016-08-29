@@ -55,13 +55,6 @@ case class Room(
     bricks.clear()
   }
 
-  def intersectWalls(x: Float, y: Float, radius: Float): Boolean = {
-    (topWallpenetration(y, radius) > 0
-      || bottomWallPenetration(y, radius) > 0
-      || leftWallPenetration(x, radius) > 0
-      || rightWallPenetration(x, radius) > 0)
-  }
-
   def topWallpenetration(y: Float, radius: Float): Float = {
     Math.max(0f, UI.verticalBorderWidth - (y - radius))
   }
@@ -78,15 +71,32 @@ case class Room(
     Math.max(0f, x + radius - (UI.horizontalBorderWidth + UI.fieldWidth))
   }
 
+  def intersectWalls(x: Float, y: Float, radius: Float): Boolean = {
+    (topWallpenetration(y, radius) > 0
+      || bottomWallPenetration(y, radius) > 0
+      || leftWallPenetration(x, radius) > 0
+      || rightWallPenetration(x, radius) > 0)
+  }
+
   def onTick(): Unit = {
     bricks.foreach(brick => {
-      if (intersectWalls(brick.entity.x, brick.entity.y, Balance.brickRadius)) {
-        brick.entity.hurting = false
-        brick.initialSpeed = 0
+      if (leftWallPenetration(brick.entity.x, Balance.brickRadius) > 0
+        || rightWallPenetration(brick.entity.x, Balance.brickRadius) > 0) {
+        brick.entity.angle = new Vector2(Math.cos(Math.toRadians(brick.entity.angle)).toFloat, -1 * Math.sin(Math.toRadians(brick.entity.angle)).toFloat).angle()
+      }
+      if (topWallpenetration(brick.entity.y, Balance.brickRadius) > 0
+        || bottomWallPenetration(brick.entity.y, Balance.brickRadius) > 0) {
+        brick.entity.angle = new Vector2(-1 * Math.cos(Math.toRadians(brick.entity.angle)).toFloat, Math.sin(Math.toRadians(brick.entity.angle)).toFloat).angle()
+      }
+
+      brick.entity.x -= brick.currentSpeed * Math.sin(Math.toRadians(brick.entity.angle)).toFloat
+      brick.entity.y += brick.currentSpeed * Math.cos(Math.toRadians(brick.entity.angle)).toFloat
+
+      if (brick.currentSpeed <= 0) {
         brick.currentSpeed = 0
+        brick.entity.hurting = false
       } else {
-        brick.entity.x -= brick.currentSpeed * Math.sin(Math.toRadians(brick.entity.angle)).toFloat
-        brick.entity.y += brick.currentSpeed * Math.cos(Math.toRadians(brick.entity.angle)).toFloat
+        brick.currentSpeed -= Balance.brickFriction
       }
     })
 

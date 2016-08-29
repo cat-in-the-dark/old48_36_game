@@ -42,6 +42,7 @@ object Const{
     val playerSpeedBonus = 10.0f
     val playerRadius = 40.0f
     val brickRadius = 10.0f
+    val brickFriction = 1f
     val spawnPoints: List[Vector2] = 2.to(9).flatMap(x => {
       1.to(6).map(y => {
         new Vector2(x*100, y*100)
