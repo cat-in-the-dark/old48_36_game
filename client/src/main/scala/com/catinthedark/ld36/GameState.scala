@@ -3,6 +3,7 @@ package com.catinthedark.ld36
 import java.util.UUID
 
 import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.utils.TimeUtils
 import com.catinthedark.common.Const
 import com.catinthedark.ld36.common.Stats
 import com.catinthedark.ld36.units.{Control, View}
@@ -12,6 +13,7 @@ import com.badlogic.gdx.{Gdx, Input}
 import com.catinthedark.common.Const.Balance
 import com.catinthedark.ld36.Assets.Animations.gopAnimationPack
 import com.catinthedark.ld36.common.{Stat, Stats}
+import com.catinthedark.lib
 import com.catinthedark.lib.YieldUnit
 import com.catinthedark.models._
 
@@ -116,10 +118,18 @@ class GameState extends YieldUnit[Shared0, Stats] {
     })
   }
 
-  def onGameState(gameStateModel: GameStateModel): Unit = {
-    shared.gameState = gameStateModel
-    shared.timeRemains = gameStateModel.time
+  def syncTime(): Unit = {
+    shared.syncTime = 0
+    shared.syncDelay = lib.TimeUtils.currentTimeInSeconds - shared.lastSyncTime
+    shared.lastSyncTime = lib.TimeUtils.currentTimeInSeconds
+    shared.me.previousPos = shared.me.pos.cpy()
+    shared.enemies.foreach(enemy => {
+      enemy.previousPos = enemy.pos.cpy()
+    })
+  }
 
+  def onGameState(gameStateModel: GameStateModel): Unit = {
+    syncTime()
     shared.gameState = gameStateModel
     shared.timeRemains = gameStateModel.time
 

@@ -30,6 +30,8 @@ object Assets {
     val gopBrickFrames = TextureRegion.split(gopBrick, 108, 108)
     val gopThrowFrames = TextureRegion.split(gopThrow, 108, 108)
     val fansFrames = TextureRegion.split(fans, 100, 100)
+
+    val kepaRegion = new TextureRegion(kepa)
   }
 
   object Fonts {

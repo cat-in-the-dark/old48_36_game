@@ -1,8 +1,7 @@
 package com.catinthedark.ld36.units
 
-import com.badlogic.gdx.graphics.Camera
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.math.Affine2
+import com.badlogic.gdx.math.Vector2
 import com.catinthedark.common.Const
 import com.catinthedark.ld36.{Assets, Shared0}
 import com.catinthedark.lib.{MagicSpriteBatch, SimpleUnit}
@@ -11,50 +10,32 @@ import com.catinthedark.lib.{MagicSpriteBatch, SimpleUnit}
   * Created by kirill on 27.08.16.
   */
 class PlayerRender(val shared: Shared0) extends SimpleUnit {
+  private def draw(batch: MagicSpriteBatch, tex: TextureRegion, pos: Vector2, angle: Float): Unit ={
+    batch.draw(tex,
+      pos.x - tex.getRegionWidth / 2 - Const.Projection.width / 2,
+      pos.y - tex.getRegionHeight / 2 - Const.Projection.height / 2,
+      tex.getRegionWidth / 2, tex.getRegionHeight / 2,
+      tex.getRegionWidth, tex.getRegionHeight,
+      1, 1,
+      angle)
+  }
+
   def render(delta: Float, magicBatch: MagicSpriteBatch) = {
     magicBatch.managed { self =>
       val me = shared.me
-      val tex = me.texture(delta)
-      self.draw(tex,
-        me.pos.x - tex.getRegionWidth / 2 - Const.Projection.width / 2,
-        me.pos.y - tex.getRegionHeight / 2 - Const.Projection.height / 2,
-        tex.getRegionWidth / 2, tex.getRegionHeight / 2,
-        tex.getRegionWidth, tex.getRegionHeight,
-        1, 1,
-        me.angle)
+      me.currentPos = me.previousPos.lerp(me.pos, (shared.syncTime / shared.syncDelay).toFloat)
+      draw(self, me.texture(delta), me.currentPos, me.angle)
       if (me.hasArmor) {
-        val tex = new TextureRegion(Assets.Textures.kepa)
-        self.draw(tex,
-          me.pos.x - tex.getRegionWidth / 2 - Const.Projection.width / 2,
-          me.pos.y - tex.getRegionHeight / 2 - Const.Projection.height / 2,
-          tex.getRegionWidth / 2, tex.getRegionHeight / 2,
-          tex.getRegionWidth, tex.getRegionHeight,
-          1, 1,
-          me.angle)
+        draw(self, Assets.Textures.kepaRegion, me.currentPos, me.angle)
       }
 
       shared.enemies.foreach(enemy => {
-        val enemyTex = enemy.texture(delta)
-        self.draw(enemyTex,
-          enemy.pos.x - enemyTex.getRegionWidth / 2 - Const.Projection.width / 2,
-          enemy.pos.y - enemyTex.getRegionHeight / 2 - Const.Projection.height / 2,
-          enemyTex.getRegionWidth / 2, enemyTex.getRegionHeight / 2,
-          enemyTex.getRegionWidth, enemyTex.getRegionHeight,
-          1, 1,
-          enemy.angle)
-
+        enemy.currentPos = enemy.previousPos.lerp(enemy.pos, (shared.syncTime / shared.syncDelay).toFloat)
+        draw(magicBatch, enemy.texture(delta), enemy.currentPos, enemy.angle)
         if (enemy.hasArmor) {
-          val tex = new TextureRegion(Assets.Textures.kepa)
-          self.draw(tex,
-            enemy.pos.x - tex.getRegionWidth / 2 - Const.Projection.width / 2,
-            enemy.pos.y - tex.getRegionHeight / 2 - Const.Projection.height / 2,
-            tex.getRegionWidth / 2, tex.getRegionHeight / 2,
-            tex.getRegionWidth, tex.getRegionHeight,
-            1, 1,
-            enemy.angle)
+          draw(self, Assets.Textures.kepaRegion, enemy.currentPos, enemy.angle)
         }
       })
-
     }
   }
 }

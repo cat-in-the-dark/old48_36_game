@@ -32,6 +32,8 @@ case class PlayerView(var pos: Vector2,
                       pack: PlayerAnimationPack = gopAnimationPack,
                       var hasArmor: Boolean) extends Entity {
   var animationCounter = 0f
+  var previousPos: Vector2 = pos.cpy()
+  var currentPos: Vector2 = pos.cpy()
 
   override def texture(delta: Float) = {
     state match {

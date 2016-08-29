@@ -42,27 +42,26 @@ class View(val shared: Shared0) extends SimpleUnit {
   def controlRotation() = {
     val pointerX = Const.Projection.calcX(Gdx.input.getX()) + camera.position.x
     val pointerY = Const.Projection.height - Const.Projection.calcY(Gdx.input.getY()) + camera.position.y
-    val newAngle = new Vector2(pointerX, pointerY).sub(shared.me.pos).angle() - 90
+    val newAngle = new Vector2(pointerX, pointerY).sub(shared.me.currentPos).angle() - 90
     shared.me.angle = newAngle
   }
 
   override def run(delta: Float): Unit = {
-    camera.position.x  = Math.max(-130, Math.min(220, shared.me.pos.x - Const.Projection.width / 2));
-    camera.position.y  = Math.max(-160, Math.min(220, shared.me.pos.y - Const.Projection.height / 2));
-//    camera.position.x = Math.min(shared.me.pos.x - Const.Projection.width / 2, 700)
-//    camera.position.y = Math.min(shared.me.pos.y - Const.Projection.height / 2, 500)
+    shared.syncTime += delta
+    camera.position.x  = Math.max(-130, Math.min(220, shared.me.currentPos.x - Const.Projection.width / 2));
+    camera.position.y  = Math.max(-160, Math.min(220, shared.me.currentPos.y - Const.Projection.height / 2));
     shared.me.state match {
       case IDLE | RUNNING =>
         controlRotation()
       case _ =>
     }
 
-    if (shared.me.pos.x > Const.Projection.width / 2
-      && shared.me.pos.x < Const.Projection.mapLeftBorder)
-      camera.position.x = shared.me.pos.x - Const.Projection.width / 2
-    if (shared.me.pos.y > Const.Projection.height / 2
-      && shared.me.pos.y < Const.Projection.mapTopBorder)
-      camera.position.y = shared.me.pos.y - Const.Projection.height / 2
+    if (shared.me.currentPos.x > Const.Projection.width / 2
+      && shared.me.currentPos.x < Const.Projection.mapLeftBorder)
+      camera.position.x = shared.me.currentPos.x - Const.Projection.width / 2
+    if (shared.me.currentPos.y > Const.Projection.height / 2
+      && shared.me.currentPos.y < Const.Projection.mapTopBorder)
+      camera.position.y = shared.me.currentPos.y - Const.Projection.height / 2
 
     camera.update()
 
