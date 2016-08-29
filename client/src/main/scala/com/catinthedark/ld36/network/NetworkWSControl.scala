@@ -48,6 +48,7 @@ class NetworkWSControl(val serverAddress: URI) extends NetworkControl {
   })
 
   override def run(): Unit = {
+    super.run()
     transport.connect()
   }
 

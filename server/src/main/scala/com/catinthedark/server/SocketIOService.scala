@@ -4,6 +4,7 @@ import java.util.UUID
 import java.util.concurrent.TimeUnit
 
 import com.catinthedark.common.Const
+import com.catinthedark.lib.Intervals
 import com.catinthedark.lib.network.JacksonConverterScala
 import com.catinthedark.models._
 import com.catinthedark.server.models.Room

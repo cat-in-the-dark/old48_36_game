@@ -1,4 +1,4 @@
-package com.catinthedark.server
+package com.catinthedark.lib
 
 import java.util.concurrent.{Executors, TimeUnit}
 
@@ -15,5 +15,10 @@ class Intervals(val threadCount: Int = 1) {
     executor.schedule(new Runnable {
       override def run() = callback()
     }, delay, timeUnit)
+  }
+
+  def shutdown(): Unit ={
+    println("Shutdown")
+    executor.shutdown()
   }
 }

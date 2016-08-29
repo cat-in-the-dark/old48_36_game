@@ -82,6 +82,6 @@ object Const{
   }
 
   object Networking {
-    val tickDelay = 20 // delay of a tick in ms
+    val tickDelay = 30 // delay of a tick in ms
   }
 }

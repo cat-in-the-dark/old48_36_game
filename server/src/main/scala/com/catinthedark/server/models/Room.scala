@@ -6,9 +6,9 @@ import java.util.concurrent.{ConcurrentHashMap, TimeUnit}
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.common.Const
 import com.catinthedark.common.Const.{Balance, UI}
+import com.catinthedark.lib.Intervals
 import com.catinthedark.lib.network.JacksonConverterScala
 import com.catinthedark.models._
-import com.catinthedark.server.Intervals
 import com.corundumstudio.socketio.SocketIOClient
 
 import scala.collection.JavaConversions._
