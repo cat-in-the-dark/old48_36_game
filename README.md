@@ -1,6 +1,6 @@
 # SQUATality
 
-![](https://raw.githubusercontent.com/cat-in-the-dark/old48_36_game/master/assets/textures/title.png)
+![](https://raw.githubusercontent.com/cat-in-the-dark/old48_36_game/master/client/assets/textures/title.png)
 
 ### [Download](https://github.com/cat-in-the-dark/old48_36_game/releases)
 
