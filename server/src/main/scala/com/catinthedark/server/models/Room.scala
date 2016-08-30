@@ -204,8 +204,11 @@ case class Room(
   }
 
   def onThrow(client: SocketIOClient, msg: ThrowBrickMessage): Unit = {
-    bricks.insert(0, Brick(msg.force, msg.force, BrickModel(UUID.randomUUID(), msg.x, msg.y, msg.angle, hurting = true), client.getSessionId))
-    players.get(client.getSessionId).entity.hasBrick = false
+      val thrower = players.get(client.getSessionId)
+      if (thrower.entity.hasBrick) {
+        bricks.insert(0, Brick(msg.force, msg.force, BrickModel(UUID.randomUUID(), msg.x, msg.y, msg.angle, hurting = true), client.getSessionId))
+        thrower.entity.hasBrick = false
+      }
   }
 
   def spawnPlayer(client: SocketIOClient, playerName: String): Boolean = {
