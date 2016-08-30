@@ -120,12 +120,9 @@ class GameState extends YieldUnit[Shared0, Stats] {
 
   def syncTime(): Unit = {
     shared.syncTime = 0
-    shared.syncDelay = lib.TimeUtils.currentTimeInSeconds - shared.lastSyncTime
-    shared.lastSyncTime = lib.TimeUtils.currentTimeInSeconds
-    shared.me.previousPos = shared.me.pos.cpy()
-    shared.enemies.foreach(enemy => {
-      enemy.previousPos = enemy.pos.cpy()
-    })
+    val time = System.nanoTime()
+    shared.syncDelay = (time - shared.lastSyncTime) / 1000000000.0f
+    shared.lastSyncTime = time
   }
 
   def onGameState(gameStateModel: GameStateModel): Unit = {
@@ -192,6 +189,7 @@ class GameState extends YieldUnit[Shared0, Stats] {
     }
 
     shared.networkControl.processIn()
+    shared.networkControl.tick()
     children.foreach(_.run(delta))
     if (forceReload) {
       forceReload = false

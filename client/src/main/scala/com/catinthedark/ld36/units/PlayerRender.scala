@@ -21,26 +21,17 @@ class PlayerRender(val shared: Shared0) extends SimpleUnit {
   }
 
   def render(delta: Float, magicBatch: MagicSpriteBatch) = {
-    var alpha = (shared.syncTime / shared.syncDelay).toFloat
-    // just check alpha for bounds
-    if (alpha.isNaN) alpha = 1
-    if (alpha > 1) alpha = 1
-    if (alpha < 0) alpha = 0
-
     magicBatch.managed { self =>
       val me = shared.me
-//      me.currentPos = MathUtilsLib.roundVector(MathUtilsLib.lerp(me.previousPos, me.pos, alpha))
-      me.currentPos = me.pos
-      draw(self, me.texture(delta), me.currentPos, me.angle)
+      draw(self, me.texture(0), me.pos, me.angle)
       if (me.hasArmor) {
-        draw(self, Assets.Textures.kepaRegion, me.currentPos, me.angle)
+        draw(self, Assets.Textures.kepaRegion, me.pos, me.angle)
       }
 
       shared.enemies.foreach(enemy => {
-        enemy.currentPos = MathUtilsLib.roundVector(MathUtilsLib.lerp(enemy.previousPos, enemy.pos, alpha))
-        draw(self, enemy.texture(delta), enemy.currentPos, enemy.angle)
+        draw(self, enemy.texture(delta), enemy.pos, enemy.angle)
         if (enemy.hasArmor) {
-          draw(self, Assets.Textures.kepaRegion, enemy.currentPos, enemy.angle)
+          draw(self, Assets.Textures.kepaRegion, enemy.pos, enemy.angle)
         }
       })
     }

@@ -1,10 +1,10 @@
 package com.catinthedark.ld36.network
 
-import java.util.concurrent.{ConcurrentLinkedQueue, TimeUnit}
+import java.util.concurrent.ConcurrentLinkedQueue
 
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.common.Const
-import com.catinthedark.lib.{Intervals, Pipe}
+import com.catinthedark.lib.Pipe
 import com.catinthedark.models._
 
 trait NetworkControl extends Runnable {
@@ -19,24 +19,33 @@ trait NetworkControl extends Runnable {
   val onGameStatePipe = new Pipe[GameStateModel]()
   val onRoundEndsPipe = new Pipe[GameStateModel]()
 
-  var executor: Intervals = _
   var moveMessage: MoveMessage = _
   var throwBrickMessage: ThrowBrickMessage = _
 
-  override def run(): Unit = {
-    executor = new Intervals(1)
-    executor.repeat(Const.Networking.tickDelay, TimeUnit.MILLISECONDS, () => {
+  private var lastSyncTime: Long = System.nanoTime
+  private var _deltaTime: Float = 0
 
-      if (moveMessage != null) {
-        processOut(moveMessage)
-        moveMessage = null
-      }
+  def deltaTime = _deltaTime
 
-      if (throwBrickMessage != null) {
-        processOut(throwBrickMessage)
-        throwBrickMessage = null
-      }
-    })
+  private def sync(): Unit ={
+    if (moveMessage != null) {
+      processOut(moveMessage)
+      moveMessage = null
+    }
+
+    if (throwBrickMessage != null) {
+      processOut(throwBrickMessage)
+      throwBrickMessage = null
+    }
+  }
+
+  def tick(): Unit = {
+    val time = System.nanoTime()
+    _deltaTime = (time - lastSyncTime) / 1000000000.0f
+    if (deltaTime >= Const.Networking.tickDelay / 1000f) {
+      lastSyncTime = time
+      sync()
+    }
   }
 
   def hello(name: String): Unit = {
@@ -69,7 +78,6 @@ trait NetworkControl extends Runnable {
   
   def dispose(): Unit = {
     isConnected = None
-    if (executor != null) executor.shutdown()
   }
 
   protected val bufferIn = new ConcurrentLinkedQueue[() => Unit]()
