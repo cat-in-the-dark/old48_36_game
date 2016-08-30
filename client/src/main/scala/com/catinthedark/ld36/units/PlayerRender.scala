@@ -23,7 +23,7 @@ class PlayerRender(val shared: Shared0) extends SimpleUnit {
   def render(delta: Float, magicBatch: MagicSpriteBatch) = {
     magicBatch.managed { self =>
       val me = shared.me
-      draw(self, me.texture(0), me.pos, me.angle)
+      draw(self, me.texture(delta), me.pos, me.angle)
       if (me.hasArmor) {
         draw(self, Assets.Textures.kepaRegion, me.pos, me.angle)
       }
