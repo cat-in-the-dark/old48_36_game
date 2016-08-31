@@ -6,6 +6,7 @@ import com.catinthedark.common.Const
 object DesktopLauncher {
   def main(args: Array[String]) {
     val conf = new LwjglApplicationConfiguration
+    System.setProperty("org.lwjgl.opengl.Display.allowSoftwareOpenGL", "true")
     conf.title = "SQUATality"
     conf.height = Const.Projection.height.toInt
     conf.width = Const.Projection.width.toInt
