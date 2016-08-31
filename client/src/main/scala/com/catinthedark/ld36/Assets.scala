@@ -9,8 +9,6 @@ import com.catinthedark.common.Const
 import com.catinthedark.common.Const.UI
 import com.catinthedark.models.SoundNames
 
-import scala.util.Random
-
 object Assets {
   object Maps {
   }
@@ -19,10 +17,6 @@ object Assets {
   object Textures {
     val brick = new Texture(Gdx.files.internal("textures/brick.png"))
     val field = new Texture(Gdx.files.internal("textures/gopofon.png"))
-    val gopBlack = new Texture(Gdx.files.internal("textures/gop_black.png"))
-    val gopBlue = new Texture(Gdx.files.internal("textures/gop_blue.png"))
-    val gopGreen = new Texture(Gdx.files.internal("textures/gop_green.png"))
-    val gopRed = new Texture(Gdx.files.internal("textures/gop_red.png"))
     val logo = new Texture(Gdx.files.internal("textures/logo.png"))
     val fans = new Texture(Gdx.files.internal("textures/fans.png"))
     val kepa = new Texture(Gdx.files.internal("textures/kepa.png"))
