@@ -9,6 +9,7 @@ import com.catinthedark.common.Const.{Balance, UI}
 import com.catinthedark.lib.Intervals
 import com.catinthedark.lib.network.JacksonConverterScala
 import com.catinthedark.models._
+import com.catinthedark.server.persist.IRepository
 import com.corundumstudio.socketio.SocketIOClient
 
 import scala.collection.JavaConversions._
@@ -19,6 +20,7 @@ import scala.util.Random
 case class Room(
                  name: UUID,
                  converter: JacksonConverterScala,
+                 repository: IRepository,
                  maxPlayers: Int = 1000
                ) {
   val players = new ConcurrentHashMap[UUID, Player]()
@@ -45,6 +47,7 @@ case class Room(
   }
 
   def finishRound(): Unit = {
+    repository.onRoundFinish(players.values().toList)
     println("Round finished")
     timeRemains = Const.Balance.roundTime
     players.iterator.foreach(player => {
@@ -244,6 +247,7 @@ case class Room(
         bricks.insert(0, spawnBrick())
         bricks.insert(0, spawnBrick())
       }
+      repository.onPlayerConnect(player)
       true
     } else {
       false
@@ -252,6 +256,7 @@ case class Room(
 
   def disconnect(client: SocketIOClient): Unit = {
     val playerToRemove = players.get(client.getSessionId)
+    repository.onPlayerDisconnect(playerToRemove)
     if (playerToRemove.entity.hasBrick) {
       bricks += Brick(0f, 0f, BrickModel(UUID.randomUUID(), playerToRemove.entity.x, playerToRemove.entity.y, 0f, hurting = false))
     }

@@ -25,4 +25,8 @@ object Config {
     val msg = URLEncoder.encode(message, "UTF-8")
     s"https://api.telegram.org/bot$key/sendMessage?chat_id=$chatId&disable_web_page_preview=1&text=$msg"
   }
+
+  def jdbcUser = pb.environment().getOrDefault("JDBC_DATABASE_USERNAME", "postgres")
+  def jdbcPassword = pb.environment().getOrDefault("JDBC_DATABASE_PASSWORD", "")
+  def jdbcURL = pb.environment().getOrDefault("JDBC_DATABASE_URL", "jdbc:postgresql://localhost:5432/postgres")
 }

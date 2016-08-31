@@ -8,6 +8,7 @@ import com.catinthedark.lib.Intervals
 import com.catinthedark.lib.network.JacksonConverterScala
 import com.catinthedark.models._
 import com.catinthedark.server.models.Room
+import com.catinthedark.server.persist.{Repository, IRepository}
 import com.corundumstudio.socketio._
 import com.corundumstudio.socketio.listener.{ConnectListener, DataListener, DisconnectListener}
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -31,7 +32,9 @@ class SocketIOService {
   MessageConverter.registerConverters(converter)
   private val executor = new Intervals(4)
 
-  private val room = Room(UUID.randomUUID(), converter)
+  private val geoIPService = new GeoIPService(mapper)
+  private val repository: IRepository = new Repository(geoIPService, mapper)
+  private val room = Room(UUID.randomUUID(), converter, repository)
 
   server.addConnectListener(new ConnectListener {
     override def onConnect(client: SocketIOClient): Unit = {

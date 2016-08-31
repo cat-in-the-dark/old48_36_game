@@ -17,14 +17,4 @@ case class Player(
   def intersect(player: Player): Boolean = {
     pos.dst(player.pos) < (Balance.playerRadius * 2)
   }
-
-  def ip(): String = try {
-      var address = socket.getHandshakeData.getHttpHeaders.get("X-Forwarded-For")
-      if (address == null) {
-        address = socket.getHandshakeData.getAddress.getHostString
-      }
-      address
-    } catch {
-      case e: Exception => ""
-    }
 }

@@ -39,5 +39,8 @@ lazy val server = project.in(file("./server"))
   .settings(libraryDependencies ++= Seq(
     "com.fasterxml.jackson.module" % "jackson-module-scala_2.11" % "2.7.2",
     "com.corundumstudio.socketio" % "netty-socketio" % "1.7.10",
-    "org.slf4j" % "slf4j-simple" % "1.7.7"
+    "org.slf4j" % "slf4j-simple" % "1.7.7",
+    "org.postgresql" % "postgresql" % "9.4-1201-jdbc41",
+    "org.sql2o" % "sql2o" % "1.5.4",
+    "org.flywaydb" % "flyway-core" % "3.2.1"
   ))

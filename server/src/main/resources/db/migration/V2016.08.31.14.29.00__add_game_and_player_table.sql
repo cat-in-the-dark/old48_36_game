@@ -1,0 +1,13 @@
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
+CREATE TABLE game(
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  meta JSONB NOT NULL,
+  created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL
+);
+
+CREATE TABLE player(
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  meta JSONB NOT NULL,
+  created_at TIMESTAMP WITHOUT TIME ZONE DEFAULT now() NOT NULL
+);
