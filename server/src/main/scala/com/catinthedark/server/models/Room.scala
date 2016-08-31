@@ -217,7 +217,7 @@ case class Room(
   def spawnPlayer(client: SocketIOClient, playerName: String): Boolean = {
     val pos = Const.Balance.randomSpawn
     val player = Player(this, client,
-      PlayerModel(UUID.randomUUID(), playerName, pos.x, pos.y, 0f, MessageConverter.stateToString(IDLE), mutable.ListBuffer(), 0, 0, false))
+      PlayerModel(UUID.randomUUID(), playerName, pos.x, pos.y, 0f, MessageConverter.stateToString(IDLE), UI.randomSkin, mutable.ListBuffer(), 0, 0, false))
     connect(player)
   }
 

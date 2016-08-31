@@ -3,6 +3,8 @@ package com.catinthedark.ld36
 import java.net.URI
 
 import com.badlogic.gdx.math.Vector2
+import com.catinthedark.common.Const.UI
+import com.catinthedark.ld36.Assets.Animations
 import com.catinthedark.ld36.common.{Stat, Stats}
 import com.catinthedark.ld36.network.{NetworkControl, NetworkWSControl}
 import com.catinthedark.models._
@@ -19,7 +21,7 @@ case class Shared0(serverAddress: URI,
                    var lastSyncTime: Long = System.nanoTime(),
                    var gameState: GameStateModel = null,
                    var timeRemains: Long = 0,
-                   var me: PlayerView = PlayerView(new Vector2(0, 0), IDLE, 0.0f, null, false, hasArmor = true),
+                   var me: PlayerView = PlayerView(new Vector2(0, 0), IDLE, 0.0f, null, hasBrick = false, hasArmor = true),
                    var shootRage: Float = 0) {
   val networkControl: NetworkControl = new NetworkWSControl(serverAddress)
   private var networkControlThread: Thread = _

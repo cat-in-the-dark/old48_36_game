@@ -20,7 +20,12 @@ class Repository(private val geoIPService: GeoIPService, private val mapper: Obj
   private val sql = new Sql2o(Config.jdbcURL, Config.jdbcUser, Config.jdbcPassword)
   private val flyway = new Flyway()
   flyway.setDataSource(sql.getDataSource)
-  flyway.migrate()
+  try {
+    flyway.migrate()
+  } catch {
+    case e: Exception =>
+      println(e.getMessage)
+  }
 
   def onPlayerConnect(player: Player) = Future {
     val ip = IP.retrieve(player.socket)

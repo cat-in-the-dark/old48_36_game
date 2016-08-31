@@ -4,9 +4,9 @@ import java.util.UUID
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.math.Vector2
-import com.catinthedark.common.Const.Balance
-import com.catinthedark.ld36.Assets.Animations.{FanAnimationPack, PlayerAnimationPack, gopAnimationPack}
-import com.catinthedark.ld36.Assets.Textures
+import com.catinthedark.common.Const.{Balance, UI}
+import com.catinthedark.ld36.Assets.Animations.{FanAnimationPack, PlayerSkin}
+import com.catinthedark.ld36.Assets.{Animations, Textures}
 import com.catinthedark.models._
 
 /**
@@ -29,24 +29,24 @@ case class PlayerView(var pos: Vector2,
                       var id: UUID,
                       var hasBrick: Boolean,
                       radius: Float = Balance.playerRadius,
-                      pack: PlayerAnimationPack = gopAnimationPack,
+                      var skin: PlayerSkin = Animations.gopSkins(UI.randomSkin), // it'll be overwritten by server, place pack here just to avoid NPE
                       var hasArmor: Boolean) extends Entity {
   var animationCounter = 0f
 
   override def texture(delta: Float) = {
     state match {
       case IDLE =>
-        if(hasBrick) Assets.Textures.gopBrickFrames(0)(0)
-        else pack.idle
+        if(hasBrick) skin.idleWithBrick
+        else skin.idle
       case RUNNING =>
         animationCounter += delta * 2
-        if (hasBrick) pack.runningWithBrick.getKeyFrame(animationCounter)
-        else pack.running.getKeyFrame(animationCounter)
+        if (hasBrick) skin.runningWithBrick.getKeyFrame(animationCounter)
+        else skin.running.getKeyFrame(animationCounter)
       case KILLED =>
-        pack.killed
+        skin.killed
       case THROWING =>
         animationCounter += delta
-        pack.throwing.getKeyFrame(animationCounter)
+        skin.throwing.getKeyFrame(animationCounter)
     }
   }
 

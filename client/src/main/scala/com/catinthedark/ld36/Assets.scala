@@ -9,6 +9,8 @@ import com.catinthedark.common.Const
 import com.catinthedark.common.Const.UI
 import com.catinthedark.models.SoundNames
 
+import scala.util.Random
+
 object Assets {
   object Maps {
   }
@@ -17,18 +19,15 @@ object Assets {
   object Textures {
     val brick = new Texture(Gdx.files.internal("textures/brick.png"))
     val field = new Texture(Gdx.files.internal("textures/gopofon.png"))
-    val gop = new Texture(Gdx.files.internal("textures/gop.png"))
-    val gopBrick = new Texture(Gdx.files.internal("textures/gop-brick.png"))
-    val gopThrow = new Texture(Gdx.files.internal("textures/gop-throw.png"))
+    val gopBlack = new Texture(Gdx.files.internal("textures/gop_black.png"))
+    val gopBlue = new Texture(Gdx.files.internal("textures/gop_blue.png"))
+    val gopGreen = new Texture(Gdx.files.internal("textures/gop_green.png"))
+    val gopRed = new Texture(Gdx.files.internal("textures/gop_red.png"))
     val logo = new Texture(Gdx.files.internal("textures/logo.png"))
     val fans = new Texture(Gdx.files.internal("textures/fans.png"))
     val kepa = new Texture(Gdx.files.internal("textures/kepa.png"))
     val menu = new Texture(Gdx.files.internal("textures/menu.png"))
     val t0 = new Texture(Gdx.files.internal("textures/title.png"))
-
-    val gopFrames = TextureRegion.split(gop, 108, 108)
-    val gopBrickFrames = TextureRegion.split(gopBrick, 108, 108)
-    val gopThrowFrames = TextureRegion.split(gopThrow, 108, 108)
     val fansFrames = TextureRegion.split(fans, 100, 100)
 
     val kepaRegion = new TextureRegion(kepa)
@@ -82,21 +81,19 @@ object Assets {
       new Animation(speed, array, Animation.PlayMode.NORMAL)
     }
 
-    trait PlayerAnimationPack {
-      val idle: TextureRegion
-      val running: Animation
-      val runningWithBrick: Animation
-      val killed: TextureRegion
-      val throwing: Animation
+    class PlayerSkin(textureName: String) {
+      val frames = TextureRegion.split(new Texture(Gdx.files.internal(s"textures/$textureName.png")), 108, 108)
+      val idle: TextureRegion = frames(0)(0)
+      val idleWithBrick: TextureRegion = frames(0)(7)
+      val running: Animation = loopingAnimation(frames, (0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6))
+      val runningWithBrick: Animation = loopingAnimation(frames, (0, 7), (0, 8), (0, 9), (0, 10), (0, 11), (0, 12), (0, 13))
+      val killed: TextureRegion = frames(0)(14)
+      val throwing: Animation = normalAnimation(UI.throwBrickAnimationSpeed, frames, (0, 15), (0, 16), (0, 17), (0, 18))
     }
 
-    object gopAnimationPack extends PlayerAnimationPack {
-      override val idle: TextureRegion = Textures.gopFrames(0)(0)
-      override val running: Animation = loopingAnimation(Textures.gopFrames, (0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6))
-      override val runningWithBrick: Animation = loopingAnimation(Textures.gopBrickFrames, (0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6))
-      override val killed: TextureRegion = Textures.gopFrames(0)(9)
-      override val throwing: Animation = normalAnimation(UI.throwBrickAnimationSpeed, Textures.gopThrowFrames, (0, 0), (0, 2), (0, 1), (0, 3))
-    }
+    val gopSkins: Map[String, PlayerSkin] = UI.PlayerSkinNames.map ( skinName => {
+      (skinName, new PlayerSkin(skinName))
+    }).toMap
 
     trait FanAnimationPack {
       val normalAnimation: Animation

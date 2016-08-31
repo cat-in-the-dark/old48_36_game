@@ -3,22 +3,15 @@ package com.catinthedark.ld36
 import java.util.UUID
 
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.utils.TimeUtils
 import com.catinthedark.common.Const
-import com.catinthedark.ld36.common.Stats
 import com.catinthedark.ld36.units.{Control, View}
-import com.catinthedark.lib.{LocalDeferred, SimpleUnit, YieldUnit}
+import com.catinthedark.lib.{LocalDeferred, SimpleUnit}
 import com.catinthedark.models.{GameStateModel, MessageConverter, RUNNING}
-import com.badlogic.gdx.{Gdx, Input}
 import com.catinthedark.common.Const.Balance
-import com.catinthedark.ld36.Assets.Animations.gopAnimationPack
+import com.catinthedark.ld36.Assets.Animations
 import com.catinthedark.ld36.common.{Stat, Stats}
-import com.catinthedark.lib
 import com.catinthedark.lib.YieldUnit
 import com.catinthedark.models._
-
-import collection.JavaConversions._
-import scala.collection.mutable.ListBuffer
 
 /**
   * Created by over on 18.04.15.
@@ -69,7 +62,7 @@ class GameState extends YieldUnit[Shared0, Stats] {
     players.filter(p => {
       enemiesIDs.indexOf(p.id) == -1
     }).foreach(p => {
-      shared.enemies.insert(0, PlayerView(new Vector2(p.x, p.y), MessageConverter.stringToState(p.state), p.angle, p.id, p.hasBrick, hasArmor = false))
+      shared.enemies.insert(0, PlayerView(new Vector2(p.x, p.y), MessageConverter.stringToState(p.state), p.angle, p.id, p.hasBrick, hasArmor = false, skin = Animations.gopSkins(p.skin)))
     })
 
     shared.enemies --= shared.enemies.filter(enemy => {
@@ -84,6 +77,7 @@ class GameState extends YieldUnit[Shared0, Stats] {
       enemy.pos.y = remotePlayer.y
       enemy.angle = remotePlayer.angle
       enemy.state = MessageConverter.stringToState(remotePlayer.state)
+      enemy.skin = Animations.gopSkins(remotePlayer.skin)
       enemy.hasArmor = remotePlayer.bonuses.contains(Const.Bonus.hat)
       enemy.hasBrick = remotePlayer.hasBrick
     })
@@ -136,6 +130,7 @@ class GameState extends YieldUnit[Shared0, Stats] {
 
     if (shared.me.id == null) {
       shared.me.id = remoteMe.id
+      shared.me.skin = Animations.gopSkins(remoteMe.skin)
     } else {
       shared.me.pos.x = remoteMe.x
       shared.me.pos.y = remoteMe.y

@@ -20,6 +20,17 @@ object Const{
     val verticalBorderWidth = 40f
     val fieldWidth = 1081f
     val fieldHeight = 652f
+
+    val PlayerSkinNames = Array(
+      "gop_black",
+      "gop_blue",
+      "gop_green",
+      "gop_red"
+    )
+
+    def randomSkin: String = {
+      PlayerSkinNames(new Random().nextInt(PlayerSkinNames.length))
+    }
   }
 
   object HUD {
