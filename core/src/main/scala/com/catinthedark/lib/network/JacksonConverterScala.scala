@@ -5,8 +5,7 @@ import com.fasterxml.jackson.module.scala.DefaultScalaModule
 
 import scala.collection.mutable
 
-class JacksonConverterScala() extends Converter {
-  private val objectMapper = new ObjectMapper()
+class JacksonConverterScala(private val objectMapper: ObjectMapper = new ObjectMapper()) extends Converter {
   objectMapper.registerModule(DefaultScalaModule)
   private val converters = new mutable.HashMap[String, Map[String, Any] => Message]()
   
