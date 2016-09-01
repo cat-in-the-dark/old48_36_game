@@ -1,7 +1,5 @@
 package com.catinthedark.lib.network
 
-import com.catinthedark.models.Message
-
 abstract class NetworkTransport(val converter: Converter) extends Transport {
   var receiver: (Wrapper) => Unit = _
 
@@ -42,7 +40,11 @@ abstract class NetworkTransport(val converter: Converter) extends Transport {
   def sendToNetwork(msg: String)
 }
 
+trait Message
+
 trait Converter {
   def toJson(data: Message): String
   def fromJson(json: String): Wrapper
+  def registerConverter[T](clazz: Class[T], converter: Map[String, Any] => Message): Converter
+  def registerMessage[T <: Message](clazz: Class[T]): Converter
 }

@@ -1,7 +1,5 @@
 package com.catinthedark.lib.network
 
-import com.catinthedark.models.Message
-
 trait IMessageBus {
   def send(message: Message): Unit
 

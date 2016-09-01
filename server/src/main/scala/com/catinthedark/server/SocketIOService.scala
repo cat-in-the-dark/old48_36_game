@@ -8,7 +8,7 @@ import com.catinthedark.lib.Intervals
 import com.catinthedark.lib.network.JacksonConverterScala
 import com.catinthedark.models._
 import com.catinthedark.server.models.Room
-import com.catinthedark.server.persist.{Repository, IRepository}
+import com.catinthedark.server.persist.{IRepository, Repository}
 import com.corundumstudio.socketio._
 import com.corundumstudio.socketio.listener.{ConnectListener, DataListener, DisconnectListener}
 import com.fasterxml.jackson.databind.ObjectMapper

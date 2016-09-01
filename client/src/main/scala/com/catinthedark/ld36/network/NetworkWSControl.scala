@@ -3,7 +3,7 @@ package com.catinthedark.ld36.network
 import java.net.URI
 
 import com.catinthedark.ld36.Assets
-import com.catinthedark.lib.network.{JacksonConverterScala, MessageBus, SocketIOTransport}
+import com.catinthedark.lib.network.{JacksonConverterScala, Message, MessageBus, SocketIOTransport}
 import com.catinthedark.models._
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.scala.DefaultScalaModule

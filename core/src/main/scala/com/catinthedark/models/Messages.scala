@@ -1,6 +1,8 @@
 package com.catinthedark.models
 
-sealed class Message
+import com.catinthedark.lib.network.Message
+
+sealed class GameMessage extends Message
 case class EnemyDisconnectedMessage(clientId: String) extends Message
 case class GameStartedMessage(clientId: String) extends Message
 case class RoundEndsMessage(gameStateModel: GameStateModel) extends Message

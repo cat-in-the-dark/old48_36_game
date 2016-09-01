@@ -1,6 +1,5 @@
 package com.catinthedark.lib.network
 
-import com.catinthedark.models.Message
 import com.fasterxml.jackson.databind.ObjectMapper
 
 import scala.collection.mutable
@@ -21,9 +20,19 @@ class JacksonConverterScala(val objectMapper: ObjectMapper) extends Converter {
     wrapper.copy(data = data)
   }
   
-  def registerConverter[T](clazz: Class[T], converter: Map[String, Any] => Message): JacksonConverterScala = {
+  override def registerConverter[T](clazz: Class[T], converter: Map[String, Any] => Message): JacksonConverterScala = {
     converters.put(clazz.getCanonicalName, converter)
     this
+  }
+
+  override def registerMessage[T <: Message](clazz: Class[T]): JacksonConverterScala = {
+    registerConverter(clazz, (data) => {
+      defaultConverter(data, clazz)
+    })
+  }
+
+  private def defaultConverter[T <: Message](data: Map[String, Any], clazz: Class[T]): Message = {
+    objectMapper.convertValue(data, clazz)
   }
   
   def registeredConverters = converters.keySet

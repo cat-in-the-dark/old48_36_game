@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import com.badlogic.gdx.math.Vector2
 import com.catinthedark.common.Const
 import com.catinthedark.lib.Pipe
+import com.catinthedark.lib.network.Message
 import com.catinthedark.models._
 
 trait NetworkControl extends Runnable {

@@ -2,9 +2,6 @@ package com.catinthedark.models
 
 import java.util.UUID
 
-import com.badlogic.gdx.math.Vector2
-import com.catinthedark.common.Const.Balance
-
 case class GameStateModel(me: PlayerModel,
                           players: List[PlayerModel],
                           bricks: List[BrickModel],

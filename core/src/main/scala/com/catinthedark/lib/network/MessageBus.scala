@@ -1,7 +1,5 @@
 package com.catinthedark.lib.network
 
-import com.catinthedark.models.Message
-
 import scala.collection.mutable
 
 class MessageBus(val transport: Transport) extends IMessageBus {
