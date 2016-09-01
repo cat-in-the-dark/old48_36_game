@@ -13,19 +13,25 @@ lazy val core = project.in(file("./core"))
     "com.fasterxml.jackson.module" % "jackson-module-scala_2.11" % "2.7.2"
   ))
 
+lazy val lib = project.in(file("./lib"))
+    .dependsOn(core)
+    .settings(commonSettings: _*)
+    .settings(libraryDependencies ++= Seq(
+      "com.badlogicgames.gdx" % "gdx-backend-lwjgl" % libgdxVersion,
+      "com.badlogicgames.gdx" % "gdx-platform" % libgdxVersion classifier "natives-desktop",
+      "com.badlogicgames.gdx" % "gdx-freetype" % libgdxVersion,
+      "com.badlogicgames.gdx" % "gdx-freetype-platform" % libgdxVersion classifier "natives-desktop",
+      "io.socket" % "socket.io-client" % "0.7.0"
+    ))
+
 lazy val client = project.in(file("./client"))
-  .dependsOn(core)
+  .dependsOn(lib)
   .settings(commonSettings: _*)
   .settings(unmanagedResourceDirectories in Compile += file("./client/assets"))
   .settings(assemblyJarName in assembly := "client.jar")
   .settings(fork in Compile := true)
   .settings(libraryDependencies ++= Seq(
-    "com.badlogicgames.gdx" % "gdx-backend-lwjgl" % libgdxVersion,
-    "com.badlogicgames.gdx" % "gdx-platform" % libgdxVersion classifier "natives-desktop",
-    "com.badlogicgames.gdx" % "gdx-freetype" % libgdxVersion,
-    "com.badlogicgames.gdx" % "gdx-freetype-platform" % libgdxVersion classifier "natives-desktop",
-    "io.socket" % "socket.io-client" % "0.7.0",
-    "com.fasterxml.jackson.module" % "jackson-module-scala_2.11" % "2.7.2"
+
   ))
 
 lazy val server = project.in(file("./server"))

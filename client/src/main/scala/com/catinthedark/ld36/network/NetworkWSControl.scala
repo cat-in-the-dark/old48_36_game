@@ -5,13 +5,9 @@ import java.net.URI
 import com.catinthedark.ld36.Assets
 import com.catinthedark.lib.network.{JacksonConverterScala, Message, MessageBus, SocketIOTransport}
 import com.catinthedark.models._
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.scala.DefaultScalaModule
 
 class NetworkWSControl(val serverAddress: URI) extends NetworkControl {
-  private val objectMapper = new ObjectMapper()
-  objectMapper.registerModule(DefaultScalaModule)
-  private val messageConverter = new JacksonConverterScala(objectMapper)
+  private val messageConverter = new JacksonConverterScala()
   private val transport = new SocketIOTransport(messageConverter, serverAddress)
   private val messageBus = new MessageBus(transport)
 

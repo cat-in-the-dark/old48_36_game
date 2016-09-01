@@ -1,10 +1,13 @@
 package com.catinthedark.lib.network
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.scala.DefaultScalaModule
 
 import scala.collection.mutable
 
-class JacksonConverterScala(val objectMapper: ObjectMapper) extends Converter {
+class JacksonConverterScala() extends Converter {
+  private val objectMapper = new ObjectMapper()
+  objectMapper.registerModule(DefaultScalaModule)
   private val converters = new mutable.HashMap[String, Map[String, Any] => Message]()
   
   override def toJson(data: Message): String = {
